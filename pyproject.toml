@@ -1,0 +1,63 @@
+# pyproject.toml
+
+[build-system]
+requires = ["setuptools>=61.0.0", "versioneer[toml]", "cibuildwheel[toml]"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "glm-py"
+dynamic = ["version"]
+description = "Python tools for running General Lake Model (GLM) simulations"
+readme = "README.md"
+authors = []
+license = { file = "LICENSE" }
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+keywords = ["GLM", "Lake", "Model"]
+requires-python = ">=3.9"
+
+dependencies = [
+    "pandas>=2.0.0",
+    "fastapi[all]>=0.88.0",
+    "numpy>=1.26",
+    "python-multipart"
+]
+
+[project.optional-dependencies]
+toml = ["tomli; python_version < '3.11'"]
+
+[tool.setuptools]
+include-package-data = true
+
+[project.urls]
+Repository = "https://github.com/WET-tool/glm-py"
+
+[project.scripts]
+
+[tool.setuptools.packages.find]
+include = ["glmpy", "glmpy.*"]
+namespaces = false
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "."
+]
+
+
+# See the docstring in versioneer.py for instructions. Note that you must
+# re-run 'versioneer.py setup' after changing this section, and commit the
+# resulting files.
+
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "glmpy/_version.py"
+versionfile_build = "glmpy/_version.py"
+tag_prefix = "v"
+parentdir_prefix = "glmpy-"
+
+
+[tool.cibuildwheel]
+skip = "*musllinux*"

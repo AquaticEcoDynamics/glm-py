@@ -1,0 +1,91 @@
+site_name: glm-py
+repo_url: https://github.com/WET-tool/glm-py
+repo_name: WET-tool/glm-py
+
+theme:
+    name: material
+    logo: img/glm_icon_text_square.png
+    custom_dir: docs/custom_theme/
+    features:
+      - content.code.copy
+      - navigation.tabs
+      - navigation.top
+      - navigation.indexes
+      - navigation.sections
+    palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+extra_css:
+    - css/extra.css
+
+plugins:
+- search
+- blog:
+    blog_dir: blog
+    authors: true
+    authors_file: blog/authors.yml
+    list_length: 25
+
+- mkdocstrings:
+    default_handler: python
+    handlers:
+      python:
+        options:
+          docstring_style: numpy
+          show_source: false
+
+
+markdown_extensions:
+  - toc:
+      permalink: True
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - md_in_html
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+
+extra:
+  social:
+    - icon: "fontawesome/brands/github"
+      link: "https://github.com/"
+
+nav:
+  - Home: index.md
+  - Install: installation.md
+  - How-to: 
+    - NML: how_to/how-to-nml.md
+    - Dimensions: how_to/how-to-dimensions.md
+    - Outflows: how_to/how-to-outflows.md
+    - Inflows: how_to/how-to-inflows.md
+    - GLM JSON: how_to/how-to-glm_json.md
+  - API Reference:
+    - NML: nml.md
+    - Dimensions: dimensions.md
+    - GLM_JSON: json-to-nml.md
+    - Simulations: simulation.md
+    - Inflows: inflows.md
+    - Outflows: outflows.md
+  - Contributing:
+    - contributing/index.md
+  - Blog:
+    - blog/index.md

@@ -1,0 +1,24 @@
+{
+    "python.analysis.typeCheckingMode": "basic",
+    "python.linting.flake8Enabled": false,
+    "python.linting.pylintEnabled": false,
+    "python.linting.enabled": true,
+    "editor.rulers": [
+        79
+    ],
+    "editor.formatOnSave": true,
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": [
+        "--line-length=79"
+    ],
+    "autoDocstring.docstringFormat": "numpy",
+    "python.linting.pydocstyleEnabled": false,
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.autopep8"
+    },
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
+}

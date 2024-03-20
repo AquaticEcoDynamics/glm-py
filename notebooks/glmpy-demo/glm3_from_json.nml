@@ -1,0 +1,117 @@
+&glm_setup 
+   sim_name = 'Sparkling Lake'
+   max_layers = 500
+   min_layer_vol = 0.5
+   min_layer_thick = 0.15
+   max_layer_thick = 0.5
+   density_model = 1
+   non_avg = .true.
+/
+&mixing 
+   surface_mixing = 1
+   coef_mix_conv = 0.2
+   coef_wind_stir = 0.402
+   coef_mix_shear = 0.2
+   coef_mix_turb = 0.51
+   coef_mix_KH = 0.3
+   deep_mixing = 2
+   coef_mix_hyp = 0.5
+   diff = 0.0
+/
+&morphometry 
+   lake_name = 'Sparkling'
+   latitude = 46.00881
+   longitude = -89.69953
+   crest_elev = 320.0
+   bsn_len = 901.0385
+   bsn_wid = 901.0385
+   bsn_vals = 15
+   H = 301.712, 303.018285714286, 304.324571428571, 305.630857142857, 306.937142857143, 308.243428571429, 309.549714285714, 310.856, 312.162285714286, 313.468571428571, 314.774857142857, 316.081142857143, 317.387428571429, 318.693714285714, 320, 321
+   A = 0, 45545.8263571429, 91091.6527142857, 136637.479071429, 182183.305428571, 227729.131785714, 273274.958142857, 318820.7845, 364366.610857143, 409912.437214286, 455458.263571429, 501004.089928571, 546549.916285714, 592095.742642857, 637641.569, 687641.569
+/
+&time 
+   timefmt = 3
+   start = '1980-04-15'
+   stop = '2012-12-10'
+   dt = 3600
+   num_days = 730
+   timezone = -6
+/
+&output 
+   out_dir = 'output'
+   out_fn = 'output'
+   nsave = 24
+   csv_lake_fname = 'lake'
+   csv_point_nlevs = 0
+   csv_point_fname = 'WQ_'
+   csv_point_at = 17
+   csv_point_nvars = 2
+   csv_point_vars = 'temp', 'salt', 'OXY_oxy'
+   csv_outlet_allinone = .false.
+   csv_outlet_fname = 'outlet_'
+   csv_outlet_nvars = 3
+   csv_outlet_vars = 'flow', 'temp', 'salt', 'OXY_oxy'
+   csv_ovrflw_fname = 'overflow'
+/
+&init_profiles 
+   lake_depth = 18.288
+   num_depths = 3
+   the_depths = 0, 0.2, 18.288
+   the_temps = 3, 4, 4
+   the_sals = 0, 0, 0
+   num_wq_vars = 6
+   wq_names = 'OGM_don', 'OGM_pon', 'OGM_dop', 'OGM_pop', 'OGM_doc', 'OGM_poc'
+   wq_init_vals = 1.1, 1.2, 1.3, 1.2, 1.3, 2.1, 2.2, 2.3, 1.2, 1.3, 3.1, 3.2, 3.3, 1.2, 1.3, 4.1, 4.2, 4.3, 1.2, 1.3, 5.1, 5.2, 5.3, 1.2, 1.3, 6.1, 6.2, 6.3, 1.2, 1.3
+/
+&light 
+   light_mode = 0
+   Kw = 0.331
+   n_bands = 4
+   light_extc = 1.0, 0.5, 2.0, 4.0
+   energy_frac = 0.51, 0.45, 0.035, 0.005
+   Benthic_Imin = 10
+/
+&bird_model 
+   AP = 973
+   Oz = 0.279
+   WatVap = 1.1
+   AOD500 = 0.033
+   AOD380 = 0.038
+   Albedo = 0.2
+/
+&sediment 
+   sed_heat_Ksoil = 2.0
+   sed_temp_depth = 0.2
+   sed_temp_mean = 4.5, 5, 6
+   sed_temp_amplitude = 1, 1, 1
+   sed_temp_peak_doy = 242, 242, 242
+   benthic_mode = 2
+   n_zones = 3
+   zone_heights = 10.0, 20.0, 30.0
+   sed_reflectivity = 0.1, 0.01, 0.01
+   sed_roughness = 0.1, 0.01, 0.01
+/
+&meteorology 
+   met_sw = .true.
+   meteo_fl = 'bcs/nldas_driver.csv'
+   subdaily = .false.
+   rad_mode = 1
+   albedo_mode = 1
+   sw_factor = 1.08
+   lw_type = 'LW_IN'
+   cloud_mode = 4
+   lw_factor = 1
+   atm_stab = 0
+   rh_factor = 1
+   at_factor = 1
+   ce = 0.00132
+   ch = 0.0014
+   rain_sw = .false.
+   rain_factor = 1
+   catchrain = .false.
+   rain_threshold = 0.01
+   runoff_coef = 0.3
+   cd = 0.0013
+   wind_factor = 1
+   fetch_mode = 0
+/

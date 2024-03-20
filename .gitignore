@@ -1,0 +1,23 @@
+examples
+
+*.DS_Store
+
+*/__pycache__
+*__pycache__
+*.py[cod]
+
+build
+*.egg-info
+
+.ruff_cache
+.pytest_cache
+
+# glm*/
+glmpy/setup.py
+
+sparkling.nml
+# MkDocs documentation
+site*/
+
+#glm3.nml
+notebooks/glmpy-demo/inputs
