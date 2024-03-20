@@ -1,6 +1,6 @@
 site_name: glm-py
-repo_url: https://github.com/WET-tool/glm-py
-repo_name: WET-tool/glm-py
+repo_url: https://github.com/AquaticEcoDynamics/glm-py
+repo_name: AquaticEcoDynamics/glm-py
 
 theme:
     name: material

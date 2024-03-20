@@ -1,5 +1,5 @@
 ---
-draft: true 
+draft: false 
 date: 2024-03-20 
 authors:
   - gknight
@@ -13,11 +13,21 @@ readtime: 20
 **This tutorial guides users through the process of setting up a model of 
 Sparkling Lake using glm-py.**
 
-Sparkling Lake is an oligotrophic, northern temperate lake (89.7 ºN, 46.3 ºW) in Winconsin, USA. The lake is approximately 20m deep and covers a surface area of 0.638km<sup>2</sup>. We will use glm-py to simulate the hydrological domain of Sparkling Lake for 2 years (1980-04-15 to 1982-04-15). The water balance and heat fluxes will be hypothetically calculated based on the lake configuration and input data.
+<a target="_blank" href="https://colab.research.google.com/github/AquaticEcoDynamics/glm-py/blob/main/notebooks/sparkling-lake-tutorial.ipynb">
+  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/>
+</a>
+
+Sparkling Lake is an oligotrophic, northern temperate lake (89.7 ºN, 46.3 ºW) in Winconsin, USA. The lake is approximately 20m deep and covers a surface area of 0.638km<sup>2</sup>. This tutorial serves an introduction to the two core modules of glm-py - `nml` and `simulation`. You will use glm-py to model Sparkling Lake for 2 years (1980-04-15 to 1982-04-15).
 
 <!-- more -->
 
-## The GLM `.nml` file
+If you haven't already, install glm-py using `pip`:
+
+```
+pip install glmpy
+```
+
+## Creating a GLM `.nml` file
 
 To begin, start by importing the `nml` module from `glmpy`:
 
@@ -25,7 +35,7 @@ To begin, start by importing the `nml` module from `glmpy`:
 from glmpy import nml
 ```
 
-The `nml` module provides a set of classes to create the namelist file (`.nml`) that defines the model parameters of a GLM simulation.  The GLM namelist file is divided into multiple "blocks" that configure specific aspects of the model, e.g., the `&morphometry` block defines morphometry of the water body. The structure of a GLM namelist file is shown below for the four minimum required blocks (`...` indicates that the block contains more parameters than shown):
+The `nml` module provides a set of classes to construct GLM's namelist file (`.nml`).  A `.nml` file is divided into multiple "blocks" that configure specific aspects of the model, e.g., the `&morphometry` block defines morphometry of the water body. The structure of a `.nml` file is shown below for the four minimum required blocks (`...` indicates that the block contains more parameters than shown):
 
 ```
 &glm_setup
@@ -48,7 +58,21 @@ The `nml` module provides a set of classes to create the namelist file (`.nml`) 
 
 ### Model setup
 
-As a 1-dimensional model, GLM simulates the dynamics of a water body by dividing it into a vertically stacked series of layers. The compulsory `&glm_setup` block defines the structure of these layers, e.g., the maximum number of layers, the minimum layer volume, and the minimum and maximum layer thicknesses. You can configure the `&glm_setup` block by using the `NMLGLMSetup` class from the `nml` module. Each model parameter of the `&glm_setup` block has a corresponding attribute in the `NMLGLMSetup` class:
+GLM simulates the dynamics of a water body by dividing it into a vertically stacked series of layers. The compulsory `&glm_setup` block defines the structure of these layers, e.g., the maximum number of layers, the minimum layer volume, and the minimum and maximum layer thicknesses. To configure the `&glm_setup` parameters for Sparkling Lake, you would typically write a `.nml` file that contains the following:
+
+```
+&glm_setup 
+   sim_name = 'Sparkling Lake'
+   max_layers = 500
+   min_layer_vol = 0.5
+   min_layer_thick = 0.15
+   max_layer_thick = 0.5
+   density_model = 1
+   non_avg = .true.
+/
+```
+
+Using glm-py, you instead configure the `&glm_setup` block by using the `NMLGLMSetup` class from the `nml` module. Each model parameter of the `&glm_setup` block has a corresponding attribute in the `NMLGLMSetup` class:
 
 ```python
 glm_setup = nml.NMLGLMSetup(
@@ -62,7 +86,13 @@ glm_setup = nml.NMLGLMSetup(
 )
 ```
 
-Alternatively, these attributes can also be passed to `NMLSetup` as a dictionary object:
+This approach offers a number of advantages over editing a raw `.nml` file:
+
+- Explicit type hinting for parameter types
+- Native Python syntax
+- Error checking
+
+Alternatively, these parameters can also be defined in a dictionary and set as class attributes using the `set_attributes()` method:
 
 ```python
 glm_setup = nml.NMLGLMSetup()
@@ -90,16 +120,25 @@ print(glm_setup_parameters)
 ```
 {'sim_name': 'Sparkling Lake', 'max_layers': 500, 'min_layer_vol': 0.5, 'min_layer_thick': 0.15, 'max_layer_thick': 0.5, 'density_model': 1, 'non_avg': True}
 ```
+The call method provides an optional `check_errors` parameter. If set to `True`, glm-py will validate the model parameters and raise errors if non-compliance is detected. Note, `check_errors` is not fully implemented in glm-py `0.0.1`.
 
-The call method provides an optional `check_errors` parameter. If set to `True`, glm-py with validate the model parameters and raise errors if non-compliance is detected. Note, `check_errors` is not fully implemented in glm-py `0.0.1`.
-
-```python
-glm_setup(check_errors=True)
 ```
+FutureWarning: Error checking is not stable and lacks complete coverage. Erroneous parameters may not be raised.
+  glm_setup(check_errors=True)
+
+{'sim_name': 'Sparkling Lake',
+ 'max_layers': 500,
+ 'min_layer_vol': 0.5,
+ 'min_layer_thick': 0.15,
+ 'max_layer_thick': 0.5,
+ 'density_model': 1,
+ 'non_avg': True}
+```
+
 
 ### Mixing and morphometry
 
-Next, let's set the parameters that control the mixing processes between the simulated layers of Sparkling lake. Just as `NMLGLMSetup` defines the `&glm_setup` block, we can configure the `&mixing` block using the `NMLMixing` class:
+Next, let's set the parameters that control the mixing processes within Sparkling Lake. Just as `NMLGLMSetup` defines the `&glm_setup` block, we can configure the `&mixing` block using the `NMLMixing` class:
 
 ```python
 mixing = nml.NMLMixing(
@@ -115,7 +154,7 @@ mixing = nml.NMLMixing(
 )
 ```
 
-Let's repeat the same for the `&morphometry` block to define the structure of Sparkling Lake:
+Let's repeat the same for the `&morphometry` block - use the `NMLMorphometry` class:
 
 ```python
 morphometry = nml.NMLMorphometry(
@@ -147,7 +186,7 @@ There are up to 14 configurable blocks in the GLM namelist file - setting each w
 curl https://raw.githubusercontent.com/WET-tool/glm-py/main/notebooks/glmpy-demo/sparkling-nml.json --output sparkling-nml.json
 ```
 
-Now import the `glm_json` module and initalise the `JSONReader` class by passing in the file path to the JSON file we just downloaded:
+Now import the `glm_json` module and initalise the `JSONReader` class by passing in the file path of the JSON file we just downloaded:
 
 ```python 
 from glmpy import glm_json
@@ -190,7 +229,7 @@ mkdir bcs
 curl https://raw.githubusercontent.com/WET-tool/glm-py/main/notebooks/glmpy-demo/bcs/nldas_driver.csv --output bcs/nldas_driver.csv
 ```
 
-Now, let's setup the remaining blocks:  `&output`, `&init_profiles`, `&time`, `&bird_model`, `&light`, `&sediment`. There won't be any more boundary conidition files to include. If you're want to find out more about the attributes for each block, check out glm-py's documentation website.
+Now, let's setup the remaining blocks:  `&output`, `&init_profiles`, `&time`, `&bird_model`, `&light`, `&sediment`. We'll use `get_nml_parameters` to return dictionaries of parameters that will set the attributes of the corresponding `nml.NML*` classes:
 
 ```python
 output_attrs=my_json_file.get_nml_parameters("&output")
@@ -226,9 +265,13 @@ sediment.set_attributes(sediment_attrs)
 wq_setup.set_attributes(wq_setup_attrs)
 ```
 
+If you're want to find out more about the attributes for each block, check out glm-py's documentation website.
+
 ### Writing the namelist file
 
-Now that we have the attributes set for each block, the `.nml` file can be created. First, create an instance of the `NML` class and pass in the dictionaries of consolidated parameters, i.e., from `glm_setup()`, `mixing()`, `morphometry()`:
+### Writing the namelist file
+
+We now have the attributes set for each block. Let's combine them to create the `.nml` file. First, create an instance of the `NML` class. Then pass in the dictionaries of consolidated parameters, i.e., from `glm_setup()`, `mixing()`, `morphometry()`, etc:
 
 ```python
 nml = nml.NML(
@@ -260,7 +303,7 @@ Model configuration is now complete! To run our Sparkling Lake simulation, impor
 from glmpy import simulation
 ```
 
-We now need to specify the location of any files we'll be using in the simulation. For Sparkling Lake, that's just your newly created `glm3.nml` and the meterological boundary condition file `nldas_driver.csv`. These will be defined in a dictionary where the key is the filename and the value is the filepath:
+We now need to specify the location of any files that we'll use in the simulation. For Sparkling Lake, that's just your newly created `glm3.nml` and the meterological boundary condition file `nldas_driver.csv`. These will be defined in a dictionary where the key is the filename and the value is the file path:
 
 ```python
 files = {
@@ -269,7 +312,7 @@ files = {
 }
 ```
 
-Now pass this dictionary to a new instance of the `GLMSim` class. `GLMSim` will prepare a new directory called `inputs` that structures our files in a way that GLM expects. Set `api` to `False` to run the simulation locally:
+Now pass this dictionary to a new instance of the `GLMSim` class. `GLMSim` is used prepare a new directory of model inputs that we'll point GLM at . Set `api` to `False` to run the simulation locally and set `inputs_dir` to the name of the inputs directory that will be created:
 
 ```python
 glm_sim = simulation.GLMSim(
