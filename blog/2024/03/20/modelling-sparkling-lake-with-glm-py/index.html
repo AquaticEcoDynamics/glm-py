@@ -1148,15 +1148,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#writing-the-namelist-file_1" class="md-nav__link">
-    <span class="md-ellipsis">
-      Writing the namelist file
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -1461,7 +1452,6 @@ pass these to the <code>NMLMeteorology</code> class with the <code>set_attribute
 </span></code></pre></div>
 <p>If you're want to find out more about the attributes for each block, check out glm-py's documentation website.</p>
 <h3 id="writing-the-namelist-file">Writing the namelist file<a class="headerlink" href="#writing-the-namelist-file" title="Permanent link">&para;</a></h3>
-<h3 id="writing-the-namelist-file_1">Writing the namelist file<a class="headerlink" href="#writing-the-namelist-file_1" title="Permanent link">&para;</a></h3>
 <p>We now have the attributes set for each block. Let's combine them to create the <code>.nml</code> file. First, create an instance of the <code>NML</code> class. Then pass in the dictionaries of consolidated parameters, i.e., from <code>glm_setup()</code>, <code>mixing()</code>, <code>morphometry()</code>, etc:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">nml</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NML</span><span class="p">(</span>
 </span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>  <span class="n">glm_setup</span><span class="o">=</span><span class="n">glm_setup</span><span class="p">(),</span>
