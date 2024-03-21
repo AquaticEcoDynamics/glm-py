@@ -266,7 +266,7 @@ jobs:
           name: ${{ matrix.distribution}}
           path: dist/
 
-      - name: Publish all distributions to TestPyPI
+      - name: Publish distribution to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           repository-url: https://test.pypi.org/legacy/
@@ -396,4 +396,32 @@ jobs:
     - name: Run glmpy
       run: python run_glmpy.py
     
+  publish-to-pypi:
+    name: Publish distributions to PyPI
+    needs: [test-windows-wheels-amd64, test-macos-wheels-arm64, test-macos-wheels-x86_64, test-linux-wheels-x86_64]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distribution:
+          - source-dist
+          - wheels-manylinux2014-aarch64
+          - wheels-manylinux2014-x86_64
+          - wheels-macos-x86_64
+          - wheels-macos-arm64
+          - wheels-windows-amd64
 
+    environment:
+      name: pypi
+      url: https://pypi.org/p/glm-py  
+    permissions:
+      id-token: write  
+  
+    steps:
+      - name: Download distribution artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ matrix.distribution }}
+          path: dist/
+
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

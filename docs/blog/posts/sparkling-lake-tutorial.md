@@ -269,8 +269,6 @@ If you're want to find out more about the attributes for each block, check out g
 
 ### Writing the namelist file
 
-### Writing the namelist file
-
 We now have the attributes set for each block. Let's combine them to create the `.nml` file. First, create an instance of the `NML` class. Then pass in the dictionaries of consolidated parameters, i.e., from `glm_setup()`, `mixing()`, `morphometry()`, etc:
 
 ```python
