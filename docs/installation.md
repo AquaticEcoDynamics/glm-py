@@ -5,7 +5,7 @@
 Install glm-py with `pip`:
 
 ``` 
-pip install glmpy
+pip install glm-py
 ```
 
 ### Built distribution (recommended)
@@ -31,7 +31,8 @@ To run GLM, you will either need to source a pre-compiled binary or [compile GLM
 
 The following table lists the GLM version that is bundled with the built distribution of each glm-py release:
 
+[glm_py_0_1_3]: https://github.com/AquaticEcoDynamics/glm-py/releases/tag/v0.1.3
 
-| glm-py version | GLM version |
-| -------------- | ----------- |
-| `0.0.1`        | `3.3.1`     |
+| glm-py version          | GLM version     |
+| --------------          | -----------     |
+| [`0.1.3`][glm_py_0_1_3] | `3.3.1a12 `     |

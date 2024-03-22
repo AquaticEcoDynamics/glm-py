@@ -1,6 +1,6 @@
 ---
 draft: false 
-date: 2024-03-20 
+date: 2024-03-22 
 authors:
   - gknight
 categories:
@@ -24,7 +24,7 @@ Sparkling Lake is an oligotrophic, northern temperate lake (89.7 ºN, 46.3 ºW) 
 If you haven't already, install glm-py using `pip`:
 
 ```
-pip install glmpy
+pip install glm-py
 ```
 
 ## Creating a GLM `.nml` file

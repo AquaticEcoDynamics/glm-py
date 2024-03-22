@@ -82,7 +82,7 @@ nav:
     - NML: nml.md
     - Dimensions: dimensions.md
     - GLM_JSON: json-to-nml.md
-    - Simulations: simulation.md
+    - Simulation: simulation.md
     - Inflows: inflows.md
     - Outflows: outflows.md
   - Contributing:

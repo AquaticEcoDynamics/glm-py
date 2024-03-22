@@ -1,17 +1,17 @@
 ---
 draft: false 
-date: 2024-03-20 
+date: 2024-03-22 
 authors:
   - gknight
 categories:
   - Releases
 ---
 
-# glm-py `0.0.1` released! 🚀
+# glm-py released! 🚀
 
-**We're pleased to announce the first release of glm-py on pip!**
+**We're pleased to announce the first public release of glm-py on pip!**
 
-glm-py provides a Python interface to the General Lake Model (GLM) that 
+glm-py `0.1.3` provides a Python interface to the General Lake Model (GLM) that 
 abstracts away the complexity of building and running simulations. It is now
 easier than ever to use GLM for research, education, and software development. 
 
