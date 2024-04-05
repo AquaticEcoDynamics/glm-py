@@ -40,7 +40,25 @@ def example_glmpy_parameters():
         "param7": 12.3,
         "param8": [12.3],
         "param9": [12.3, 32.4, 64.2],
-        "param10": None
+        "param10": None,
+        "param11": [
+            [1.1, 1.2, 1.3, 1.2, 1.3],
+            [2.1, 2.2, 2.3, 1.2, 1.3],
+            [3.1, 3.2, 3.3, 1.2, 1.3],
+            [4.1, 4.2, 4.3, 1.2, 1.3],
+            [5.1, 5.2, 5.3, 1.2, 1.3],
+            [6.1, 6.2, 6.3, 1.2, 1.3]
+        ],
+        "param12": [
+            [True, True, True, True, True],
+            [False, False, False, False, False],
+            [False, True, False, True, False]
+        ],
+        "param13": [
+            ["foo", "foo", "foo"],
+            ["foo", "foo", "foo"],
+            ["foo", "foo", "foo"]
+        ]
     }
 
 def test_nml_param_val(example_glmpy_parameters):
@@ -103,6 +121,43 @@ def test_nml_param_val(example_glmpy_parameters):
         param="param10",
         syntax_func=None
     ) == ""
+
+    assert nml.NML.nml_param_val(
+        param_dict=example_glmpy_parameters,
+        param="param11",
+        syntax_func=lambda x: nml.NML.nml_array(x, row_indent=13)
+    ) == (
+        f"   param11 = 1.1,1.2,1.3,1.2,1.3,\n"+
+        f"             2.1,2.2,2.3,1.2,1.3,\n"+
+        f"             3.1,3.2,3.3,1.2,1.3,\n"+
+        f"             4.1,4.2,4.3,1.2,1.3,\n"+
+        f"             5.1,5.2,5.3,1.2,1.3,\n"+
+        f"             6.1,6.2,6.3,1.2,1.3\n"
+    )
+
+    assert nml.NML.nml_param_val(
+        param_dict=example_glmpy_parameters,
+        param="param12",
+        syntax_func=lambda x: nml.NML.nml_array(
+            x, row_indent=13, syntax_func=nml.NML.nml_bool
+        )
+    ) == (
+        f"   param12 = .true.,.true.,.true.,.true.,.true.,\n"+
+        f"             .false.,.false.,.false.,.false.,.false.,\n"+
+        f"             .false.,.true.,.false.,.true.,.false.\n"
+    )
+
+    assert nml.NML.nml_param_val(
+        param_dict=example_glmpy_parameters,
+        param="param13",
+        syntax_func=lambda x: nml.NML.nml_array(
+            x, row_indent=13, syntax_func=nml.NML.nml_str
+        )
+    ) == (
+        f"   param13 = 'foo','foo','foo',\n"+
+        f"             'foo','foo','foo',\n"+
+        f"             'foo','foo','foo'\n"
+    )
 
 @pytest.fixture
 def example_glm_setup_parameters():
@@ -384,12 +439,12 @@ def example_init_profiles_parameters():
             'OGM_don','OGM_pon','OGM_dop','OGM_pop','OGM_doc','OGM_poc'
         ],
         "wq_init_vals": [
-            1.1, 1.2, 1.3, 1.2, 1.3,
-            2.1, 2.2, 2.3, 1.2, 1.3,
-            3.1, 3.2, 3.3, 1.2, 1.3,
-            4.1, 4.2, 4.3, 1.2, 1.3,
-            5.1, 5.2, 5.3, 1.2, 1.3,
-            6.1, 6.2, 6.3, 1.2, 1.3
+            [1.1, 1.2, 1.3, 1.2, 1.3],
+            [2.1, 2.2, 2.3, 1.2, 1.3],
+            [3.1, 3.2, 3.3, 1.2, 1.3],
+            [4.1, 4.2, 4.3, 1.2, 1.3],
+            [5.1, 5.2, 5.3, 1.2, 1.3],
+            [6.1, 6.2, 6.3, 1.2, 1.3]
         ]
     }
 
@@ -413,12 +468,12 @@ def test_write_init_profiles(example_init_profiles_parameters):
         f"   num_wq_vars = 6\n" +
         f"   wq_names = 'OGM_don','OGM_pon','OGM_dop','OGM_pop','OGM_doc'," +
         "'OGM_poc'\n" +
-        f"   wq_init_vals = 1.1,1.2,1.3,1.2,1.3," +
-        "2.1,2.2,2.3,1.2,1.3," +
-        "3.1,3.2,3.3,1.2,1.3," +
-        "4.1,4.2,4.3,1.2,1.3," +
-        "5.1,5.2,5.3,1.2,1.3," +
-        "6.1,6.2,6.3,1.2,1.3\n" +
+        f"   wq_init_vals = 1.1,1.2,1.3,1.2,1.3,\n" +
+        "                  2.1,2.2,2.3,1.2,1.3,\n" +
+        "                  3.1,3.2,3.3,1.2,1.3,\n" +
+        "                  4.1,4.2,4.3,1.2,1.3,\n" +
+        "                  5.1,5.2,5.3,1.2,1.3,\n" +
+        "                  6.1,6.2,6.3,1.2,1.3\n" +
         "/"
     )
     assert init_profiles_str == expected
@@ -873,12 +928,12 @@ def test_write_nml(
         f"   num_wq_vars = 6\n" +
         f"   wq_names = 'OGM_don','OGM_pon','OGM_dop','OGM_pop','OGM_doc'," +
         "'OGM_poc'\n" +
-        f"   wq_init_vals = 1.1,1.2,1.3,1.2,1.3," +
-        "2.1,2.2,2.3,1.2,1.3," +
-        "3.1,3.2,3.3,1.2,1.3," +
-        "4.1,4.2,4.3,1.2,1.3," +
-        "5.1,5.2,5.3,1.2,1.3," +
-        "6.1,6.2,6.3,1.2,1.3\n" +
+        f"   wq_init_vals = 1.1,1.2,1.3,1.2,1.3,\n" +
+        "                  2.1,2.2,2.3,1.2,1.3,\n" +
+        "                  3.1,3.2,3.3,1.2,1.3,\n" +
+        "                  4.1,4.2,4.3,1.2,1.3,\n" +
+        "                  5.1,5.2,5.3,1.2,1.3,\n" +
+        "                  6.1,6.2,6.3,1.2,1.3\n" +
         "/" +
         "\n" +
         "&light\n" +
