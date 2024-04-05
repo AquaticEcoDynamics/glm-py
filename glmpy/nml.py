@@ -214,7 +214,7 @@ class NML:
 
     @staticmethod
     def nml_bool(python_bool: bool) -> str:
-        """Python boolean to Fortran boolean.
+        """Python boolean to NML boolean.
 
         Convert a Python boolean to a string representation of a Fortran 
         boolean. 
@@ -238,7 +238,7 @@ class NML:
 
     @staticmethod    
     def nml_str(python_str: str) -> str:
-        """Python string to Fortran string.
+        """Python string to NML string.
 
         Convert a Python string to a Fortran string by adding inverted commas.
 
@@ -261,7 +261,7 @@ class NML:
             python_list: List[Any], 
             syntax_func: Union[Callable, None] = None
         ) -> str:
-        """Python list to comma-separated list.
+        """Python list to NML comma-separated list.
 
         Convert a Python list to a comma-separated list. A function can be 
         optionally passed to the `syntax_func` parameter to format the syntax 
@@ -297,6 +297,83 @@ class NML:
                 return ','.join(syntax_func(val) for val in python_list)
             else:
                 return ','.join(str(val) for val in python_list)
+    
+    @staticmethod
+    def nml_array(
+            python_array: List[List[Any]], 
+            row_indent: int = 18,
+            syntax_func: Union[Callable, None] = None,
+        ) -> str:
+        """Python array to NML array
+
+        Convert a 2D Python array to NML syntax. The Python array is 
+        constructed as a nested list - similarly to 2D arrays in the numpy 
+        package. The number of inner lists equals the array rows and the length 
+        of each list equals the array columns. A function can be 
+        optionally passed to the `syntax_func` parameter to format the syntax 
+        of each array element, e.g., `nml_str()` and `nml_bool()`.
+
+        Parameters
+        ----------
+        python_array : List[List[Any]]
+            A list of lists. The number of inner lists equals the array rows 
+            and the length of each list equals the array columns.
+        row_indent : int
+            The number of spaces to indent consecutive array rows by. Default
+            is `18`.
+        syntax_func : Union[Callable, None]
+            A function used to format each list item. Default is `None`.
+
+        Examples
+        --------
+        >>> from glmpy import nml
+        >>> wq_init_vals = [
+        ...     [1.1, 1.2, 1.3, 1.2, 1.3],
+        ...     [2.1, 2.2, 2.3, 1.2, 1.3],
+        ...     [3.1, 3.2, 3.3, 1.2, 1.3],
+        ...     [4.1, 4.2, 4.3, 1.2, 1.3],
+        ...     [5.1, 5.2, 5.3, 1.2, 1.3],
+        ...     [6.1, 6.2, 6.3, 1.2, 1.3]
+        ... ]
+        >>> wq_init_vals = nml.NML.nml_array(python_array=wq_init_vals)
+        >>> print(wq_init_vals)
+        1.1,1.2,1.3,1.2,1.3,
+                          2.1,2.2,2.3,1.2,1.3,
+                          3.1,3.2,3.3,1.2,1.3,
+                          4.1,4.2,4.3,1.2,1.3,
+                          5.1,5.2,5.3,1.2,1.3,
+                          6.1,6.2,6.3,1.2,1.3
+
+        >>> bool_array = [
+        ...     [True, True, True, True, True],
+        ...     [False, False, False, False, False],
+        ...     [False, True, False, True, False]
+        ... ]
+        >>> bool_array = nml.NML.nml_array(
+        ...     python_array=bool_array, 
+        ...     syntax_func=nml.NML.nml_bool
+        ... )
+        >>> print(bool_array)
+        .true.,.true.,.true.,.true.,.true.,
+                          .false.,.false.,.false.,.false.,.false.,
+                          .false.,.true.,.false.,.true.,.false.
+        """
+        if syntax_func is None:
+            syntax_func = str
+        nrows = len(python_array)
+        array_str = ''
+        array_str += ','.join(syntax_func(val) for val in python_array[0])
+        if nrows > 1:
+            array_str += ','
+            for i in range(1, nrows):
+                array_str += '\n'
+                array_str += ' ' * row_indent
+                array_str += ','.join(
+                    syntax_func(val) for val in python_array[i]
+                )
+                if i != nrows - 1:
+                    array_str += ','
+        return array_str
 
     @staticmethod
     def nml_param_val(
@@ -505,9 +582,7 @@ class NML:
                 "wq_names", 
                 lambda x: self.nml_list(x, self.nml_str)
             ) +
-            self.nml_param_val(
-                init_profiles, "wq_init_vals", self.nml_list
-            ) +
+            self.nml_param_val(init_profiles, "wq_init_vals", self.nml_array) +
             "/"
         )
 
