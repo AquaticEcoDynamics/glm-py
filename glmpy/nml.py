@@ -679,7 +679,11 @@ class NML:
         outflow_str = (
             "&outflow\n" +
             self.nml_param_val(outflow, "num_outlet")+
-            self.nml_param_val(outflow, "outflow_fl", self.nml_str) +
+            self.nml_param_val(
+                outflow, 
+                "outflow_fl", 
+                lambda x: self.nml_list(x, self.nml_str)
+            ) +
             self.nml_param_val(outflow, "time_fmt", self.nml_str) +
             self.nml_param_val(outflow, "outflow_factor", self.nml_list) +
             self.nml_param_val(
