@@ -1,4 +1,6 @@
+import json
 import pytest
+
 from glmpy import nml
 
 def test_nml_bool():
@@ -1027,3 +1029,331 @@ def test_write_nml(
     )
     assert content == expected
 
+
+@pytest.fixture
+def example_nml_parameters():
+    return {
+        "nml_bool_1": ".true.",
+        "nml_bool_2": ".false.",
+        "nml_bool_3": ".TRUE.",
+        "nml_bool_4": ".FALSE.",
+        "nml_int_1": "123",
+        "nml_float_1": "1.23",
+        "nml_str_1": "'foo'",
+        "nml_str_2": '"foo"',
+        "nml_list_1": "'foo', 'bar', 'baz'",
+        "nml_list_2": "1, 2, 3",
+        "nml_list_3": "1.1, 2.1, 3.1",
+        "nml_list_4": ".true., .false., .TRUE., .FALSE.",
+        "nml_array_1": ["1, 2, 3", "4, 5, 6"],
+        "nml_array_2": ["1.1, 2.1, 3.1", "1.2, 2.2, 3.2"],
+        "nml_array_3": ["'foo', 'bar', 'baz'", '"foo", "bar", "baz"'],
+        "nml_array_4": [".true., .FALSE.", ".TRUE., .false."]
+    }
+
+def test_convert_nml_methods(example_nml_parameters):
+    assert nml.NMLReader.convert_nml_bool(
+        nml_bool=example_nml_parameters["nml_bool_1"]
+    ) == True
+    assert nml.NMLReader.convert_nml_bool(
+        nml_bool=example_nml_parameters["nml_bool_2"]
+    ) == False
+    assert nml.NMLReader.convert_nml_bool(
+        nml_bool=example_nml_parameters["nml_bool_3"]
+    ) == True
+    assert nml.NMLReader.convert_nml_bool(
+        nml_bool=example_nml_parameters["nml_bool_4"]
+    ) == False
+
+    assert nml.NMLReader.convert_nml_int(
+        nml_int=example_nml_parameters["nml_int_1"]
+    ) == 123
+
+    assert nml.NMLReader.convert_nml_float(
+        nml_float=example_nml_parameters["nml_float_1"]
+    ) == 1.23
+
+    assert nml.NMLReader.convert_nml_str(
+        nml_str=example_nml_parameters["nml_str_1"]
+    ) == "foo"
+    assert nml.NMLReader.convert_nml_str(
+        nml_str=example_nml_parameters["nml_str_2"]
+    ) == "foo"
+
+    assert nml.NMLReader.convert_nml_list(
+        nml_list=example_nml_parameters["nml_list_1"],
+        syntax_func=nml.NMLReader.convert_nml_str
+    ) == ["foo", "bar", "baz"]
+    assert nml.NMLReader.convert_nml_list(
+        nml_list=example_nml_parameters["nml_list_2"],
+        syntax_func=nml.NMLReader.convert_nml_int
+    ) == [1, 2, 3]
+    assert nml.NMLReader.convert_nml_list(
+        nml_list=example_nml_parameters["nml_list_3"],
+        syntax_func=nml.NMLReader.convert_nml_float
+    ) == [1.1, 2.1, 3.1]
+    assert nml.NMLReader.convert_nml_list(
+        nml_list=example_nml_parameters["nml_list_4"],
+        syntax_func=nml.NMLReader.convert_nml_bool
+    ) == [True, False, True, False]
+
+    assert nml.NMLReader.convert_nml_array(
+        nml_array=example_nml_parameters["nml_array_1"],
+        syntax_func=nml.NMLReader.convert_nml_int
+    ) == [[1, 2, 3], [4, 5, 6]]
+    assert nml.NMLReader.convert_nml_array(
+        nml_array=example_nml_parameters["nml_array_2"],
+        syntax_func=nml.NMLReader.convert_nml_float
+    ) == [[1.1, 2.1, 3.1], [1.2, 2.2, 3.2]] 
+    assert nml.NMLReader.convert_nml_array(
+        nml_array=example_nml_parameters["nml_array_3"],
+        syntax_func=nml.NMLReader.convert_nml_str
+    ) == [['foo', 'bar', 'baz'], ["foo", "bar", "baz"]]
+    assert nml.NMLReader.convert_nml_array(
+        nml_array=example_nml_parameters["nml_array_4"],
+        syntax_func=nml.NMLReader.convert_nml_bool
+    ) == [[True, False], [True, False]]
+
+def test_convert_nml_int_exceptions():
+    with pytest.raises(TypeError) as error:
+        input = 123
+        nml.NMLReader.convert_nml_int(input)
+    assert str(error.value) == (
+        f"Expected a string but got type: {type(input)}."
+    )
+    with pytest.raises(ValueError) as error:
+        input = "foo"
+        nml.NMLReader.convert_nml_int(input)
+    assert str(error.value) == (
+        f"Unable to convert '{input}' to an integer."
+    )
+
+def test_convert_nml_float_exceptions():
+    with pytest.raises(TypeError) as error:
+        input = 1.23
+        nml.NMLReader.convert_nml_float(input)
+    assert str(error.value) == (
+        f"Expected a string but got type: {type(input)}."
+    )
+    with pytest.raises(ValueError) as error:
+        input = "foo"
+        nml.NMLReader.convert_nml_float(input)
+    assert str(error.value) == (
+        f"Unable to convert '{input}' to a float."
+    )
+
+def test_convert_nml_bool_exceptions():
+    with pytest.raises(TypeError) as error:
+        input = True
+        nml.NMLReader.convert_nml_bool(input)
+    assert str(error.value) == (
+        f"Expected a string but got type: {type(input)}."
+    )
+    with pytest.raises(ValueError) as error:
+        input = "foo"
+        nml.NMLReader.convert_nml_bool(input)
+    assert str(error.value) == (
+        f"Expected a single NML boolean but got '{input}'. "
+        "Valid NML boolean strings are '.true.', '.TRUE.', '.false.', "
+        "or '.FALSE.'."
+    )
+
+def test_convert_nml_str_exceptions():
+    with pytest.raises(TypeError) as error:
+        input = 123
+        nml.NMLReader.convert_nml_str(input)
+    assert str(error.value) == (
+        f"Expected a string but got type: {type(input)}."
+    )
+
+def test_convert_nml_list_exceptions():
+    with pytest.raises(TypeError) as error:
+        input = 123
+        nml.NMLReader.convert_nml_list(input, nml.NMLReader.convert_nml_int)
+    assert str(error.value) == (
+        f"Expected a string or a list but got type: {type(input)}."
+    )
+    with pytest.raises(TypeError) as error:
+        input = "foo"
+        syntax_func = "foo"
+        nml.NMLReader.convert_nml_list(input, syntax_func)
+    assert str(error.value) == (
+        f"Expected a Callable but got type: {type(syntax_func)}."
+    )
+    with pytest.raises(TypeError) as error:
+        input = ["foo, baz, bar", 123]
+        syntax_func = nml.NMLReader.convert_nml_str
+        nml.NMLReader.convert_nml_list(input, syntax_func)
+    assert str(error.value) == (
+        f"Expected a string for item {1} of nml_list but got "
+        f"type: {type(input[1])}"
+    )
+
+def test_convert_nml_array_exceptions():
+    with pytest.raises(TypeError) as error:
+        input = 123
+        nml.NMLReader.convert_nml_array(input, nml.NMLReader.convert_nml_int)
+    assert str(error.value) == (
+        f"Expected a list but got type: {type(input)}."
+    )
+    with pytest.raises(TypeError) as error:
+        input = ["1.1, 1.2, 1.3", "2.1, 2.2, 2.3"]
+        syntax_func = "foo"
+        nml.NMLReader.convert_nml_array(input, syntax_func)
+    assert str(error.value) == (
+        f"Expected a Callable but got type: {type(syntax_func)}."
+    )
+    with pytest.raises(TypeError) as error:
+        input = ["1.1, 1.2, 1.3", 123]
+        syntax_func = nml.NMLReader.convert_nml_float
+        nml.NMLReader.convert_nml_array(input, syntax_func)
+    assert str(error.value) == (
+        f"Expected a string for item {1} of nml_array but got "
+        f"type: {type(input[1])}"
+    )
+
+def test_NMLReader_get_block_valid(ellenbrook_nml):
+    my_nml = nml.NMLReader(nml_file=ellenbrook_nml)
+    expected_glm_setup = {
+        "sim_name": "GLM Simulation",
+        "max_layers": 60,
+        "min_layer_vol": 0.0005,
+        "min_layer_thick": 0.05,
+        "max_layer_thick": 0.1,
+        "non_avg": True
+    }
+    assert my_nml.get_block("glm_setup") == expected_glm_setup
+
+def test_NMLReader_get_block_invalid(ellenbrook_nml):
+    my_nml = nml.NMLReader(nml_file=ellenbrook_nml)
+    with pytest.raises(TypeError) as error:
+        block_name = 123
+        setup = my_nml.get_block(block_name)
+    assert str(error.value) == (
+        f"Expected a string but got type: {type(block_name)}."
+    )
+    with pytest.raises(ValueError) as error:
+        block_name = "foo"
+        setup = my_nml.get_block(block_name)
+    assert str(error.value) == (
+            f"Unknown block 'foo'. The following blocks were "
+            "read from the NML file: 'glm_setup', 'mixing', 'light', " 
+            "'morphometry', 'time', 'output', 'init_profiles', 'meteorology', "
+            "'bird_model', 'inflow', 'outflow', 'snowice', 'sediment'."
+    )
+            
+def test_NMLReader_type_mappings_block(ellenbrook_nml):
+    type_mappings = {
+        "debugging": {
+            "disable_evap": nml.NMLReader.convert_nml_bool
+        }
+    }
+    my_nml = nml.NMLReader(
+        nml_file=ellenbrook_nml, type_mappings=type_mappings
+    )
+    expected_debugging = {
+        "disable_evap": False
+    }
+    debugging = my_nml.get_block("debugging")
+    assert debugging == expected_debugging
+
+def test_NMLReader_type_mappings_param(ellenbrook_nml):
+    type_mappings = {
+        "init_profiles": {
+            "foo": nml.NMLReader.convert_nml_str,
+            "bar": lambda x: nml.NMLReader.convert_nml_list(
+                x, nml.NMLReader.convert_nml_int
+            ),
+            "num_depths": nml.NMLReader.convert_nml_str
+        }
+    }
+    my_nml = nml.NMLReader(
+        nml_file=ellenbrook_nml, type_mappings=type_mappings
+    )
+    expected_init_profiles = {
+        "lake_depth": 0.15,
+        "num_depths": "2",
+        "the_depths": [0.01, 0.1],
+        "the_temps": [18.0, 10.0],
+        "the_sals": [0.5, 1.5],
+        "bar": [1, 2, 3],
+        "num_wq_vars": 1,
+        "foo": "foo",
+        "wq_names": [
+            "OGM_don", "OGM_pon", "OGM_dop", "OGM_pop", "OGM_doc", "OGM_poc"
+            ],
+        "wq_init_vals": [
+            [1.1, 1.2, 1.3, 1.2, 1.3],
+            [2.1, 2.2, 2.3, 1.2, 1.3],
+            [3.1, 3.2, 3.3, 1.2, 1.3],
+            [4.1, 4.2, 4.3, 1.2, 1.3],
+            [5.1, 5.2, 5.3, 1.2, 1.3],
+            [6.1, 6.2, 6.3, 1.2, 1.3]
+        ]
+    }
+    init_profiles = my_nml.get_block("init_profiles")
+    assert init_profiles == expected_init_profiles
+
+def test_NMLReader_get_nml(ellenbrook_nml, ellenbrook_json):
+    with open(ellenbrook_json, 'r') as file:
+        ellenbrook_dict = json.load(file)
+    type_mappings = {
+        "init_profiles": {
+            "foo": nml.NMLReader.convert_nml_str,
+            "bar": lambda x: nml.NMLReader.convert_nml_list(
+                x, nml.NMLReader.convert_nml_int
+            )
+        },
+        "debugging": {
+            "disable_evap": nml.NMLReader.convert_nml_bool
+        }
+    }
+    my_nml = nml.NMLReader(
+        nml_file=ellenbrook_nml, type_mappings=type_mappings
+    )
+    my_nml_dict = my_nml.get_nml()
+    assert my_nml_dict == ellenbrook_dict
+
+def test_NMLReader_invalid_nml_file():
+    nml_file=123
+    with pytest.raises(TypeError) as error:
+        my_nml = nml.NMLReader(
+            nml_file=nml_file
+        )
+    assert str(error.value) == (
+        f"Expected type str or os.PathLike but got {type(nml_file)}."
+    )
+
+def test_NMLReader_invalid_json_file(ellenbrook_nml):
+    json_file=123
+    with pytest.raises(TypeError) as error:
+        my_nml = nml.NMLReader(
+            nml_file=ellenbrook_nml
+        )
+        my_nml.write_json(json_file)
+    assert str(error.value) == (
+        f"Expected type str or os.PathLike but got {type(json_file)}."
+    )
+
+def test_NMLReader_json_file(tmp_path, ellenbrook_nml, ellenbrook_json):
+    with open(ellenbrook_json, 'r') as file:
+        expected_ellenbrook_dict = json.load(file)
+    type_mappings = {
+        "init_profiles": {
+            "foo": nml.NMLReader.convert_nml_str,
+            "bar": lambda x: nml.NMLReader.convert_nml_list(
+                x, nml.NMLReader.convert_nml_int
+            )
+        },
+        "debugging": {
+            "disable_evap": nml.NMLReader.convert_nml_bool
+        }
+    }
+    my_nml = nml.NMLReader(
+        nml_file=ellenbrook_nml, type_mappings=type_mappings
+    )
+    test_json_file = tmp_path / "test_glm3_nml.json"
+    my_nml.write_json(test_json_file)
+    with open(test_json_file, 'r') as file:
+        test_ellenbrook_dict = json.load(file)
+    assert test_ellenbrook_dict == expected_ellenbrook_dict

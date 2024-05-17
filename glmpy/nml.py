@@ -1,3 +1,4 @@
+import os
 import json
 import warnings
 import regex as re
@@ -5,7 +6,7 @@ import regex as re
 from typing import Union, List, Any, Callable, Dict
 
 class NML:
-    """Generate .nml files.
+    """Generate NML files.
 
     The General Lake Model (GLM) namelist file (`.nml`) describes the parameter
     configuration for running simulations. The `NML` class builds an `.nml` 
@@ -3204,22 +3205,84 @@ class NMLOutflow(NMLBase):
 
 
 class NMLReader:
+    """Read NML files.
+
+    Read a NML file and return a dictionary of parameters converted to Python
+    data types. By default, `NMLReader` can parse parameters from the standard
+    GLM NML configuration blocks. This functionality can expanded to read other
+    non-standard blocks, or overwrite exisiting parameter conversion methods,
+    using the `type_mappings` argument. The converted NML dictionary can be 
+    returned in its entirety with `get_nml()`, or by block with `get_block()`, 
+    or saved directly to a JSON file with `write_json()`. 
+
+    Attributes
+    ----------
+    nml_file : Union[str, os.PathLike]
+        Path to the NML file.
+    type_mappings : type_mappings: Union[Dict[str, Dict], None]
+        A dictionary where the keys are the block names and the values are
+        a dictionary of parameter names (keys) and syntax conversion functions
+        (values). `NMLReader` provides static methods for use as the syntax
+        conversion functions.
+    
+    Examples
+    --------
+    >>> from glmpy import nml
+
+    Fetch an individual block of parameters with the `get_block()` method:
+    >>> my_nml = nml.NMLReader(nml_file="glm3.nml")
+    >>> setup = my_nml.get_block("glm_setup")
+    >>> print(setup)
+    {
+        "sim_name": "GLM Simulation",
+        "max_layers": 60,
+        "min_layer_vol": 0.0005,
+        "min_layer_thick": 0.05,
+        "max_layer_thick": 0.1,
+        "non_avg": True
+    }
+    >>> glm_setup = nml.NMLGLMSetup()
+    >>> glm_setup.set_attributes(setup)
+
+    Expand the functionality of `NMLReader` to read in a non-standard block:
+    >>> debugging_types = {
+    ...     "debugging": {
+    ...         "disable_evap": nml.NMLReader.convert_nml_bool
+    ... }
+    >>> my_nml = nml.NMLReader(
+    ...     nml_file="glm3.nml", type_mappings=debugging_types
+    ... )
+    >>> debugging = my_nml.get_block("debugging")
+    >>> print(debugging)
+    {
+        "disable_evap": False
+    }
+
+    Convert the NML file directly to a JSON file with `write_json()`:
+    >>> my_nml = nml.NMLReader(nml_file="glm3.nml")
+    >>> my_nml.write_json(json_file="glm3.json")
+    
+    """
     def __init__(
         self,
-        nml_file_path,
-        custom_param_types: Union[Dict[str, Dict], None] = None
+        nml_file: Union[str, os.PathLike],
+        type_mappings: Union[Dict[str, Dict], None] = None
     ):
-        with open(nml_file_path) as file:
-            nml_file = file.read()
-        self.nml_file = nml_file
+        if not isinstance(nml_file, (str, os.PathLike)):
+            raise TypeError(
+                f"Expected type str or os.PathLike but got {type(nml_file)}."
+            )
+        with open(nml_file) as file:
+            nml = file.read()
+        self.nml_file = nml
         self.converted_nml = None
 
         self.param_type_dict = self._get_param_type_dict()
 
-        if custom_param_types is not None:
+        if type_mappings is not None:
             self.param_type_dict = self._update_param_type_dict(
-                default_param_types=self.param_type_dict,
-                custom_param_types=custom_param_types
+                default_types=self.param_type_dict,
+                type_mappings=type_mappings
             )
 
     @staticmethod
@@ -3244,7 +3307,7 @@ class NMLReader:
         <class 'int'>
         """
         if not isinstance(nml_int, str):
-            raise ValueError(
+            raise TypeError(
                 f"Expected a string but got type: {type(nml_int)}."
             )
         
@@ -3279,7 +3342,7 @@ class NMLReader:
         <class 'float'>
         """
         if not isinstance(nml_float, str):
-            raise ValueError(
+            raise TypeError(
                 f"Expected a string but got type: {type(nml_float)}."
             )
 
@@ -3315,7 +3378,7 @@ class NMLReader:
         <class 'bool'>
         """
         if not isinstance(nml_bool, str):
-            raise ValueError(
+            raise TypeError(
                 f"Expected a string but got type: {type(nml_bool)}."
             )
 
@@ -3330,7 +3393,6 @@ class NMLReader:
                 f"Expected a single NML boolean but got '{nml_bool}'. "
                 "Valid NML boolean strings are '.true.', '.TRUE.', '.false.', "
                 "or '.FALSE.'."
-
             )
 
         return python_bool
@@ -3358,7 +3420,7 @@ class NMLReader:
         <class 'str'>
         """
         if not isinstance(nml_str, str):
-            raise ValueError(
+            raise TypeError(
                 f"Expected a string but got type: {type(nml_str)}."
             )
 
@@ -3393,10 +3455,10 @@ class NMLReader:
         --------
         Converting a comma-separated list of strings:
         >>> from glmpy import nml
-        >>> my_nml_list = "foo, bar, baz"
+        >>> my_nml_list = "'foo', 'bar', 'baz'"
         >>> python_list = nml.NMLReader.convert_nml_list(
         ...     my_nml_list, 
-        ...     syntax_func=NMLReader.convert_nml_str
+        ...     syntax_func=nml.NMLReader.convert_nml_str
         ... )
         >>> print(python_list)
         ['foo', 'bar', 'baz']
@@ -3407,9 +3469,9 @@ class NMLReader:
         >>> my_nml_list = [
         ...     ".true., .false., .true.,", ".false., .true., .false."
         ... ]
-        >>> python_list = NMLReader.convert_nml_list(
+        >>> python_list = nml.NMLReader.convert_nml_list(
         ...     my_nml_list, 
-        ...     syntax_func=NMLReader.convert_nml_bool
+        ...     syntax_func=nml.NMLReader.convert_nml_bool
         ... )
         >>> print(python_list)
         [True, False, True, False, True, False]
@@ -3417,14 +3479,19 @@ class NMLReader:
         <class 'list'>
         """
         if not isinstance(nml_list, (str, list)):
-            raise ValueError(
+            raise TypeError(
                 f"Expected a string or a list but got type: {type(nml_list)}."
+            )
+        
+        if not isinstance(syntax_func, Callable):
+            raise TypeError(
+                f"Expected a Callable but got type: {type(syntax_func)}."
             )
         
         if isinstance(nml_list, list):
             for i in range(0, len(nml_list)):
                 if not isinstance(nml_list[i], str):
-                    raise ValueError(
+                    raise TypeError(
                         f"Expected a string for item {i} of nml_list but got "
                         f"type: {type(nml_list[i])}"
                     )
@@ -3468,9 +3535,9 @@ class NMLReader:
         Converting an array of floats of size 1x3:
         >>> from glmpy import nml
         >>> my_nml_array = ["1.1, 1.2, 1.3"]
-        >>> python_arary = NMLReader.convert_nml_array(
+        >>> python_arary = nml.NMLReader.convert_nml_array(
         ...     my_nml_array, 
-        ...     syntax_func=NMLReader.convert_nml_float
+        ...     syntax_func=nml.NMLReader.convert_nml_float
         ... )
         >>> print(python_arary)
         >>> print(type(python_arary))
@@ -3479,9 +3546,9 @@ class NMLReader:
         >>> my_nml_array = [
         ...     "1.1, 1.2, 1.3", "2.1, 2.2, 2.3"
         ... ]
-        >>> python_array = NMLReader.convert_nml_array(
+        >>> python_array = nml.NMLReader.convert_nml_array(
         ...     my_nml_array, 
-        ...     syntax_func=NMLReader.convert_nml_float
+        ...     syntax_func=nml.NMLReader.convert_nml_float
         ... )
         >>> print(python_array)
         [[1.1, 1.2, 1.3], [2.1, 2.2, 2.3]]
@@ -3489,13 +3556,18 @@ class NMLReader:
         <class 'list'>
         """
         if not isinstance(nml_array, list):
-            raise ValueError(
-                f"Expected a a list but got type: {type(nml_array)}."
+            raise TypeError(
+                f"Expected a list but got type: {type(nml_array)}."
+            )
+        
+        if not isinstance(syntax_func, Callable):
+            raise TypeError(
+                f"Expected a Callable but got type: {type(syntax_func)}."
             )
         
         for i in range(0, len(nml_array)):
             if not isinstance(nml_array[i], str):
-                raise ValueError(
+                raise TypeError(
                     f"Expected a string for item {i} of nml_array but got "
                     f"type: {type(nml_array[i])}"
                 )
@@ -3697,11 +3769,11 @@ class NMLReader:
                 warnings.warn(
                     f"Unexpected block '{block_name}' in the NML file. If "
                     "parsing this block is desired, update the "
-                    "'custom_param_types' attribute. Provide a dictionary "
+                    "'type_mappings' attribute. Provide a dictionary "
                     "containing the block name as the key and a nested "
                     "dictionary of parameter conversion methods as the "
                     "value. For example: \n"
-                    f'>>> custom_types = {{"{block_name}": '
+                    f'>>> type_mappings = {{"{block_name}": '
                     f'{{"param1": NMLReader.convert_nml_str}}}}'
                 )
                 continue
@@ -3714,8 +3786,8 @@ class NMLReader:
                         f"'{block_name}' block. If parsing this parameter is "
                         "desired, provide a dictionary containing the "
                         "applicable syntax conversion methods to the "
-                        "'custom_param_types' attribute. For example: \n"
-                        f'>>> custom_types = {{"{block_name}": '
+                        "'type_mappings' attribute. For example: \n"
+                        f'>>> type_mappings = {{"{block_name}": '
                         f'{{"{param_name}": NMLReader.convert_nml_str}}}}',
                         stacklevel=1
                     )
@@ -3753,6 +3825,12 @@ class NMLReader:
 
         Returns a dictionary of all blocks and their corresponding dictionary
         of parameters.
+
+        Examples
+        --------
+        >>> from glmpy import nml
+        >>> my_nml = nml.NMLReader(nml_file="glm3.nml")
+        >>> nml_dict = my_nml.get_nml()
         """
         if self.converted_nml is None:
             self.converted_nml = self._parse_nml(in_nml=self.nml_file)
@@ -3769,9 +3847,23 @@ class NMLReader:
         block_name: str
             Name of the block to fetch the parameter dictionary for.
         
+        Examples
+        --------
+        >>> from glmpy import nml
+        >>> my_nml = nml.NMLReader(nml_file="glm3.nml")
+        >>> setup = my_nml.get_block("glm_setup")
+        >>> print(setup)
+        {
+            "sim_name": "GLM Simulation",
+            "max_layers": 60,
+            "min_layer_vol": 0.0005,
+            "min_layer_thick": 0.05,
+            "max_layer_thick": 0.1,
+            "non_avg": True
+        }
         """
         if not isinstance(block_name, str):
-            raise ValueError(
+            raise TypeError(
                 f"Expected a string but got type: {type(block_name)}."
             )
 
@@ -3789,7 +3881,7 @@ class NMLReader:
             )
         return self.converted_nml[block_name]
     
-    def write_json(self, json_file: str) -> None:
+    def write_json(self, json_file: Union[str, os.PathLike]) -> None:
         """Write a JSON file of model parameters.
 
         Converts paramters in a NML file to valid JSON syntax and writes to
@@ -3799,10 +3891,16 @@ class NMLReader:
         ----------
         json_file: str
             Output path of the JSON file.
+        
+        Examples
+        --------
+        >>> from glmpy import nml
+        >>> my_nml = nml.NMLReader(nml_file="glm3.nml")
+        >>> my_nml.write_json(json_file="glm3.json")
         """
-        if not isinstance(json_file, str):
-            raise ValueError(
-                f"Expected a string but got type: {type(json_file)}."
+        if not isinstance(json_file, (str, os.PathLike)):
+            raise TypeError(
+                f"Expected type str or os.PathLike but got {type(json_file)}."
             )
 
         if self.converted_nml is None:
@@ -3814,8 +3912,8 @@ class NMLReader:
 
     def _update_param_type_dict(
             self, 
-            default_param_types: dict,
-            custom_param_types: dict
+            default_types: dict,
+            type_mappings: dict
         ) -> dict:
         """Update the default dictionary of NML parameter types.
 
@@ -3825,22 +3923,22 @@ class NMLReader:
 
         Parameters
         ----------
-        default_param_types: dict
+        default_types: dict
             The dictionary returned by `_get_param_type_dict()`.
-        custom_param_types: dict
-            A dictionary with the same structure as `default_param_types` that
-            will be used to update `default_param_types`.
+        type_mappings: dict
+            A dictionary with the same structure as `default_types` that
+            will be used to update `default_types`.
         """
-        for block_name, param_dict in custom_param_types.items():
-            if block_name in default_param_types:
-                defaults = default_param_types[block_name]
+        for block_name, param_dict in type_mappings.items():
+            if block_name in default_types:
+                defaults = default_types[block_name]
                 for param_name, param_val in param_dict.items():
                     if param_name not in defaults.items():
                         defaults[param_name] = param_val
-                default_param_types[block_name] = defaults
+                default_types[block_name] = defaults
             else:
-                default_param_types[block_name] = param_dict
-        return default_param_types
+                default_types[block_name] = param_dict
+        return default_types
     
     def _get_param_type_dict(self) -> dict:
         """Default dictionary of NML parameter types.
