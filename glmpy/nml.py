@@ -2928,9 +2928,9 @@ class NMLOutflow(NMLBase):
     num_outlet : Union[int, None]
         Number of outflows (including withdrawals, outlets or offtakes) to be
         included in this simulation. Default is `None`.
-    outflow_fl : Union[str, None]
-        Filename of the file containing the outflow time-series. Default is
-        `None`.
+    outflow_fl : Union[List[str], str, None]
+        Filename of the file containing the outflow time-series. 
+        A list if `num_outlet > 1`.Default is `None`.
     time_fmt : Union[str, None]
         Time format of the 1st column in the `outflow_fl`. Default is `None`.
     outflow_factor : Union[List[float], float, None]
@@ -3026,7 +3026,7 @@ class NMLOutflow(NMLBase):
     def __init__(
         self,
         num_outlet: Union[int, None] = None,
-        outflow_fl: Union[str, None] = None,
+        outflow_fl: Union[List[str], str, None] = None,
         time_fmt: Union[str, None] = None,
         outflow_factor: Union[List[float], float, None] = None, 
         outflow_thick_limit: Union[List[float], float, None] = None, 
@@ -3153,6 +3153,7 @@ class NMLOutflow(NMLBase):
             'crest_factor': None
         }
         """
+        self.outflow_fl = self._single_value_to_list(self.outflow_fl)
         self.outflow_factor = self._single_value_to_list(self.outflow_factor)
         self.outflow_thick_limit = self._single_value_to_list(
             self.outflow_thick_limit
@@ -4165,7 +4166,10 @@ class NMLReader:
             },
             "outflow": {
                 "num_outlet": NMLReader.convert_nml_int,
-                "outflow_fl": NMLReader.convert_nml_str,
+                #"outflow_fl": NMLReader.convert_nml_str,
+                "outflow_fl": lambda x: NMLReader.convert_nml_list(
+                    x, NMLReader.convert_nml_str
+                ),
                 "time_fmt": NMLReader.convert_nml_str,
                 "outflow_factor": lambda x: NMLReader.convert_nml_list(
                     x, NMLReader.convert_nml_float

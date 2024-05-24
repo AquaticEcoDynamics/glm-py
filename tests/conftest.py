@@ -739,7 +739,7 @@ def ellenbrook_json(tmp_path):
             "outl_elvs": [0.1],
             "bsn_len_outl": [100.0],
             "bsn_wid_outl": [100.0],
-            "outflow_fl": "outflow.csv",
+            "outflow_fl": ["outflow.csv"],
             "outflow_factor": [0.8],
             "seepage": True,
             "seepage_rate": 0.011,
