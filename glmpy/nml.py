@@ -2834,9 +2834,10 @@ class _NML:
         ----------
         type_mappings : Dict[str, Dict[str, Callable]]
             A nested dictionary where the keys are the NML block names and the
-            values are a dictionary of parameter names and syntax conversion
-            methods (e.g., `NMLReader.read_nml_str` and 
-            `NMLWrite.write_nml_str`).
+            values are a dictionary of parameter names (keys) and syntax 
+            conversion methods (values, e.g., `NMLReader.read_nml_str` for use
+            with `NMLReader` or `NMLWriter.write_nml_str` for use with 
+            `NMLWriter`).
         
         Examples
         --------
@@ -2963,12 +2964,109 @@ class _NML:
             return self.type_mappings
 
 class NMLWriter(_NML):
+    """Write NML files.
+
+    Write a NML file from a nested dictionary of block names (keys) and 
+    parameter dictionaries (values). By default, `NMLWriter` can write all
+    parameters from the standard GLM NML configuration blocks. This 
+    functionality can expanded to write other non-standard blocks, or update 
+    exisiting parameter conversion methods, using the `type_mappings` argument. 
+
+    `NMLWriter` provides the following static methods to convert from Python
+    syntax to NML syntax:
+    - `write_nml_str`: Python string to NML string.
+    - `write_nml_bool`: Python bool to NML bool.
+    - `write_nml_list`: Python list to NML list (comma-separated values).
+
+    Attributes
+    ----------
+    nml_dict : Dict[str, Dict[str, Any]]
+        A dictionary where the keys are the block names and the values are 
+        dictionaries of parameter names (keys) and parameter values (values).
+    detect_types : bool
+        Let `NMLWriter` determine which syntax conversion methods should be 
+        used to write the NML file. Default is `True`. If `False`, `NMLWriter`
+        relies on an internal dictionary that stores the syntax conversion
+        methods for each parameter. This dictionary can be updated/expanded
+        with the `set_type_mappings()` method.
+    
+    Examples
+    --------
+    >>> from glmpy import nml
+
+    Create a nested dictionary of blocks (keys) and parameters (values) to 
+    write:
+    >>> my_nml_dict = {
+    ...     "glm_setup": {
+    ...         "sim_name": "Sparkling Lake",
+    ...         "max_layers": 500,
+    ...         "min_layer_vol": 0.5,
+    ...         "min_layer_thick": 0.15,
+    ...         "max_layer_thick": 0.5,
+    ...         "density_model": 1,
+    ...         "non_avg": True,
+    ...     },
+    ...     "mixing": {
+    ...         "surface_mixing": 1,
+    ...         "coef_mix_conv": 0.2,
+    ...         "coef_wind_stir": 0.402,
+    ...         "coef_mix_shear": 0.2,
+    ...         "coef_mix_turb": 0.51,
+    ...         "coef_mix_KH": 0.3,
+    ...         "deep_mixing": 2,
+    ...         "coef_mix_hyp": 0.5,
+    ...         "diff": 0.0,
+    ...     }
+    ... }
+
+    Initialise `NMLWriter` and set the `nml_dict` attribute:
+    >>> my_nml = nml.NMLWriter(nml_dict=my_nml_dict)
+
+    Write the NML to file by calling the `write_nml` method:
+    >>> my_nml.write_nml(nml_file="glm3.nml")
+
+    Consider an example where a non-standard configuration block is to be
+    written to the NML file:
+    >>> my_nml_dict = {
+    ...     "glm_setup": {
+    ...         "sim_name": "Sparkling Lake",
+    ...         "max_layers": 500,
+    ...         "min_layer_vol": 0.5,
+    ...         "min_layer_thick": 0.15,
+    ...         "max_layer_thick": 0.5,
+    ...         "density_model": 1,
+    ...         "non_avg": True,
+    ...     },
+    ...     "mixing": {
+    ...         "surface_mixing": 1,
+    ...         "coef_mix_conv": 0.2,
+    ...         "coef_wind_stir": 0.402,
+    ...         "coef_mix_shear": 0.2,
+    ...         "coef_mix_turb": 0.51,
+    ...         "coef_mix_KH": 0.3,
+    ...         "deep_mixing": 2,
+    ...         "coef_mix_hyp": 0.5,
+    ...         "diff": 0.0,
+    ...     },
+    ...     "custom_block": {
+    ...         "custom_param": True
+    ...     }
+    ... }
+
+    Writing a NML file from this dictionary will raise a warning alerting you
+
+    """
     def __init__(
         self, 
-        nml_dict: Dict[str, Dict[str, Any]]
+        nml_dict: Dict[str, Dict[str, Any]],
+        detect_types: bool = True
     ):
         self.nml_dict = nml_dict
-        self.type_mappings = self._default_type_mappings()
+        self.detect_types = detect_types
+        if self.detect_types:
+            self.auto_type_mappings = self._auto_type_mappings()
+        else:
+            self.type_mappings = self._default_type_mappings()
     
     @staticmethod
     def write_nml_bool(python_bool: bool) -> str:
@@ -3059,8 +3157,8 @@ class NMLWriter(_NML):
     @staticmethod
     def write_nml_array(
             python_array: List[List[Any]], 
-            row_indent: int = 18,
             syntax_func: Union[Callable, None] = None,
+            row_indent: int = 18,
         ) -> str:
         """Python array to NML array
 
@@ -3076,12 +3174,12 @@ class NMLWriter(_NML):
         python_array : List[List[Any]]
             A list of lists. The number of inner lists equals the array rows 
             and the length of each list equals the array columns.
+        syntax_func : Union[Callable, None]
+            A function used to format each list item. Default is `None`.
         row_indent : int
             The number of spaces to indent consecutive array rows by. Default
             is `18`.
-        syntax_func : Union[Callable, None]
-            A function used to format each list item. Default is `None`.
-
+        
         Examples
         --------
         >>> from glmpy import nml
@@ -3177,6 +3275,75 @@ class NMLWriter(_NML):
             return f"   {param_name} = {param_value}\n"
 
     
+    def _write_nml_manual_type_mappings(self) -> str:
+        nml_string = ""
+        for block_name, param_dict in self.nml_dict.items():
+            if block_name not in self.type_mappings:
+                warnings.warn(
+                    f"Unexpected block '{block_name}' in the nml_dict. If "
+                    "parsing this block is desired, update the "
+                    "type mappings with `set_type_mappings()`. Provide a "
+                    "dictionary containing the block name as the key and a "
+                    "nested dictionary of parameter conversion methods as the "
+                    "value. For example: \n"
+                    f'>>> type_mappings = {{"{block_name}": '
+                    f'{{"param1": NMLWriter.write_nml_str}}}}'
+                )
+                continue
+            param_types = self.type_mappings[block_name]
+            block_header = f"&{block_name}\n"
+
+            nml_string += block_header
+            block_string = ""
+            for param_name, param_value in param_dict.items():
+                if param_name not in param_types:
+                    warnings.warn(
+                        f"Unexpected parameter '{param_name}' in the "
+                        f"'{block_name}' block. If parsing this parameter is "
+                        "desired, pass a dictionary containing the "
+                        "applicable syntax conversion methods to the "
+                        "`set_type_mappings()` method. For example: \n"
+                        f'>>> type_mappings = {{"{block_name}": '
+                        f'{{"{param_name}": NMLWriter.write_nml_str}}}}',
+                        stacklevel=1
+                    )
+                    continue
+                if param_value is not None:
+                    param_string = NMLWriter.write_nml_parameter(
+                        param_name=param_name,
+                        param_value=param_value,
+                        syntax_func=param_types[param_name]
+                    )
+                    block_string += param_string
+                else:
+                    continue
+            block_string += "/\n"
+            nml_string += block_string
+        return nml_string
+    
+    def _write_nml_automatic_type_mappings(self) -> str:
+        nml_string = ""
+        for block_name, param_dict in self.nml_dict.items():
+            block_header = f"&{block_name}\n"
+            nml_string += block_header
+            block_string = ""
+            for param_name, param_value in param_dict.items():
+                if param_value is not None:
+                    param_string = NMLWriter.write_nml_parameter(
+                        param_name=param_name,
+                        param_value=param_value,
+                        syntax_func=self._get_auto_type_mappings(
+                            param_name, param_value
+                        )
+                    )
+                    block_string += param_string
+                else:
+                    continue
+            block_string += "/\n"
+            nml_string += block_string
+        return nml_string
+
+
     def write_nml(self, nml_file: str = "glm3.nml"):
         """Write the `.nml` file.
 
@@ -3191,30 +3358,59 @@ class NMLWriter(_NML):
         --------
         >>> nml_file.write_nml(nml_file="my_lake.nml")
         """
-        nml_string = ""
-
-        for block_name, param_dict in self.nml_dict.items():
-            block_type_mappings = self.type_mappings[block_name]
-            block_header = f"&{block_name}\n"
-
-            nml_string += block_header
-            block_string = ""
-            for param_name, param_value in param_dict.items():
-                if param_value is not None:
-                    param_string = NMLWriter.write_nml_parameter(
-                        param_name=param_name,
-                        param_value=param_value,
-                        syntax_func=block_type_mappings[param_name]
-                    )
-                    block_string += param_string
-                else:
-                    continue
-            block_string += "/\n"
-            nml_string += block_string
+        if self.detect_types:
+            nml_string = self._write_nml_automatic_type_mappings()
+        else:
+            nml_string = self._write_nml_manual_type_mappings()
         
         with open(file=nml_file, mode="w") as file:
             file.write(nml_string)
     
+    def _auto_type_mappings(self) -> dict:
+        type_map = {
+            str: NMLWriter.write_nml_str,
+            bool: NMLWriter.write_nml_bool,
+            int: None,
+            float: None,
+            list: {
+                str: lambda x: NMLWriter.write_nml_list(
+                    x, NMLWriter.write_nml_str
+                ),
+                bool: lambda x: NMLWriter.write_nml_list(
+                    x, NMLWriter.write_nml_bool
+                ),
+                int: NMLWriter.write_nml_list,
+                float: NMLWriter.write_nml_list,
+                list: {
+                    str: lambda x: NMLWriter.write_nml_array(
+                        x, NMLWriter.write_nml_str
+                    ),
+                    bool: lambda x: NMLWriter.write_nml_array(
+                        x, NMLWriter.write_nml_bool
+                    ),
+                    int: NMLWriter.write_nml_array,
+                    float: NMLWriter.write_nml_array
+                }
+            }
+        }
+        return type_map
+
+    def _get_auto_type_mappings(self, param_name, param_value) -> Callable:
+        param_type = type(param_value)
+        if param_type not in self.auto_type_mappings:
+            raise ValueError("Unsupported parameter type")
+        if param_type != list:
+            return self.auto_type_mappings[param_type]
+        list_type = type(param_value[0])
+        if list_type not in self.auto_type_mappings[list]:
+            raise ValueError("Unsupported list element type")
+        if list_type == list:
+            array_type = type(param_value[0][0])
+            if array_type not in self.auto_type_mappings[list][list]:
+                raise ValueError("Unsupported nested list element type")
+            return self.auto_type_mappings[list][list][array_type]
+        return self.auto_type_mappings[list][list_type]
+
     def _default_type_mappings(self) -> dict:
         default_type_mappings = {
             "glm_setup": {
@@ -3427,23 +3623,35 @@ class NMLWriter(_NML):
 class NMLReader(_NML):
     """Read NML files.
 
-    Read a NML file and return a dictionary of parameters converted to Python
-    data types. By default, `NMLReader` can parse parameters from the standard
-    GLM NML configuration blocks. This functionality can expanded to read other
-    non-standard blocks, or overwrite exisiting parameter conversion methods,
-    using the `type_mappings` argument. The converted NML dictionary can be 
-    returned in its entirety with `get_nml()`, or by block with `get_block()`, 
-    or saved directly to a JSON file with `write_json()`. 
+    Read a NML file and return a dictionary of parameters that have been 
+    converted to Python data types. By default, `NMLReader` can parse 
+    parameters from the standard GLM NML configuration blocks. This 
+    functionality can expanded to read other non-standard blocks, or overwrite 
+    exisiting parameter conversion methods, using the `type_mappings` argument. 
+    The converted NML dictionary can be returned in its entirety with 
+    `get_nml()`, or by block with `get_block()`, or saved directly to a JSON 
+    file with `write_json()`. 
+
+    Unexpected behaviour will occur if:
+    - Exclamation marks (`!`) are used within a string parameter, e.g., 
+    `sim_name = 'A very important sim!'`. Exclamation marks are used to declare
+    comments in NML files.
+    - You terminate a comma-separated list with a comma, e.g., 
+    `A = 100, 3600, 5600,`. Remove the final comma: `A = 100, 3600, 5600`.
+
+    `NMLReader` provides the following static methods to convert from NML
+    syntax to Python syntax:
+    - `read_nml_int`: NML integer to Python integer.
+    - `read_nml_float`: NML float to Python float.
+    - `read_nml_bool`: NML boolean to Python boolean.
+    - `read_nml_str`: NML string to Python string.
+    - `read_nml_list`: NML list (comma-separated values) to Python list.
+    - `read_nml_array`: NML array to Python array.
 
     Attributes
     ----------
     nml_file : Union[str, os.PathLike]
         Path to the NML file.
-    type_mappings : type_mappings: Union[Dict[str, Dict], None]
-        A dictionary where the keys are the block names and the values are
-        a dictionary of parameter names (keys) and syntax conversion functions
-        (values). `NMLReader` provides static methods for use as the syntax
-        conversion functions.
     
     Examples
     --------
@@ -3980,9 +4188,9 @@ class NMLReader(_NML):
                 warnings.warn(
                     f"Unexpected block '{block_name}' in the NML file. If "
                     "parsing this block is desired, update the "
-                    "'type_mappings' attribute. Provide a dictionary "
-                    "containing the block name as the key and a nested "
-                    "dictionary of parameter conversion methods as the "
+                    "type mappings with `set_type_mappings()`. Provide a " 
+                    "dictionary containing the block name as the key and a "
+                    "nested dictionary of parameter conversion methods as the "
                     "value. For example: \n"
                     f'>>> type_mappings = {{"{block_name}": '
                     f'{{"param1": NMLReader.read_nml_str}}}}'
@@ -3995,9 +4203,9 @@ class NMLReader(_NML):
                     warnings.warn(
                         f"Unexpected parameter '{param_name}' in the "
                         f"'{block_name}' block. If parsing this parameter is "
-                        "desired, provide a dictionary containing the "
+                        "desired, pass a dictionary containing the "
                         "applicable syntax conversion methods to the "
-                        "'type_mappings' attribute. For example: \n"
+                        "`set_type_mappings()` method. For example: \n"
                         f'>>> type_mappings = {{"{block_name}": '
                         f'{{"{param_name}": NMLReader.read_nml_str}}}}',
                         stacklevel=1
