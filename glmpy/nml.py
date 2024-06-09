@@ -508,6 +508,10 @@ class NML:
             self.nml_param_val(
                 init_profiles, "wq_init_vals", self.nml_list
             ) +
+            self.nml_param_val(
+                init_profiles, "restart_variables", self.nml_list
+            ) 
+            +
             "/"
         )
 
@@ -1746,6 +1750,7 @@ class NMLInitProfiles(NMLBase):
         num_wq_vars: Union[int, None] = None,
         wq_names: Union[List[str], str, None] = None,
         wq_init_vals: Union[List[float], float, None] = None,
+        restart_variables: Union[List[float], float, None] = None,
     ):
         self.lake_depth = lake_depth
         self.num_depths = num_depths
@@ -1755,6 +1760,7 @@ class NMLInitProfiles(NMLBase):
         self.num_wq_vars = num_wq_vars
         self.wq_names = wq_names
         self.wq_init_vals = wq_init_vals
+        self.restart_variables = restart_variables
 
     def __call__(
         self, 
@@ -1806,6 +1812,7 @@ class NMLInitProfiles(NMLBase):
         self.the_depths = self._single_value_to_list(self.the_depths)
         self.wq_names = self._single_value_to_list(self.wq_names)
         self.wq_init_vals = self._single_value_to_list(self.wq_init_vals)
+        self.restart_variables = self._single_value_to_list(self.restart_variables)
 
         if check_errors:
             warnings.warn(
@@ -1823,7 +1830,8 @@ class NMLInitProfiles(NMLBase):
             "the_sals": self.the_sals,
             "num_wq_vars": self.num_wq_vars,
             "wq_names": self.wq_names,
-            "wq_init_vals": self.wq_init_vals
+            "wq_init_vals": self.wq_init_vals,
+            "restart_variables": self.restart_variables
         }
 
         return init_profiles_dict
