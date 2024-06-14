@@ -1,164 +1,144 @@
 import json
 import pytest
 
-from glmpy import nml
+from glmpy.nml import nml
+from glmpy.nml import glm_nml
 
-def test_nml_bool():
-    assert nml.NML.nml_bool(True) == ".true."
-    assert nml.NML.nml_bool(False) == ".false."
+def test_write_nml_bool():
+    assert nml.NMLWriter.write_nml_bool(True) == ".true."
+    assert nml.NMLWriter.write_nml_bool(False) == ".false."
 
-def test_nml_str():
+def test_write_nml_str():
     python_str = 'temp'
-    assert nml.NML.nml_str(python_str) == f"'{python_str}'"
+    assert nml.NMLWriter.write_nml_str(python_str) == f"'{python_str}'"
 
 @pytest.mark.parametrize("python_syntax, nml_syntax, syntax_func", [
-    ([True], ".true.", nml.NML.nml_bool),
-    ([True, False, True], ".true.,.false.,.true.", nml.NML.nml_bool),
-    (['temp'], f"'{'temp'}'", nml.NML.nml_str),
+    ([True], ".true.", nml.NMLWriter.write_nml_bool),
+    (
+        [True, False, True], ".true.,.false.,.true.", 
+        nml.NMLWriter.write_nml_bool
+    ),
+    (['temp'], f"'{'temp'}'", nml.NMLWriter.write_nml_str),
     (
         ['temp', 'salt', 'oxy'], 
         f"'{'temp'}','{'salt'}','{'oxy'}'", 
-        nml.NML.nml_str
+        nml.NMLWriter.write_nml_str
     ),
     ([12.3], "12.3", None),
     ([12.3, 32.4, 64.2], "12.3,32.4,64.2", None)
 ])
 
-def test_nml_list(python_syntax, nml_syntax, syntax_func):
-    assert nml.NML.nml_list(
+def test_write_nml_list(python_syntax, nml_syntax, syntax_func):
+    assert nml.NMLWriter.write_nml_list(
         python_list=python_syntax,
         syntax_func=syntax_func
     ) == nml_syntax
 
 @pytest.fixture
-def example_glmpy_parameters():
+def example_python_params():
     return {
-        "param1": True,
-        "param2": [True],
-        "param3": [True, False, True],
-        "param4": 'temp',
-        "param5": ['temp'],
-        "param6": ['temp', 'salt', 'oxy'],
-        "param7": 12.3,
-        "param8": [12.3],
-        "param9": [12.3, 32.4, 64.2],
-        "param10": None,
+        "param1": 123,
+        "param2": 1.23,
+        "param3": "foo",
+        "param4": True,
+        "param5": [1, 2, 3],
+        "param6": [1.1, 2.1, 3.1],
+        "param7": ["foo", "bar", "baz"],
+        "param8": [True, False, True],
+        "param9": [[1, 2, 3], [1, 2, 3], [1, 2, 3]],
+        "param10": [[1.1, 2.1, 3.1], [1.1, 2.1, 3.1], [1.1, 2.1, 3.1]],
         "param11": [
-            [1.1, 1.2, 1.3, 1.2, 1.3],
-            [2.1, 2.2, 2.3, 1.2, 1.3],
-            [3.1, 3.2, 3.3, 1.2, 1.3],
-            [4.1, 4.2, 4.3, 1.2, 1.3],
-            [5.1, 5.2, 5.3, 1.2, 1.3],
-            [6.1, 6.2, 6.3, 1.2, 1.3]
+            ["foo", "bar", "baz"], ["foo", "bar", "baz"], ["foo", "bar", "baz"]
         ],
         "param12": [
-            [True, True, True, True, True],
-            [False, False, False, False, False],
-            [False, True, False, True, False]
-        ],
-        "param13": [
-            ["foo", "foo", "foo"],
-            ["foo", "foo", "foo"],
-            ["foo", "foo", "foo"]
+            [True, False, True], [True, False, True], [True, False, True]
         ]
     }
 
-def test_nml_param_val(example_glmpy_parameters):
-    assert nml.NML.nml_param_val(
-        param_dict=example_glmpy_parameters,
-        param="param1",
-        syntax_func=nml.NML.nml_bool
-    ) == f"   param1 = .true.\n"
-
-    assert nml.NML.nml_param_val(
-        param_dict=example_glmpy_parameters,
-        param="param2",
-        syntax_func=lambda x: nml.NML.nml_list(x, nml.NML.nml_bool)
-    ) == f"   param2 = .true.\n"
-
-    assert nml.NML.nml_param_val(
-        param_dict=example_glmpy_parameters,
-        param="param3",
-        syntax_func=lambda x: nml.NML.nml_list(x, nml.NML.nml_bool)
-    ) == f"   param3 = .true.,.false.,.true.\n"
-
-    assert nml.NML.nml_param_val(
-        param_dict=example_glmpy_parameters,
-        param="param4",
-        syntax_func=nml.NML.nml_str
-    ) == f"   param4 = 'temp'\n"
-
-    assert nml.NML.nml_param_val(
-        param_dict=example_glmpy_parameters,
-        param="param5",
-        syntax_func=lambda x: nml.NML.nml_list(x, nml.NML.nml_str)
-    ) == f"   param5 = 'temp'\n"
-
-    assert nml.NML.nml_param_val(
-        param_dict=example_glmpy_parameters,
-        param="param6",
-        syntax_func=lambda x: nml.NML.nml_list(x, nml.NML.nml_str)
-    ) == f"   param6 = 'temp','salt','oxy'\n"
-
-    assert nml.NML.nml_param_val(
-        param_dict=example_glmpy_parameters,
-        param="param7",
+def test_write_nml_parameter(example_python_params):
+    assert nml.NMLWriter.write_nml_parameter(
+        param_name="param1",
+        param_value=example_python_params["param1"],
         syntax_func=None
-    ) == f"   param7 = 12.3\n"
-
-    assert nml.NML.nml_param_val(
-        param_dict=example_glmpy_parameters,
-        param="param8",
-        syntax_func=nml.NML.nml_list
-    ) == f"   param8 = 12.3\n"
-
-    assert nml.NML.nml_param_val(
-        param_dict=example_glmpy_parameters,
-        param="param9",
-        syntax_func=nml.NML.nml_list
-    ) == f"   param9 = 12.3,32.4,64.2\n"
-
-    assert nml.NML.nml_param_val(
-        param_dict=example_glmpy_parameters,
-        param="param10",
+    ) == "   param1 = 123\n"
+    assert nml.NMLWriter.write_nml_parameter(
+        param_name="param2",
+        param_value=example_python_params["param2"],
         syntax_func=None
-    ) == ""
-
-    assert nml.NML.nml_param_val(
-        param_dict=example_glmpy_parameters,
-        param="param11",
-        syntax_func=lambda x: nml.NML.nml_array(x, row_indent=13)
+    ) == "   param2 = 1.23\n"
+    assert nml.NMLWriter.write_nml_parameter(
+        param_name="param3",
+        param_value=example_python_params["param3"],
+        syntax_func=nml.NMLWriter.write_nml_str
+    ) == "   param3 = 'foo'\n"
+    assert nml.NMLWriter.write_nml_parameter(
+        param_name="param4",
+        param_value=example_python_params["param4"],
+        syntax_func=nml.NMLWriter.write_nml_bool
+    ) == "   param4 = .true.\n"
+    assert nml.NMLWriter.write_nml_parameter(
+        param_name="param5",
+        param_value=example_python_params["param5"],
+        syntax_func=nml.NMLWriter.write_nml_list
+    ) == "   param5 = 1,2,3\n"
+    assert nml.NMLWriter.write_nml_parameter(
+        param_name="param6",
+        param_value=example_python_params["param6"],
+        syntax_func=nml.NMLWriter.write_nml_list
+    ) == "   param6 = 1.1,2.1,3.1\n"
+    assert nml.NMLWriter.write_nml_parameter(
+        param_name="param7",
+        param_value=example_python_params["param7"],
+        syntax_func=lambda x: nml.NMLWriter.write_nml_list(
+            x, nml.NMLWriter.write_nml_str
+        )
+    ) == "   param7 = 'foo','bar','baz'\n"
+    assert nml.NMLWriter.write_nml_parameter(
+        param_name="param8",
+        param_value=example_python_params["param8"],
+        syntax_func=lambda x: nml.NMLWriter.write_nml_list(
+            x, nml.NMLWriter.write_nml_bool
+        )
+    ) == "   param8 = .true.,.false.,.true.\n"
+    assert nml.NMLWriter.write_nml_parameter(
+        param_name="param9",
+        param_value=example_python_params["param9"],
+        syntax_func=nml.NMLWriter.write_nml_array
     ) == (
-        f"   param11 = 1.1,1.2,1.3,1.2,1.3,\n"+
-        f"             2.1,2.2,2.3,1.2,1.3,\n"+
-        f"             3.1,3.2,3.3,1.2,1.3,\n"+
-        f"             4.1,4.2,4.3,1.2,1.3,\n"+
-        f"             5.1,5.2,5.3,1.2,1.3,\n"+
-        f"             6.1,6.2,6.3,1.2,1.3\n"
+        "   param9 = 1,2,3,\n"+
+        "            1,2,3,\n"+
+        "            1,2,3\n"
     )
-
-    assert nml.NML.nml_param_val(
-        param_dict=example_glmpy_parameters,
-        param="param12",
-        syntax_func=lambda x: nml.NML.nml_array(
-            x, row_indent=13, syntax_func=nml.NML.nml_bool
+    assert nml.NMLWriter.write_nml_parameter(
+        param_name="param10",
+        param_value=example_python_params["param10"],
+        syntax_func=nml.NMLWriter.write_nml_array
+    ) == (
+        "   param10 = 1.1,2.1,3.1,\n"+
+        "             1.1,2.1,3.1,\n"+
+        "             1.1,2.1,3.1\n"
+    )
+    assert nml.NMLWriter.write_nml_parameter(
+        param_name="param11",
+        param_value=example_python_params["param11"],
+        syntax_func=lambda x: nml.NMLWriter.write_nml_array(
+            x, nml.NMLWriter.write_nml_str
         )
     ) == (
-        f"   param12 = .true.,.true.,.true.,.true.,.true.,\n"+
-        f"             .false.,.false.,.false.,.false.,.false.,\n"+
-        f"             .false.,.true.,.false.,.true.,.false.\n"
+        "   param11 = 'foo','bar','baz',\n"+
+        "             'foo','bar','baz',\n"+
+        "             'foo','bar','baz'\n"
     )
-
-    assert nml.NML.nml_param_val(
-        param_dict=example_glmpy_parameters,
-        param="param13",
-        syntax_func=lambda x: nml.NML.nml_array(
-            x, row_indent=13, syntax_func=nml.NML.nml_str
+    assert nml.NMLWriter.write_nml_parameter(
+        param_name="param12",
+        param_value=example_python_params["param12"],
+        syntax_func=lambda x: nml.NMLWriter.write_nml_array(
+            x, nml.NMLWriter.write_nml_bool
         )
     ) == (
-        f"   param13 = 'foo','foo','foo',\n"+
-        f"             'foo','foo','foo',\n"+
-        f"             'foo','foo','foo'\n"
+        "   param12 = .true.,.false.,.true.,\n"+
+        "             .true.,.false.,.true.,\n"+
+        "             .true.,.false.,.true.\n"
     )
 
 @pytest.fixture
@@ -250,7 +230,7 @@ def example_output_parameters():
         'csv_lake_fname': 'lake',
         'csv_point_nlevs': 2,
         'csv_point_fname': 'WQ_' ,
-        #"csv_point_frombot": [1], ###
+        "csv_point_frombot": [1], 
         'csv_point_at': [5, 30],    
         'csv_point_nvars': 7,
         'csv_point_vars': [
@@ -407,20 +387,20 @@ def test_write_nml(
         example_snow_ice_parameters,
         example_wq_setup_parameters
 ):
-    glm_setup = nml.NMLGLMSetup()
-    morphometry = nml.NMLMorphometry()
-    time = nml.NMLTime()
-    init_profiles = nml.NMLInitProfiles()
-    mixing = nml.NMLMixing()
-    output = nml.NMLOutput()
-    meteorology = nml.NMLMeteorology()
-    light = nml.NMLLight()
-    bird_model = nml.NMLBirdModel()
-    inflow = nml.NMLInflow()
-    outflow = nml.NMLOutflow()
-    sediment = nml.NMLSediment()
-    snow_ice = nml.NMLSnowIce()
-    wq_setup = nml.NMLWQSetup()
+    glm_setup = glm_nml.SetupBlock()
+    morphometry = glm_nml.MorphometryBlock()
+    time = glm_nml.TimeBlock()
+    init_profiles = glm_nml.InitProfilesBlock()
+    mixing = glm_nml.MixingBlock()
+    output = glm_nml.OutputBlock()
+    meteorology = glm_nml.MeteorologyBlock()
+    light = glm_nml.LightBlock()
+    bird_model = glm_nml.BirdModelBlock()
+    inflow = glm_nml.InflowBlock()
+    outflow = glm_nml.OutflowBlock()
+    sediment = glm_nml.SedimentBlock()
+    snow_ice = glm_nml.SnowIceBlock()
+    wq_setup = glm_nml.WQSetupBlock()
 
     glm_setup.set_attributes(example_glm_setup_parameters)
     morphometry.set_attributes(example_morphometry_parameters)
@@ -437,21 +417,21 @@ def test_write_nml(
     snow_ice.set_attributes(example_snow_ice_parameters)
     wq_setup.set_attributes(example_wq_setup_parameters)
 
-    nml_file = nml.NML(
-        glm_setup=glm_setup(),
-        morphometry=morphometry(),
-        time=time(),
-        init_profiles=init_profiles(),
-        mixing=mixing(),
-        output=output(),
-        meteorology=meteorology(),
-        light=light(),
-        bird_model=bird_model(),
-        inflow=inflow(),
-        outflow=outflow(),
-        sediment=sediment(),
-        snow_ice=snow_ice(),
-        wq_setup=wq_setup(),
+    nml_file = glm_nml.GLMNML(
+        glm_setup=glm_setup.get_params(),
+        morphometry=morphometry.get_params(),
+        time=time.get_params(),
+        init_profiles=init_profiles.get_params(),
+        mixing=mixing.get_params(),
+        output=output.get_params(),
+        meteorology=meteorology.get_params(),
+        light=light.get_params(),
+        bird_model=bird_model.get_params(),
+        inflow=inflow.get_params(),
+        outflow=outflow.get_params(),
+        sediment=sediment.get_params(),
+        snow_ice=snow_ice.get_params(),
+        wq_setup=wq_setup.get_params(),
         check_errors=False
     )
     file_path = tmp_path / "test.nml"
@@ -462,43 +442,43 @@ def test_write_nml(
     
     expected = (
         "&glm_setup\n" +
-        f"   sim_name = 'Example Simulation #1'\n" +
-        f"   max_layers = 500\n" +
-        f"   min_layer_vol = 0.025\n" +
-        f"   min_layer_thick = 0.15\n" +
-        f"   max_layer_thick = 1.5\n" +
-        f"   density_model = 1\n" +
-        f"   non_avg = .false.\n" +
+        "   sim_name = 'Example Simulation #1'\n" +
+        "   max_layers = 500\n" +
+        "   min_layer_vol = 0.025\n" +
+        "   min_layer_thick = 0.15\n" +
+        "   max_layer_thick = 1.5\n" +
+        "   density_model = 1\n" +
+        "   non_avg = .false.\n" +
         "/" + 
         "\n" +
         "&mixing\n" +
-        f"   surface_mixing = 1\n" +
-        f"   coef_mix_conv = 0.125\n" +
-        f"   coef_wind_stir = 0.23\n" +
-        f"   coef_mix_shear = 0.2\n" +
-        f"   coef_mix_turb = 0.51\n" +
-        f"   coef_mix_KH = 0.3\n" +
-        f"   deep_mixing = 2\n" +
-        f"   coef_mix_hyp = 0.5\n" +
-        f"   diff = 0.0\n" +
+        "   surface_mixing = 1\n" +
+        "   coef_mix_conv = 0.125\n" +
+        "   coef_wind_stir = 0.23\n" +
+        "   coef_mix_shear = 0.2\n" +
+        "   coef_mix_turb = 0.51\n" +
+        "   coef_mix_KH = 0.3\n" +
+        "   deep_mixing = 2\n" +
+        "   coef_mix_hyp = 0.5\n" +
+        "   diff = 0.0\n" +
         "/" +
         "\n" +
         "&morphometry\n" +
-        f"   lake_name = 'Example Lake'\n" +
-        f"   latitude = 32.0\n" +
-        f"   longitude = 35.0\n" +
-        f"   base_elev = -252.9\n" +
-        f"   crest_elev = -203.9\n" +
-        f"   bsn_len = 21000.0\n" +
-        f"   bsn_wid = 13000.0\n" +
-        f"   bsn_vals = 45\n" +
-        f"   H = -252.9,-251.9,-250.9,-249.9,-248.9,-247.9,-246.9,-245.9," +
+        "   lake_name = 'Example Lake'\n" +
+        "   latitude = 32.0\n" +
+        "   longitude = 35.0\n" +
+        "   base_elev = -252.9\n" +
+        "   crest_elev = -203.9\n" +
+        "   bsn_len = 21000.0\n" +
+        "   bsn_wid = 13000.0\n" +
+        "   bsn_vals = 45\n" +
+        "   H = -252.9,-251.9,-250.9,-249.9,-248.9,-247.9,-246.9,-245.9," +
         "-244.9,-243.9,-242.9,-241.9,-240.9,-239.9,-238.9,-237.9," +
         "-236.9,-235.9,-234.9,-233.9,-232.9,-231.9,-230.9,-229.9," + 
         "-228.9,-227.9,-226.9,-225.9,-224.9,-223.9,-222.9,-221.9," + 
         "-220.9,-219.9,-218.9,-217.9,-216.9,-215.9,-214.9,-213.9," + 
         "-212.9,-211.9,-208.9,-207.9,-203.9\n"
-        f"   A = 0,9250000,15200000,17875000,21975000,26625000,31700000," +
+        "   A = 0,9250000,15200000,17875000,21975000,26625000,31700000," +
             "33950000,38250000,41100000,46800000,51675000,55725000," +
             "60200000,64675000,69600000,74475000,79850000,85400000," +
             "90975000,96400000,102000000,107000000,113000000,118000000," +
@@ -509,42 +489,43 @@ def test_write_nml(
         "/" +
         "\n" +
         "&time\n" +
-        f"   timefmt = 3\n" +
-        f"   start = '1997-01-01 00:00:00'\n" +
-        f"   stop = '1999-01-01 00:00:00'\n" +
-        f"   dt = 3600.0\n" +
-        f"   num_days = 730\n" +
-        f"   timezone = 7.0\n" +
+        "   timefmt = 3\n" +
+        "   start = '1997-01-01 00:00:00'\n" +
+        "   stop = '1999-01-01 00:00:00'\n" +
+        "   dt = 3600.0\n" +
+        "   num_days = 730\n" +
+        "   timezone = 7.0\n" +
         "/" +
         "\n" +
         "&output\n" +
-        f"   out_dir = 'output'\n" +
-        f"   out_fn = 'output'\n" +
-        f"   nsave = 6\n" +
-        f"   csv_lake_fname = 'lake'\n" +
-        f"   csv_point_nlevs = 2\n" +
-        f"   csv_point_fname = 'WQ_'\n" +
-        f"   csv_point_at = 5,30\n" +
-        f"   csv_point_nvars = 7\n" +
-        f"   csv_point_vars = 'temp','salt','OXY_oxy','SIL_rsi','NIT_amm'," +
+        "   out_dir = 'output'\n" +
+        "   out_fn = 'output'\n" +
+        "   nsave = 6\n" +
+        "   csv_lake_fname = 'lake'\n" +
+        "   csv_point_nlevs = 2\n" +
+        "   csv_point_fname = 'WQ_'\n" +
+        "   csv_point_frombot = 1\n" +
+        "   csv_point_at = 5,30\n" +
+        "   csv_point_nvars = 7\n" +
+        "   csv_point_vars = 'temp','salt','OXY_oxy','SIL_rsi','NIT_amm'," +
         "'NIT_nit','PHS_frp'\n" +
-        f"   csv_outlet_allinone = .false.\n" +
-        f"   csv_outlet_fname = 'outlet_'\n" +
-        f"   csv_outlet_nvars = 4\n" +
-        f"   csv_outlet_vars = 'flow','temp','salt','OXY_oxy'\n" +
-        f"   csv_ovrflw_fname = 'overflow'\n" + 
+        "   csv_outlet_allinone = .false.\n" +
+        "   csv_outlet_fname = 'outlet_'\n" +
+        "   csv_outlet_nvars = 4\n" +
+        "   csv_outlet_vars = 'flow','temp','salt','OXY_oxy'\n" +
+        "   csv_ovrflw_fname = 'overflow'\n" + 
         "/" + 
         "\n"+
         "&init_profiles\n" +
-        f"   lake_depth = 43\n" +
-        f"   num_depths = 3\n" +
-        f"   the_depths = 1,20,40\n" +
-        f"   the_temps = 18.0,18.0,18.0\n" +
-        f"   the_sals = 0.5,0.5,0.5\n" +
-        f"   num_wq_vars = 6\n" +
-        f"   wq_names = 'OGM_don','OGM_pon','OGM_dop','OGM_pop','OGM_doc'," +
+        "   lake_depth = 43\n" +
+        "   num_depths = 3\n" +
+        "   the_depths = 1,20,40\n" +
+        "   the_temps = 18.0,18.0,18.0\n" +
+        "   the_sals = 0.5,0.5,0.5\n" +
+        "   num_wq_vars = 6\n" +
+        "   wq_names = 'OGM_don','OGM_pon','OGM_dop','OGM_pop','OGM_doc'," +
         "'OGM_poc'\n" +
-        f"   wq_init_vals = 1.1,1.2,1.3,1.2,1.3,\n" +
+        "   wq_init_vals = 1.1,1.2,1.3,1.2,1.3,\n" +
         "                  2.1,2.2,2.3,1.2,1.3,\n" +
         "                  3.1,3.2,3.3,1.2,1.3,\n" +
         "                  4.1,4.2,4.3,1.2,1.3,\n" +
@@ -553,101 +534,101 @@ def test_write_nml(
         "/" +
         "\n" +
         "&meteorology\n" +
-        f"   met_sw = .true.\n" +
-        f"   meteo_fl = 'bcs/met_hourly.csv'\n" +
-        f"   subdaily = .true.\n" +
-        f"   rad_mode = 1\n" +
-        f"   albedo_mode = 1\n" +
-        f"   lw_type = 'LW_IN'\n" +
-        f"   cloud_mode = 4\n" +
-        f"   atm_stab = 0\n" +
-        f"   ce = 0.0013\n" +
-        f"   ch = 0.0013\n" +
-        f"   rain_sw = .false.\n" +
-        f"   catchrain = .true.\n" +
-        f"   rain_threshold = 0.001\n" +
-        f"   runoff_coef = 0.0\n" +
-        f"   cd = 0.0013\n" +
-        f"   wind_factor = 0.9\n" +
-        f"   fetch_mode = 0\n" +
+        "   met_sw = .true.\n" +
+        "   meteo_fl = 'bcs/met_hourly.csv'\n" +
+        "   subdaily = .true.\n" +
+        "   rad_mode = 1\n" +
+        "   albedo_mode = 1\n" +
+        "   lw_type = 'LW_IN'\n" +
+        "   cloud_mode = 4\n" +
+        "   atm_stab = 0\n" +
+        "   ce = 0.0013\n" +
+        "   ch = 0.0013\n" +
+        "   rain_sw = .false.\n" +
+        "   catchrain = .true.\n" +
+        "   rain_threshold = 0.001\n" +
+        "   runoff_coef = 0.0\n" +
+        "   cd = 0.0013\n" +
+        "   wind_factor = 0.9\n" +
+        "   fetch_mode = 0\n" +
         "/" +
         "\n" +
         "&light\n" +
-        f"   light_mode = 0\n" +
-        f"   Kw = 0.4\n" +
-        f"   n_bands = 4\n" +
-        f"   light_extc = 1.0,0.5,2.0,4.0\n" +
-        f"   energy_frac = 0.51,0.45,0.035,0.005\n" +
-        f"   Benthic_Imin = 10\n" +
+        "   light_mode = 0\n" +
+        "   Kw = 0.4\n" +
+        "   n_bands = 4\n" +
+        "   light_extc = 1.0,0.5,2.0,4.0\n" +
+        "   energy_frac = 0.51,0.45,0.035,0.005\n" +
+        "   Benthic_Imin = 10\n" +
         "/" +
         "\n" +
         "&bird_model\n" +
-        f"   AP = 973\n" +
-        f"   Oz = 0.279\n" +
-        f"   WatVap = 1.1\n" +
-        f"   AOD500 = 0.033\n" +
-        f"   AOD380 = 0.038\n" +
-        f"   Albedo = 0.2\n" +
+        "   AP = 973\n" +
+        "   Oz = 0.279\n" +
+        "   WatVap = 1.1\n" +
+        "   AOD500 = 0.033\n" +
+        "   AOD380 = 0.038\n" +
+        "   Albedo = 0.2\n" +
         "/" +
         "\n" +
         "&inflow\n" +
-        f"   num_inflows = 6\n" +
-        f"   names_of_strms = 'Inflow1','Inflow2','Inflow3','Inflow4',"+
+        "   num_inflows = 6\n" +
+        "   names_of_strms = 'Inflow1','Inflow2','Inflow3','Inflow4',"+
         "'Inflow5','Inflow6'\n" +
-        f"   subm_flag = .false.,.false.,.false.,.true.,.false.,.false.\n" +
-        f"   strm_hf_angle = 85.0,85.0,85.0,85.0,85.0,85.0\n" +
-        f"   strmbd_slope = 4.0,4.0,4.0,4.0,4.0,4.0\n" +
-        f"   strmbd_drag = 0.016,0.016,0.016,0.016,0.016,0.016\n" +
-        f"   coef_inf_entrain = 0.0\n" +
-        f"   inflow_factor = 1.0,1.0,1.0,1.0,1.0,1.0\n" +
-        f"   inflow_fl = 'bcs/inflow_1.csv','bcs/inflow_2.csv'," +
+        "   subm_flag = .false.,.false.,.false.,.true.,.false.,.false.\n" +
+        "   strm_hf_angle = 85.0,85.0,85.0,85.0,85.0,85.0\n" +
+        "   strmbd_slope = 4.0,4.0,4.0,4.0,4.0,4.0\n" +
+        "   strmbd_drag = 0.016,0.016,0.016,0.016,0.016,0.016\n" +
+        "   coef_inf_entrain = 0.0\n" +
+        "   inflow_factor = 1.0,1.0,1.0,1.0,1.0,1.0\n" +
+        "   inflow_fl = 'bcs/inflow_1.csv','bcs/inflow_2.csv'," +
         "'bcs/inflow_3.csv','bcs/inflow_4.csv','bcs/inflow_5.csv'," + 
         "'bcs/inflow_6.csv'\n" +
-        f"   inflow_varnum = 3\n" +
-        f"   inflow_vars = 'FLOW','TEMP','SALT'\n" +
-        f"   time_fmt = 'YYYY-MM-DD hh:mm:ss'\n" +
+        "   inflow_varnum = 3\n" +
+        "   inflow_vars = 'FLOW','TEMP','SALT'\n" +
+        "   time_fmt = 'YYYY-MM-DD hh:mm:ss'\n" +
         "/" +
         "\n" +
         "&outflow\n" +
-        f"   num_outlet = 1\n" +
-        f"   outflow_fl = 'bcs/outflow.csv'\n" +
-        f"   outflow_factor = 1.0\n" +
-        f"   flt_off_sw = .false.\n" +
-        f"   outlet_type = 1\n" +
-        f"   outl_elvs = -215.5\n" +
-        f"   bsn_len_outl = 18000\n" +
-        f"   bsn_wid_outl = 11000\n" +
-        f"   seepage = .true.\n" +
-        f"   seepage_rate = 0.01\n" +
+        "   num_outlet = 1\n" +
+        "   outflow_fl = 'bcs/outflow.csv'\n" +
+        "   outflow_factor = 1.0\n" +
+        "   flt_off_sw = .false.\n" +
+        "   outlet_type = 1\n" +
+        "   outl_elvs = -215.5\n" +
+        "   bsn_len_outl = 18000\n" +
+        "   bsn_wid_outl = 11000\n" +
+        "   seepage = .true.\n" +
+        "   seepage_rate = 0.01\n" +
         "/" +
         "\n" +
         "&sediment\n" +
-        f"   sed_heat_Ksoil = 0.0\n" +
-        f"   sed_temp_depth = 0.2\n" +
-        f"   sed_temp_mean = 5,10,20\n" +
-        f"   sed_temp_amplitude = 6,8,10\n" +
-        f"   sed_temp_peak_doy = 80,70,60\n" +
-        f"   benthic_mode = 1\n" +
-        f"   n_zones = 3\n" +
-        f"   zone_heights = 10.0,20.0,50.0\n" +
-        f"   sed_reflectivity = 0.1,0.01,0.01\n" +
-        f"   sed_roughness = 0.1,0.01,0.01\n" +
+        "   sed_heat_Ksoil = 0.0\n" +
+        "   sed_temp_depth = 0.2\n" +
+        "   sed_temp_mean = 5,10,20\n" +
+        "   sed_temp_amplitude = 6,8,10\n" +
+        "   sed_temp_peak_doy = 80,70,60\n" +
+        "   benthic_mode = 1\n" +
+        "   n_zones = 3\n" +
+        "   zone_heights = 10.0,20.0,50.0\n" +
+        "   sed_reflectivity = 0.1,0.01,0.01\n" +
+        "   sed_roughness = 0.1,0.01,0.01\n" +
         "/" +
         "\n" +
         "&snowice\n" +
-        f"   snow_albedo_factor = 1.0\n" +
-        f"   snow_rho_min = 50\n" +
-        f"   snow_rho_max = 300\n" +
+        "   snow_albedo_factor = 1.0\n" +
+        "   snow_rho_min = 50\n" +
+        "   snow_rho_max = 300\n" +
         "/" +
         "\n" +
         "&wq_setup\n" +
-        f"   wq_lib = 'aed2'\n" +
-        f"   wq_nml_file = 'aed2/aed2.nml'\n" +
-        f"   bioshade_feedback = .true.\n" +
-        f"   mobility_off = .false.\n" +
-        f"   ode_method = 1\n" +
-        f"   split_factor = 1\n" +
-        f"   repair_state = .true.\n" +
+        "   wq_lib = 'aed2'\n" +
+        "   wq_nml_file = 'aed2/aed2.nml'\n" +
+        "   bioshade_feedback = .true.\n" +
+        "   mobility_off = .false.\n" +
+        "   ode_method = 1\n" +
+        "   split_factor = 1\n" +
+        "   repair_state = .true.\n" +
         "/" +
         "\n" 
     )
@@ -677,32 +658,28 @@ def example_nml_parameters():
 def test_read_nml_methods(example_nml_parameters):
     assert nml.NMLReader.read_nml_bool(
         nml_bool=example_nml_parameters["nml_bool_1"]
-    ) == True
+    ) is True
     assert nml.NMLReader.read_nml_bool(
         nml_bool=example_nml_parameters["nml_bool_2"]
-    ) == False
+    ) is False
     assert nml.NMLReader.read_nml_bool(
         nml_bool=example_nml_parameters["nml_bool_3"]
-    ) == True
+    ) is True
     assert nml.NMLReader.read_nml_bool(
         nml_bool=example_nml_parameters["nml_bool_4"]
-    ) == False
-
+    ) is False
     assert nml.NMLReader.read_nml_int(
         nml_int=example_nml_parameters["nml_int_1"]
     ) == 123
-
     assert nml.NMLReader.read_nml_float(
         nml_float=example_nml_parameters["nml_float_1"]
     ) == 1.23
-
     assert nml.NMLReader.read_nml_str(
         nml_str=example_nml_parameters["nml_str_1"]
     ) == "foo"
     assert nml.NMLReader.read_nml_str(
         nml_str=example_nml_parameters["nml_str_2"]
     ) == "foo"
-
     assert nml.NMLReader.read_nml_list(
         nml_list=example_nml_parameters["nml_list_1"],
         syntax_func=nml.NMLReader.read_nml_str
@@ -719,7 +696,6 @@ def test_read_nml_methods(example_nml_parameters):
         nml_list=example_nml_parameters["nml_list_4"],
         syntax_func=nml.NMLReader.read_nml_bool
     ) == [True, False, True, False]
-
     assert nml.NMLReader.read_nml_array(
         nml_array=example_nml_parameters["nml_array_1"],
         syntax_func=nml.NMLReader.read_nml_int
@@ -859,7 +835,7 @@ def test_NMLReader_get_block_invalid(ellenbrook_nml):
         block_name = "foo"
         setup = my_nml.get_block(block_name)
     assert str(error.value) == (
-            f"Unknown block 'foo'. The following blocks were "
+            "Unknown block 'foo'. The following blocks were "
             "read from the NML file: 'glm_setup', 'mixing', 'light', " 
             "'morphometry', 'time', 'output', 'init_profiles', 'meteorology', "
             "'bird_model', 'inflow', 'outflow', 'snowice', 'sediment'."
