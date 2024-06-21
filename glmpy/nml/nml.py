@@ -261,9 +261,13 @@ class NMLWriter(_NML):
 
     `NMLWriter` provides the following static methods to convert from Python
     syntax to NML syntax:
+
     - `write_nml_str`: Python string to NML string.
+
     - `write_nml_bool`: Python bool to NML bool.
+
     - `write_nml_list`: Python list to NML list (comma-separated values).
+
     - `write_nml_array`: Nested Python list to NML array. 
 
     Attributes
@@ -931,19 +935,27 @@ class NMLReader(_NML):
     file with `write_json()`. 
 
     Unexpected behaviour will occur if:
+
     - Exclamation marks (`!`) are used within a string parameter, e.g., 
     `sim_name = 'A very important sim!'`. Exclamation marks are used to declare
     comments in NML files.
+    
     - You terminate a comma-separated list with a comma, e.g., 
     `A = 100, 3600, 5600,`. Remove the final comma: `A = 100, 3600, 5600`.
 
     `NMLReader` provides the following static methods to convert from NML
     syntax to Python syntax:
+
     - `read_nml_int`: NML integer to Python integer.
+
     - `read_nml_float`: NML float to Python float.
+
     - `read_nml_bool`: NML boolean to Python boolean.
+
     - `read_nml_str`: NML string to Python string.
+
     - `read_nml_list`: NML list (comma-separated values) to Python list.
+
     - `read_nml_array`: NML array to Python array.
 
     Attributes

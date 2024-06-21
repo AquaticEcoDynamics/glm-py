@@ -4,7 +4,7 @@ repo_name: AquaticEcoDynamics/glm-py
 
 theme:
     name: material
-    logo: img/glm_icon_text_square.png
+    logo: img/glm_icon_text.png
     custom_dir: docs/custom_theme/
     features:
       - content.code.copy
@@ -45,7 +45,9 @@ plugins:
       python:
         options:
           docstring_style: numpy
+          show_submodules: true
           show_source: false
+          inherited_members: true
 
 
 markdown_extensions:
