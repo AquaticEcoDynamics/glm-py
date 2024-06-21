@@ -449,8 +449,8 @@ class InvertedTruncatedCone:
         if base_radius <= 0:
             raise ValueError(
                 "Invalid combination of height, surface_radius, and "
-                "side_slope attributes. The calculated base_radies of the "
-                "water body is currently <= 0. base_radies is calculated by "
+                "side_slope attributes. The calculated base_radius of the "
+                "water body is currently <= 0. base_radius is calculated by "
                 "(surface_radius - (height / side_slope)). Adjust your input "
                 "attributes to calculate a positive base_radius value."
             )

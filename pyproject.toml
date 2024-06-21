@@ -33,7 +33,7 @@ toml = ["tomli; python_version < '3.11'"]
 include-package-data = true
 
 [project.urls]
-Repository = "https://github.com/WET-tool/glm-py"
+Repository = "https://github.com/AquaticEcoDynamics/glm-py"
 
 [project.scripts]
 
