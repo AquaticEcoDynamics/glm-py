@@ -3,9 +3,10 @@ import json
 import warnings
 import regex as re
 
+from abc import ABC, abstractmethod
 from typing import Union, List, Any, Callable, Dict
 
-class _BaseBlock:
+class _BaseBlock(ABC):
     """
     Base class for all configuration block classes.
     """
@@ -35,6 +36,47 @@ class _BaseBlock:
         """
         for key, value in attrs_dict.items():
             setattr(self, key, value)
+    
+    @abstractmethod
+    def get_params(self, check_params: bool = False) -> dict:
+        """Return the block parameter dictionary.
+
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. If 
+        `check_params` is `True`, the method performs validation checks on the 
+        parameters to ensure they comply with expected formats and constraints. 
+
+        Parameters
+        ----------
+        check_params : bool, optional
+            If `True`, performs validation checks on the parameters to ensure 
+            compliance with GLM. Default is `False`.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing the `&glm_setup` parameters.
+        
+        Examples
+        --------
+        >>> from glmpy.nml import glm_nml
+        >>> glm_setup = glm_nml.SetupBlock(
+        ...     sim_name="Example Simulation #1", 
+        ...     max_layers=100
+        ... )
+        >>> print(glm_setup.get_params(check_params=False))
+        {
+            'sim_name': 'Example Simulation #1', 
+            'max_layers': 100, 
+            'min_layer_vol': None, 
+            'min_layer_thick': None, 
+            'max_layer_thick': None, 
+            'density_model': None, 
+            'non_avg': None
+        }
+        """
+        pass
 
     def _single_value_to_list(
             self, 
