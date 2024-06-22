@@ -653,6 +653,7 @@ class NML:
                 "subm_flag", 
                 lambda x: self.nml_list(x, self.nml_bool)
             ) +
+            self.nml_param_val(inflow, "subm_elev", self.nml_list) +
             self.nml_param_val(inflow, "strm_hf_angle", self.nml_list) +
             self.nml_param_val(inflow, "strmbd_slope", self.nml_list) +
             self.nml_param_val(inflow, "strmbd_drag", self.nml_list) +
@@ -2662,6 +2663,8 @@ class NMLInflow(NMLBase):
     subm_flag : Union[List[bool], bool, None]
         Switch indicating if the inflow is entering as a submerged input. A 
         list if `num_inflows > 1`. Default is `None`.
+    subm_elev : Union[List[float], float, None]
+        Elevations (from bottom of lake subm_elev = 0.0) to top (subm_elev = lake_level) ) of submerged inflows.
     strm_hf_angle : Union[List[float], float, None]
         Angle describing the width of an inflow river channel ("half angle"). A 
         list if `num_inflows > 1`. Default is `None`.
@@ -2702,6 +2705,7 @@ class NMLInflow(NMLBase):
     ...         'Inflow1','Inflow2','Inflow3','Inflow4','Inflow5','Inflow6'
     ...     ],
     ...     "subm_flag": [False, False, False, True, False, False],
+    ...     "subm_elev": [65.0, 65.0, 65.0, 5.0, 65.0, 65.0]
     ...     "strm_hf_angle": [85.0, 85.0, 85.0, 85.0, 85.0, 85.0],
     ...     "strmbd_slope": [4.0, 4.0, 4.0, 4.0, 4.0, 4.0],
     ...     "strmbd_drag": [0.0160, 0.0160, 0.0160, 0.0160, 0.0160, 0.0160],
@@ -2723,6 +2727,7 @@ class NMLInflow(NMLBase):
         num_inflows: Union[int, None] = None,
         names_of_strms: Union[List[str], str, None] = None,
         subm_flag: Union[List[bool], bool, None] = None,
+        subm_elev: Union[List[float], float, None] = None,
         strm_hf_angle: Union[List[float], float, None] = None,
         strmbd_slope: Union[List[float], float, None] = None,
         strmbd_drag: Union[List[float], float, None] = None,
@@ -2736,6 +2741,7 @@ class NMLInflow(NMLBase):
         self.num_inflows = num_inflows        
         self.names_of_strms = names_of_strms
         self.subm_flag = subm_flag
+        self.subm_elev = subm_elev
         self.strm_hf_angle = strm_hf_angle
         self.strmbd_slope = strmbd_slope
         self.strmbd_drag = strmbd_drag
@@ -2795,6 +2801,7 @@ class NMLInflow(NMLBase):
                 'Inflow1', 'Inflow2', 'Inflow3', 'Inflow4', 'Inflow5'
             ], 
             'subm_flag': None, 
+            'subm_elev': None,
             'strm_hf_angle': None, 
             'strmbd_slope': None, 
             'strmbd_drag': None, 
@@ -2830,6 +2837,7 @@ class NMLInflow(NMLBase):
             "num_inflows": self.num_inflows,
             "names_of_strms": self.names_of_strms,
             "subm_flag": self.subm_flag,
+            "subm_elev": self.subm_elev,
             "strm_hf_angle": self.strm_hf_angle,
             "strmbd_slope": self.strmbd_slope,
             "strmbd_drag": self.strmbd_drag,
@@ -3083,6 +3091,7 @@ class NMLOutflow(NMLBase):
             'crest_factor': None
         }
         """
+        self.outflow_fl = self._single_value_to_list(self.outflow_fl)
         self.outflow_factor = self._single_value_to_list(self.outflow_factor)
         self.outflow_thick_limit = self._single_value_to_list(
             self.outflow_thick_limit
