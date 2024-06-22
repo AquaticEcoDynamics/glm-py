@@ -2664,7 +2664,8 @@ class NMLInflow(NMLBase):
         Switch indicating if the inflow is entering as a submerged input. A 
         list if `num_inflows > 1`. Default is `None`.
     subm_elev : Union[List[float], float, None]
-        Elevations (from bottom of lake subm_elev = 0.0) to top (subm_elev = lake_level) ) of submerged inflows.
+        Elevations from bottom of lake as subm_elev = 0.0 to top as subm_elev = lake_level, of submerged inflows.
+        list if `num_inflows > 1`. Default is `None`.
     strm_hf_angle : Union[List[float], float, None]
         Angle describing the width of an inflow river channel ("half angle"). A 
         list if `num_inflows > 1`. Default is `None`.
