@@ -93,7 +93,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="glm-py" class="md-header__button md-logo" aria-label="glm-py" data-md-component="logo">
       
-  <img src="../img/glm_icon_text_square.png" alt="logo">
+  <img src="../img/glm_icon_text.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -352,7 +352,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="glm-py" class="md-nav__button md-logo" aria-label="glm-py" data-md-component="logo">
       
-  <img src="../img/glm_icon_text_square.png" alt="logo">
+  <img src="../img/glm_icon_text.png" alt="logo">
 
     </a>
     glm-py
@@ -1095,6 +1095,42 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Environment
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      Code style
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tests
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pull-requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pull requests
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#suggested-contributions" class="md-nav__link">
     <span class="md-ellipsis">
       Suggested contributions
@@ -1125,33 +1161,33 @@
 <h1 id="contributing">Contributing<a class="headerlink" href="#contributing" title="Permanent link">&para;</a></h1>
 <p>glm-py is an open source project that is actively maintained by the <a href="https://github.com/AquaticEcoDynamics">Aquatic 
 EcoDynamics research group</a> at the University of Western Australia.
-Whether you're an experienced GLM user, or are new to modelling hydrodynamics,
-we would appreciate your feedback and input on using this package. </p>
+If you'd like to contribute to the project, please familiarise yourself with
+the contributing guide below.</p>
+<h2 id="environment">Environment<a class="headerlink" href="#environment" title="Permanent link">&para;</a></h2>
+<p>A Docker container can be used to create a development environment. You can 
+either build the Docker image:</p>
+<p><div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>docker build -t glm-py-dev .devcontainer
+</span></code></pre></div>
+Or, you can develop glm-py using a dev-container.</p>
+<h2 id="code-style">Code style<a class="headerlink" href="#code-style" title="Permanent link">&para;</a></h2>
+<p>Code linting and formatting uses ruff and black. A script to format the glm-py 
+repository can be run: <code>./scripts/format.sh</code>. </p>
+<p>pre-commit is used to run ruff and black. </p>
+<h2 id="tests">Tests<a class="headerlink" href="#tests" title="Permanent link">&para;</a></h2>
+<p><a href="https://docs.pytest.org/en/7.4.x/" target="_blank">pytest</a> is used 
+for testing glm-py. </p>
+<p>If testing, please add tests under the <code>tests</code> directory. If you need test data 
+for running tests, add them as <code>pytest.fixtures</code> in <code>conftest.py</code>. </p>
+<h2 id="pull-requests">Pull requests<a class="headerlink" href="#pull-requests" title="Permanent link">&para;</a></h2>
+<p>Submit pull requests to the <code>next-release</code> branch. This is where glm-py is 
+actively developed.</p>
 <h2 id="suggested-contributions">Suggested contributions<a class="headerlink" href="#suggested-contributions" title="Permanent link">&para;</a></h2>
-<div class="grid cards">
 <ul>
-<li>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22.54 21.12 20.41 19l2.13-2.12-1.42-1.42L19 17.59l-2.12-2.13-1.42 1.42L17.59 19l-2.13 2.12 1.42 1.42L19 20.41l2.12 2.13M6 2a2 2 0 0 0-2 2v16c0 1.11.89 2 2 2h7.81c-.36-.62-.61-1.3-.73-2H6V4h7v5h5v4.08c.33-.05.67-.08 1-.08.34 0 .67.03 1 .08V8l-6-6M8 12v2h8v-2m-8 4v2h5v-2Z"/></svg></span> &nbsp;
-    <strong>Documenting model parameters</strong></p>
-<hr />
-<p>Many GLM parameters are lacking adequate documentation in their respective
-<code>nml.NML*</code> classes. Please open an issue if you can improve on the 
-documentation or provide parameter units (where applicable).</p>
-<hr />
-<p><a href="https://github.com/WET-tool/glm-py/issues/new"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"/></svg></span> Open a docs issue</a></p>
-</li>
-<li>
-<p><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 8h-2.81c-.45-.8-1.07-1.5-1.82-2L17 4.41 15.59 3l-2.17 2.17a6.002 6.002 0 0 0-2.83 0L8.41 3 7 4.41 8.62 6c-.75.5-1.36 1.21-1.81 2H4v2h2.09c-.06.33-.09.66-.09 1v1H4v2h2v1c0 .34.03.67.09 1H4v2h2.81A5.988 5.988 0 0 0 15 20.18c.91-.52 1.67-1.28 2.19-2.18H20v-2h-2.09c.06-.33.09-.66.09-1v-1h2v-2h-2v-1c0-.34-.03-.67-.09-1H20V8m-4 7a4 4 0 0 1-4 4 4 4 0 0 1-4-4v-4a4 4 0 0 1 4-4 4 4 0 0 1 4 4v4m-2-5v2h-4v-2h4m-4 4h4v2h-4v-2Z"/></svg></span> &nbsp;
-    <strong>Found a bug?</strong></p>
-<hr />
-<p>While glm-py is in its infancy, you may encounter a bug in unexpected use 
-cases. Please open an issue and provide a reproducible example if you've 
-identified a bug.</p>
-<hr />
-<p><a href="https://github.com/WET-tool/glm-py/issues/new"><span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13.22 19.03a.75.75 0 0 1 0-1.06L18.19 13H3.75a.75.75 0 0 1 0-1.5h14.44l-4.97-4.97a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"/></svg></span> Report a bug</a></p>
-</li>
+<li>An <code>aed_nml</code> sub-module for the <code>nml</code> module that mirrors the functionality
+of the <code>glm_nml</code> sub-module. </li>
+<li>Parameter documentation for the <code>glm_nml</code> sub-module.</li>
+<li>Additional simple morphometries the <code>dimensions</code> module.</li>
 </ul>
-</div>
 
 
 

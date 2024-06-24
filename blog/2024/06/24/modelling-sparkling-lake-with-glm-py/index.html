@@ -9,8 +9,10 @@
       
       
       
+        <link rel="prev" href="../../../03/22/glm-py-released-/">
       
-        <link rel="next" href="../glm-py-released-/">
+      
+        <link rel="next" href="../glm-py-020/">
       
       
       <link rel="icon" href="../../../../../assets/images/favicon.png">
@@ -91,7 +93,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../../../../.." title="glm-py" class="md-header__button md-logo" aria-label="glm-py" data-md-component="logo">
       
-  <img src="../../../../../img/glm_icon_text_square.png" alt="logo">
+  <img src="../../../../../img/glm_icon_text.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -352,7 +354,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../../../../.." title="glm-py" class="md-nav__button md-logo" aria-label="glm-py" data-md-component="logo">
       
-  <img src="../../../../../img/glm_icon_text_square.png" alt="logo">
+  <img src="../../../../../img/glm_icon_text.png" alt="logo">
 
     </a>
     glm-py
@@ -1105,11 +1107,11 @@
         <li class="md-nav__item">
   <a href="#creating-a-glm-nml-file" class="md-nav__link">
     <span class="md-ellipsis">
-      Creating a GLM .nml file
+      Creating a GLM NML file
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Creating a GLM .nml file">
+    <nav class="md-nav" aria-label="Creating a GLM NML file">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1140,9 +1142,9 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#writing-the-namelist-file" class="md-nav__link">
+  <a href="#writing-the-nml-file" class="md-nav__link">
     <span class="md-ellipsis">
-      Writing the namelist file
+      Writing the NML file
     </span>
   </a>
   
@@ -1200,7 +1202,7 @@
                         
                       </strong>
                       <br>
-                      Package developer
+                      Developer
                     </span>
                   </div>
                 
@@ -1218,7 +1220,7 @@
                     <li class="md-nav__item">
                       <div class="md-nav__link">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5v-5Z"/></svg>
-                        <time datetime="2024-03-22 00:00:00" class="md-ellipsis">March 22, 2024</time>
+                        <time datetime="2024-06-24 00:00:00" class="md-ellipsis">June 24, 2024</time>
                       </div>
                     </li>
                     
@@ -1272,14 +1274,14 @@ Sparkling Lake using glm-py.</strong></p>
 <p>Sparkling Lake is an oligotrophic, northern temperate lake (89.7 ºN, 46.3 ºW) in Winconsin, USA. The lake is approximately 20m deep and covers a surface area of 0.638km<sup>2</sup>. This tutorial serves an introduction to the two core modules of glm-py - <code>nml</code> and <code>simulation</code>. You will use glm-py to model Sparkling Lake for 2 years (1980-04-15 to 1982-04-15).</p>
 <!-- more -->
 
-<p>If you haven't already, install glm-py using <code>pip</code>:</p>
+<p>First, install glm-py using <code>pip</code>:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>pip install glm-py
 </span></code></pre></div>
-<h2 id="creating-a-glm-nml-file">Creating a GLM <code>.nml</code> file<a class="headerlink" href="#creating-a-glm-nml-file" title="Permanent link">&para;</a></h2>
-<p>To begin, start by importing the <code>nml</code> module from <code>glmpy</code>:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">nml</span>
+<h2 id="creating-a-glm-nml-file">Creating a GLM NML file<a class="headerlink" href="#creating-a-glm-nml-file" title="Permanent link">&para;</a></h2>
+<p>Next, import the <code>glm_nml</code> sub-module from the <code>nml</code> module of <code>glmpy</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">glmpy.nml</span> <span class="kn">import</span> <span class="n">glm_nml</span>
 </span></code></pre></div>
-<p>The <code>nml</code> module provides a set of classes to construct GLM's namelist file (<code>.nml</code>).  A <code>.nml</code> file is divided into multiple "blocks" that configure specific aspects of the model, e.g., the <code>&amp;morphometry</code> block defines morphometry of the water body. The structure of a <code>.nml</code> file is shown below for the four minimum required blocks (<code>...</code> indicates that the block contains more parameters than shown):</p>
+<p>The <code>glm_nml</code> module provides a set of classes to construct GLM's NML file (<code>.nml</code>).  A NML file is divided into multiple "blocks" that configure specific aspects of the model, e.g., the <code>morphometry</code> block defines morphometry of the water body. The structure of a NML file is shown below for the four minimum required blocks (<code>...</code> indicates that the block contains more parameters than shown):</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>&amp;glm_setup
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>  sim_name = &#39;GLMSimulation&#39;
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>  ...
@@ -1298,7 +1300,7 @@ Sparkling Lake using glm-py.</strong></p>
 </span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>/
 </span></code></pre></div>
 <h3 id="model-setup">Model setup<a class="headerlink" href="#model-setup" title="Permanent link">&para;</a></h3>
-<p>GLM simulates the dynamics of a water body by dividing it into a vertically stacked series of layers. The compulsory <code>&amp;glm_setup</code> block defines the structure of these layers, e.g., the maximum number of layers, the minimum layer volume, and the minimum and maximum layer thicknesses. To configure the <code>&amp;glm_setup</code> parameters for Sparkling Lake, you would typically write a <code>.nml</code> file that contains the following:</p>
+<p>GLM simulates the dynamics of a water body by dividing it into a vertically stacked series of layers. The compulsory <code>glm_setup</code> block defines the structure of these layers, e.g., the maximum number of layers, the minimum layer volume, and the minimum and maximum layer thicknesses. To configure the <code>glm_setup</code> parameters for Sparkling Lake, you would typically write a NML file that contains the following:</p>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>&amp;glm_setup 
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>   sim_name = &#39;Sparkling Lake&#39;
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>   max_layers = 500
@@ -1309,8 +1311,8 @@ Sparkling Lake using glm-py.</strong></p>
 </span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>   non_avg = .true.
 </span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>/
 </span></code></pre></div>
-<p>Using glm-py, you instead configure the <code>&amp;glm_setup</code> block by using the <code>NMLGLMSetup</code> class from the <code>nml</code> module. Each model parameter of the <code>&amp;glm_setup</code> block has a corresponding attribute in the <code>NMLGLMSetup</code> class:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">glm_setup</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NMLGLMSetup</span><span class="p">(</span>
+<p>Using glm-py, you instead configure the <code>glm_setup</code> block by using the <code>SetupBlock</code> class from the <code>glm_nml</code> module. Each model parameter of the <code>glm_setup</code> block has a corresponding attribute in the <code>SetupBlock</code> class:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">glm_setup</span> <span class="o">=</span> <span class="n">glm_nml</span><span class="o">.</span><span class="n">SetupBlock</span><span class="p">(</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">sim_name</span><span class="o">=</span><span class="s1">&#39;Sparkling Lake&#39;</span><span class="p">,</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">max_layers</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">min_layer_vol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
@@ -1320,182 +1322,127 @@ Sparkling Lake using glm-py.</strong></p>
 </span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">non_avg</span><span class="o">=</span><span class="kc">True</span>
 </span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="p">)</span>
 </span></code></pre></div>
-<p>This approach offers a number of advantages over editing a raw <code>.nml</code> file:</p>
+<p>This approach offers a number of advantages over editing a raw NML file:</p>
 <ul>
 <li>Explicit type hinting for parameter types</li>
 <li>Native Python syntax</li>
 <li>Error checking</li>
 </ul>
-<p>Alternatively, these parameters can also be defined in a dictionary and set as class attributes using the <code>set_attributes()</code> method:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">glm_setup</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NMLGLMSetup</span><span class="p">()</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">glm_setup_attrs</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="s1">&#39;sim_name&#39;</span><span class="p">:</span> <span class="s1">&#39;Sparkling Lake&#39;</span><span class="p">,</span>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="s1">&#39;max_layers&#39;</span><span class="p">:</span> <span class="mi">500</span><span class="p">,</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="s1">&#39;min_layer_vol&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>    <span class="s1">&#39;min_layer_thick&#39;</span><span class="p">:</span> <span class="mf">0.15</span><span class="p">,</span>
-</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>    <span class="s1">&#39;max_layer_thick&#39;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">,</span>
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>    <span class="s1">&#39;density_model&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="s1">&#39;non_avg&#39;</span><span class="p">:</span> <span class="kc">True</span>
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a><span class="p">}</span>
-</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>
-</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="n">glm_setup</span><span class="o">.</span><span class="n">set_attributes</span><span class="p">(</span><span class="n">glm_setup_attrs</span><span class="p">)</span>
+<p>Once the attributes are set, you can return a dictionary of the consolidated model parameters by calling the <code>get_params</code> method:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">glm_setup_params</span> <span class="o">=</span> <span class="n">glm_setup</span><span class="o">.</span><span class="n">get_params</span><span class="p">()</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">print</span><span class="p">(</span><span class="n">glm_setup_params</span><span class="p">)</span>
 </span></code></pre></div>
-<p>Once the attributes are set, you can return a dictionary of the consolidated model parameters by calling the instance of the <code>NMLGLMSetup()</code> class:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">glm_setup_parameters</span> <span class="o">=</span> <span class="n">glm_setup</span><span class="p">()</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">print</span><span class="p">(</span><span class="n">glm_setup_parameters</span><span class="p">)</span>
-</span></code></pre></div>
-<p><div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>{&#39;sim_name&#39;: &#39;Sparkling Lake&#39;, &#39;max_layers&#39;: 500, &#39;min_layer_vol&#39;: 0.5, &#39;min_layer_thick&#39;: 0.15, &#39;max_layer_thick&#39;: 0.5, &#39;density_model&#39;: 1, &#39;non_avg&#39;: True}
-</span></code></pre></div>
-The call method provides an optional <code>check_errors</code> parameter. If set to <code>True</code>, glm-py will validate the model parameters and raise errors if non-compliance is detected. Note, <code>check_errors</code> is not fully implemented in glm-py <code>0.0.1</code>.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>FutureWarning: Error checking is not stable and lacks complete coverage. Erroneous parameters may not be raised.
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>  glm_setup(check_errors=True)
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>{&#39;sim_name&#39;: &#39;Sparkling Lake&#39;,
-</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a> &#39;max_layers&#39;: 500,
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a> &#39;min_layer_vol&#39;: 0.5,
-</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a> &#39;min_layer_thick&#39;: 0.15,
-</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a> &#39;max_layer_thick&#39;: 0.5,
-</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a> &#39;density_model&#39;: 1,
-</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a> &#39;non_avg&#39;: True}
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>{&#39;sim_name&#39;: &#39;Sparkling Lake&#39;, &#39;max_layers&#39;: 500, &#39;min_layer_vol&#39;: 0.5, &#39;min_layer_thick&#39;: 0.15, &#39;max_layer_thick&#39;: 0.5, &#39;density_model&#39;: 1, &#39;non_avg&#39;: True}
 </span></code></pre></div>
 <h3 id="mixing-and-morphometry">Mixing and morphometry<a class="headerlink" href="#mixing-and-morphometry" title="Permanent link">&para;</a></h3>
-<p>Next, let's set the parameters that control the mixing processes within Sparkling Lake. Just as <code>NMLGLMSetup</code> defines the <code>&amp;glm_setup</code> block, we can configure the <code>&amp;mixing</code> block using the <code>NMLMixing</code> class:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">mixing</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NMLMixing</span><span class="p">(</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>    <span class="n">surface_mixing</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">coef_mix_conv</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">coef_wind_stir</span><span class="o">=</span><span class="mf">0.402</span><span class="p">,</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">coef_mix_shear</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">coef_mix_turb</span><span class="o">=</span><span class="mf">0.51</span><span class="p">,</span>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="n">coef_mix_KH</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
-</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    <span class="n">deep_mixing</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>    <span class="n">coef_mix_hyp</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>    <span class="n">diff</span><span class="o">=</span><span class="mf">0.0</span>
-</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="p">)</span>
+<p>Next, let's set the parameters that control the mixing processes within Sparkling Lake. Just as <code>SetupBlock</code> defines the <code>glm_setup</code> block, we can configure the <code>mixing</code> block using the <code>MixingBlock</code> class:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">mixing</span> <span class="o">=</span> <span class="n">glm_nml</span><span class="o">.</span><span class="n">MixingBlock</span><span class="p">(</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="n">surface_mixing</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">coef_mix_conv</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">coef_wind_stir</span><span class="o">=</span><span class="mf">0.402</span><span class="p">,</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">coef_mix_shear</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">coef_mix_turb</span><span class="o">=</span><span class="mf">0.51</span><span class="p">,</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">coef_mix_KH</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="n">deep_mixing</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="n">coef_mix_hyp</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="n">diff</span><span class="o">=</span><span class="mf">0.0</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="p">)</span>
 </span></code></pre></div>
-<p>Let's repeat the same for the <code>&amp;morphometry</code> block - use the <code>NMLMorphometry</code> class:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">morphometry</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NMLMorphometry</span><span class="p">(</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">lake_name</span><span class="o">=</span><span class="s1">&#39;Sparkling&#39;</span><span class="p">,</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">latitude</span><span class="o">=</span><span class="mf">46.00881</span><span class="p">,</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">longitude</span><span class="o">=-</span><span class="mf">89.69953</span><span class="p">,</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">bsn_len</span><span class="o">=</span><span class="mf">901.0385</span><span class="p">,</span>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="n">bsn_wid</span><span class="o">=</span><span class="mf">901.0385</span><span class="p">,</span>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">crest_elev</span><span class="o">=</span><span class="mf">320.0</span><span class="p">,</span>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="n">bsn_vals</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
-</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a>    <span class="n">H</span><span class="o">=</span><span class="p">[</span><span class="mf">301.712</span><span class="p">,</span> <span class="mf">303.018285714286</span><span class="p">,</span> <span class="mf">304.324571428571</span><span class="p">,</span>
-</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>        <span class="mf">305.630857142857</span><span class="p">,</span> <span class="mf">306.937142857143</span><span class="p">,</span> <span class="mf">308.243428571429</span><span class="p">,</span>
-</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a>        <span class="mf">309.549714285714</span><span class="p">,</span> <span class="mf">310.856</span><span class="p">,</span> <span class="mf">312.162285714286</span><span class="p">,</span>
-</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a>        <span class="mf">313.468571428571</span><span class="p">,</span> <span class="mf">314.774857142857</span><span class="p">,</span> <span class="mf">316.081142857143</span><span class="p">,</span>
-</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>        <span class="mf">317.387428571429</span><span class="p">,</span> <span class="mf">318.693714285714</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">321</span><span class="p">],</span>
-</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>    <span class="n">A</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">45545.8263571429</span><span class="p">,</span> <span class="mf">91091.6527142857</span><span class="p">,</span>
-</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a>        <span class="mf">136637.479071429</span><span class="p">,</span> <span class="mf">182183.305428571</span><span class="p">,</span> <span class="mf">227729.131785714</span><span class="p">,</span>
-</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>        <span class="mf">273274.958142857</span><span class="p">,</span> <span class="mf">318820.7845</span><span class="p">,</span> <span class="mf">364366.610857143</span><span class="p">,</span>
-</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a>        <span class="mf">409912.437214286</span><span class="p">,</span> <span class="mf">455458.263571429</span><span class="p">,</span> <span class="mf">501004.089928571</span><span class="p">,</span>
-</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a>        <span class="mf">546549.916285714</span><span class="p">,</span> <span class="mf">592095.742642857</span><span class="p">,</span> <span class="mf">637641.569</span><span class="p">,</span> <span class="mf">687641.569</span><span class="p">]</span>
-</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="p">)</span>
+<p>Let's repeat the same for the <code>morphometry</code> block - use the <code>MorphometryBlock</code> class:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">morphometry</span> <span class="o">=</span> <span class="n">glm_nml</span><span class="o">.</span><span class="n">MorphometryBlock</span><span class="p">(</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">lake_name</span><span class="o">=</span><span class="s1">&#39;Sparkling&#39;</span><span class="p">,</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">latitude</span><span class="o">=</span><span class="mf">46.00881</span><span class="p">,</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">longitude</span><span class="o">=-</span><span class="mf">89.69953</span><span class="p">,</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">bsn_len</span><span class="o">=</span><span class="mf">901.0385</span><span class="p">,</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>    <span class="n">bsn_wid</span><span class="o">=</span><span class="mf">901.0385</span><span class="p">,</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="n">crest_elev</span><span class="o">=</span><span class="mf">320.0</span><span class="p">,</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>    <span class="n">bsn_vals</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>    <span class="n">H</span><span class="o">=</span><span class="p">[</span><span class="mf">301.712</span><span class="p">,</span> <span class="mf">303.018285714286</span><span class="p">,</span> <span class="mf">304.324571428571</span><span class="p">,</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>        <span class="mf">305.630857142857</span><span class="p">,</span> <span class="mf">306.937142857143</span><span class="p">,</span> <span class="mf">308.243428571429</span><span class="p">,</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>        <span class="mf">309.549714285714</span><span class="p">,</span> <span class="mf">310.856</span><span class="p">,</span> <span class="mf">312.162285714286</span><span class="p">,</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>        <span class="mf">313.468571428571</span><span class="p">,</span> <span class="mf">314.774857142857</span><span class="p">,</span> <span class="mf">316.081142857143</span><span class="p">,</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>        <span class="mf">317.387428571429</span><span class="p">,</span> <span class="mf">318.693714285714</span><span class="p">,</span> <span class="mi">320</span><span class="p">,</span> <span class="mi">321</span><span class="p">],</span>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a>    <span class="n">A</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">45545.8263571429</span><span class="p">,</span> <span class="mf">91091.6527142857</span><span class="p">,</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a>        <span class="mf">136637.479071429</span><span class="p">,</span> <span class="mf">182183.305428571</span><span class="p">,</span> <span class="mf">227729.131785714</span><span class="p">,</span>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a>        <span class="mf">273274.958142857</span><span class="p">,</span> <span class="mf">318820.7845</span><span class="p">,</span> <span class="mf">364366.610857143</span><span class="p">,</span>
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a>        <span class="mf">409912.437214286</span><span class="p">,</span> <span class="mf">455458.263571429</span><span class="p">,</span> <span class="mf">501004.089928571</span><span class="p">,</span>
+</span><span id="__span-8-18"><a id="__codelineno-8-18" name="__codelineno-8-18" href="#__codelineno-8-18"></a>        <span class="mf">546549.916285714</span><span class="p">,</span> <span class="mf">592095.742642857</span><span class="p">,</span> <span class="mf">637641.569</span><span class="p">,</span> <span class="mf">687641.569</span><span class="p">]</span>
+</span><span id="__span-8-19"><a id="__codelineno-8-19" name="__codelineno-8-19" href="#__codelineno-8-19"></a><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="setting-the-remaining-blocks">Setting the remaining blocks<a class="headerlink" href="#setting-the-remaining-blocks" title="Permanent link">&para;</a></h3>
-<p>There are up to 14 configurable blocks in the GLM namelist file - setting each will take some time! Let's speed up the process by importing a JSON file that contains the parameters for the remaining blocks. We'll use the <code>JSONReader</code> class from the <code>glm_json</code> module to extract the relevant parameters from each respective block. Download the JSON file to your working directory using <code>curl</code>:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>curl https://raw.githubusercontent.com/WET-tool/glm-py/main/notebooks/glmpy-demo/sparkling-nml.json --output sparkling-nml.json
+<p>There are up to 14 configurable blocks in the GLM NML file - setting each will take some time! Let's speed up the process by reading the remaining blocks from an existing NML file. Download the NML file to your working directory using <code>curl</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>!curl https://raw.githubusercontent.com/AquaticEcoDynamics/glm-py/main/notebooks/glmpy-demo/glm3.nml --output sparkling_lake.nml
 </span></code></pre></div>
-<p>Now import the <code>glm_json</code> module and initalise the <code>JSONReader</code> class by passing in the file path of the JSON file we just downloaded:</p>
-<p><div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">glm_json</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="n">my_json_file</span> <span class="o">=</span> <span class="n">glm_json</span><span class="o">.</span><span class="n">JSONReader</span><span class="p">(</span><span class="s2">&quot;sparkling-nml.json&quot;</span><span class="p">)</span>
+<p>To read <code>sparkling_lake.nml</code>, we'll use the <code>NMLReader</code> class from the <code>nml.nml</code> sub-module. After importing the sub-module, initalise the <code>NMLReader</code> class and provide the NML file path:</p>
+<p><div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span> <span class="nn">glmpy.nml</span> <span class="kn">import</span> <span class="n">nml</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">my_nml_file</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NMLReader</span><span class="p">(</span><span class="s2">&quot;sparkling_lake.nml&quot;</span><span class="p">)</span>
 </span></code></pre></div>
-Next, let's extract the parameters for the <code>&amp;meteorology</code> block using the <code>get_nml_parameters()</code> method:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">meteorology_attrs</span> <span class="o">=</span> <span class="n">my_json_file</span><span class="o">.</span><span class="n">get_nml_parameters</span><span class="p">(</span><span class="s2">&quot;&amp;meteorology&quot;</span><span class="p">)</span>
+Next, let's extract the parameters for the <code>meteorology</code> block using the <code>get_block</code> method:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">meteorology_params</span> <span class="o">=</span> <span class="n">my_nml_file</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="s2">&quot;meteorology&quot;</span><span class="p">)</span>
 </span></code></pre></div>
-<p>Take a look at what <code>meteorology_attrs</code> contains:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">print</span><span class="p">(</span><span class="n">meteorology_attrs</span><span class="p">)</span>
+<p>Take a look at what <code>meteorology_params</code> contains:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">print</span><span class="p">(</span><span class="n">meteorology_attrs</span><span class="p">)</span>
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>{&#39;met_sw&#39;: True, &#39;lw_type&#39;: &#39;LW_IN&#39;, &#39;rain_sw&#39;: False, &#39;atm_stab&#39;: 0, &#39;catchrain&#39;: False, &#39;rad_mode&#39;: 1, &#39;albedo_mode&#39;: 1, &#39;cloud_mode&#39;: 4, &#39;fetch_mode&#39;: 0, &#39;subdaily&#39;: False, &#39;meteo_fl&#39;: &#39;bcs/nldas_driver.csv&#39;, &#39;wind_factor&#39;: 1, &#39;sw_factor&#39;: 1.08, &#39;lw_factor&#39;: 1, &#39;at_factor&#39;: 1, &#39;rh_factor&#39;: 1, &#39;rain_factor&#39;: 1, &#39;ce&#39;: 0.00132, &#39;ch&#39;: 0.0014, &#39;cd&#39;: 0.0013, &#39;rain_threshold&#39;: 0.01, &#39;runoff_coef&#39;: 0.3}
+<div class="language-text highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>{&#39;met_sw&#39;: True, &#39;lw_type&#39;: &#39;LW_IN&#39;, &#39;rain_sw&#39;: False, &#39;atm_stab&#39;: 0, &#39;catchrain&#39;: False, &#39;rad_mode&#39;: 1, &#39;albedo_mode&#39;: 1, &#39;cloud_mode&#39;: 4, &#39;fetch_mode&#39;: 0, &#39;subdaily&#39;: False, &#39;meteo_fl&#39;: &#39;bcs/nldas_driver.csv&#39;, &#39;wind_factor&#39;: 1.0, &#39;sw_factor&#39;: 1.08, &#39;lw_factor&#39;: 1.0, &#39;at_factor&#39;: 1.0, &#39;rh_factor&#39;: 1.0, &#39;rain_factor&#39;: 1.0, &#39;ce&#39;: 0.00132, &#39;ch&#39;: 0.0014, &#39;cd&#39;: 0.0013, &#39;rain_threshold&#39;: 0.01, &#39;runoff_coef&#39;: 0.3}
 </span></code></pre></div>
-<p>This is a dictionary containing all parameters for the <code>&amp;meteorology</code> block. Let's
-pass these to the <code>NMLMeteorology</code> class with the <code>set_attributes()</code> method:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">meteorology</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NMLMeteorology</span><span class="p">()</span>
-</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="n">meteorology</span><span class="o">.</span><span class="n">set_attributes</span><span class="p">(</span><span class="n">meteorology_attrs</span><span class="p">)</span>
-</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="nb">print</span><span class="p">(</span><span class="n">meteorology</span><span class="p">())</span>
+<p>This is a dictionary containing all <code>meteorology</code> parameters from <code>sparkling_lake.nml</code> in Python data types. Look closely at the <code>meteo_fl</code> parameter - what's <code>bcs/nldas_driver.csv</code>? This is a path to a CSV that contains boundary condition data for Sparkling Lake, e.g., daily rainfall, wind speed, and air temperature. You'll need this file to run the model. Let's download it with <code>curl</code> and place it in sub-directory called <code>bcs</code>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>!mkdir bcs
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>!curl https://raw.githubusercontent.com/AquaticEcoDynamics/glm-py/main/notebooks/glmpy-demo/bcs/nldas_driver.csv --output bcs/nldas_driver.csv
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>{&#39;met_sw&#39;: True, &#39;meteo_fl&#39;: &#39;bcs/nldas_driver.csv&#39;, &#39;subdaily&#39;: False, &#39;time_fmt&#39;: None, &#39;rad_mode&#39;: 1, &#39;albedo_mode&#39;: 1, &#39;sw_factor&#39;: 1.08, &#39;lw_type&#39;: &#39;LW_IN&#39;, &#39;cloud_mode&#39;: 4, &#39;lw_factor&#39;: 1, &#39;atm_stab&#39;: 0, &#39;rh_factor&#39;: 1, &#39;at_factor&#39;: 1, &#39;ce&#39;: 0.00132, &#39;ch&#39;: 0.0014, &#39;rain_sw&#39;: False, &#39;rain_factor&#39;: 1, &#39;catchrain&#39;: False, &#39;rain_threshold&#39;: 0.01, &#39;runoff_coef&#39;: 0.3, &#39;cd&#39;: 0.0013, &#39;wind_factor&#39;: 1, &#39;fetch_mode&#39;: 0, &#39;Aws&#39;: None, &#39;Xws&#39;: None, &#39;num_dir&#39;: None, &#39;wind_dir&#39;: None, &#39;fetch_scale&#39;: None}
+<p>Now, let's get the parameters for the remaining blocks:  <code>output</code>, <code>init_profiles</code>, <code>time</code>, <code>bird_model</code>, <code>light</code>, <code>sediment</code>. We'll use the <code>get_block</code> method from our instance of <code>NMLReader</code>:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">output_params</span><span class="o">=</span><span class="n">my_nml_file</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">)</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">init_profiles_params</span><span class="o">=</span><span class="n">my_nml_file</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="s2">&quot;init_profiles&quot;</span><span class="p">)</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="n">time_params</span><span class="o">=</span><span class="n">my_nml_file</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="n">light_params</span><span class="o">=</span><span class="n">my_nml_file</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="s2">&quot;light&quot;</span><span class="p">)</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="n">bird_model_params</span><span class="o">=</span><span class="n">my_nml_file</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="s2">&quot;bird_model&quot;</span><span class="p">)</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a><span class="n">sediment_params</span><span class="o">=</span><span class="n">my_nml_file</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="s2">&quot;sediment&quot;</span><span class="p">)</span>
 </span></code></pre></div>
-<p>Easy! But before we go any futher, look closely at the <code>meteo_fl</code> parameter - what's <code>bcs/nldas_driver.csv</code>? This is a path to a CSV that contains boundary condition data for Sparkling Lake, e.g., daily rainfall, wind speed, and air temperature. You'll need this file to run the model. Let's download it with <code>curl</code> and place it in sub-directory called <code>bcs</code>:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>mkdir bcs
-</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>curl https://raw.githubusercontent.com/WET-tool/glm-py/main/notebooks/glmpy-demo/bcs/nldas_driver.csv --output bcs/nldas_driver.csv
-</span></code></pre></div>
-<p>Now, let's setup the remaining blocks:  <code>&amp;output</code>, <code>&amp;init_profiles</code>, <code>&amp;time</code>, <code>&amp;bird_model</code>, <code>&amp;light</code>, <code>&amp;sediment</code>. We'll use <code>get_nml_parameters</code> to return dictionaries of parameters that will set the attributes of the corresponding <code>nml.NML*</code> classes:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">output_attrs</span><span class="o">=</span><span class="n">my_json_file</span><span class="o">.</span><span class="n">get_nml_parameters</span><span class="p">(</span><span class="s2">&quot;&amp;output&quot;</span><span class="p">)</span>
-</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a><span class="n">init_profiles_attrs</span><span class="o">=</span><span class="n">my_json_file</span><span class="o">.</span><span class="n">get_nml_parameters</span><span class="p">(</span><span class="s2">&quot;&amp;init_profiles&quot;</span><span class="p">)</span>
-</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a><span class="n">time_attrs</span><span class="o">=</span><span class="n">my_json_file</span><span class="o">.</span><span class="n">get_nml_parameters</span><span class="p">(</span><span class="s2">&quot;&amp;time&quot;</span><span class="p">)</span>
-</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="n">light_attrs</span><span class="o">=</span><span class="n">my_json_file</span><span class="o">.</span><span class="n">get_nml_parameters</span><span class="p">(</span><span class="s2">&quot;&amp;light&quot;</span><span class="p">)</span>
-</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="n">bird_model_attrs</span><span class="o">=</span><span class="n">my_json_file</span><span class="o">.</span><span class="n">get_nml_parameters</span><span class="p">(</span><span class="s2">&quot;&amp;bird_model&quot;</span><span class="p">)</span>
-</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="n">sediment_attrs</span><span class="o">=</span><span class="n">my_json_file</span><span class="o">.</span><span class="n">get_nml_parameters</span><span class="p">(</span><span class="s2">&quot;&amp;sediment&quot;</span><span class="p">)</span>
-</span><span id="__span-19-7"><a id="__codelineno-19-7" name="__codelineno-19-7" href="#__codelineno-19-7"></a><span class="n">wq_setup_attrs</span><span class="o">=</span><span class="n">my_json_file</span><span class="o">.</span><span class="n">get_nml_parameters</span><span class="p">(</span><span class="s2">&quot;&amp;wq_setup&quot;</span><span class="p">)</span>
-</span></code></pre></div>
-<p>Now initialise the respective classes:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">output</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NMLOutput</span><span class="p">()</span>
-</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="n">init_profiles</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NMLInitProfiles</span><span class="p">()</span>
-</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="n">time</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NMLTime</span><span class="p">()</span>
-</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="n">light</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NMLLight</span><span class="p">()</span>
-</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="n">bird_model</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NMLBirdModel</span><span class="p">()</span>
-</span><span id="__span-20-6"><a id="__codelineno-20-6" name="__codelineno-20-6" href="#__codelineno-20-6"></a><span class="n">sediment</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NMLSediment</span><span class="p">()</span>
-</span><span id="__span-20-7"><a id="__codelineno-20-7" name="__codelineno-20-7" href="#__codelineno-20-7"></a><span class="n">wq_setup</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NMLWQSetup</span><span class="p">()</span>
-</span></code></pre></div>
-<p>And set the attributes:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">output</span><span class="o">.</span><span class="n">set_attributes</span><span class="p">(</span><span class="n">output_attrs</span><span class="p">)</span>
-</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a><span class="n">init_profiles</span><span class="o">.</span><span class="n">set_attributes</span><span class="p">(</span><span class="n">init_profiles_attrs</span><span class="p">)</span>
-</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a><span class="n">time</span><span class="o">.</span><span class="n">set_attributes</span><span class="p">(</span><span class="n">time_attrs</span><span class="p">)</span>
-</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="n">light</span><span class="o">.</span><span class="n">set_attributes</span><span class="p">(</span><span class="n">light_attrs</span><span class="p">)</span>
-</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="n">bird_model</span><span class="o">.</span><span class="n">set_attributes</span><span class="p">(</span><span class="n">bird_model_attrs</span><span class="p">)</span>
-</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="n">sediment</span><span class="o">.</span><span class="n">set_attributes</span><span class="p">(</span><span class="n">sediment_attrs</span><span class="p">)</span>
-</span><span id="__span-21-7"><a id="__codelineno-21-7" name="__codelineno-21-7" href="#__codelineno-21-7"></a><span class="n">wq_setup</span><span class="o">.</span><span class="n">set_attributes</span><span class="p">(</span><span class="n">wq_setup_attrs</span><span class="p">)</span>
-</span></code></pre></div>
-<p>If you're want to find out more about the attributes for each block, check out glm-py's documentation website.</p>
-<h3 id="writing-the-namelist-file">Writing the namelist file<a class="headerlink" href="#writing-the-namelist-file" title="Permanent link">&para;</a></h3>
-<p>We now have the attributes set for each block. Let's combine them to create the <code>.nml</code> file. First, create an instance of the <code>NML</code> class. Then pass in the dictionaries of consolidated parameters, i.e., from <code>glm_setup()</code>, <code>mixing()</code>, <code>morphometry()</code>, etc:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a><span class="n">nml</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NML</span><span class="p">(</span>
-</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>  <span class="n">glm_setup</span><span class="o">=</span><span class="n">glm_setup</span><span class="p">(),</span>
-</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>  <span class="n">mixing</span><span class="o">=</span><span class="n">mixing</span><span class="p">(),</span>
-</span><span id="__span-22-4"><a id="__codelineno-22-4" name="__codelineno-22-4" href="#__codelineno-22-4"></a>  <span class="n">morphometry</span><span class="o">=</span><span class="n">morphometry</span><span class="p">(),</span>
-</span><span id="__span-22-5"><a id="__codelineno-22-5" name="__codelineno-22-5" href="#__codelineno-22-5"></a>  <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">(),</span>
-</span><span id="__span-22-6"><a id="__codelineno-22-6" name="__codelineno-22-6" href="#__codelineno-22-6"></a>  <span class="n">output</span><span class="o">=</span><span class="n">output</span><span class="p">(),</span>
-</span><span id="__span-22-7"><a id="__codelineno-22-7" name="__codelineno-22-7" href="#__codelineno-22-7"></a>  <span class="n">init_profiles</span><span class="o">=</span><span class="n">init_profiles</span><span class="p">(),</span>
-</span><span id="__span-22-8"><a id="__codelineno-22-8" name="__codelineno-22-8" href="#__codelineno-22-8"></a>  <span class="n">meteorology</span><span class="o">=</span><span class="n">meteorology</span><span class="p">(),</span>
-</span><span id="__span-22-9"><a id="__codelineno-22-9" name="__codelineno-22-9" href="#__codelineno-22-9"></a>  <span class="n">bird_model</span><span class="o">=</span><span class="n">bird_model</span><span class="p">(),</span>
-</span><span id="__span-22-10"><a id="__codelineno-22-10" name="__codelineno-22-10" href="#__codelineno-22-10"></a>  <span class="n">light</span><span class="o">=</span><span class="n">light</span><span class="p">(),</span>
-</span><span id="__span-22-11"><a id="__codelineno-22-11" name="__codelineno-22-11" href="#__codelineno-22-11"></a>  <span class="n">sediment</span><span class="o">=</span><span class="n">sediment</span><span class="p">()</span>
-</span><span id="__span-22-12"><a id="__codelineno-22-12" name="__codelineno-22-12" href="#__codelineno-22-12"></a><span class="p">)</span>
+<h3 id="writing-the-nml-file">Writing the NML file<a class="headerlink" href="#writing-the-nml-file" title="Permanent link">&para;</a></h3>
+<p>We now have a dictionary of model parameters for each block. Let's combine them to create the NML file. First, create an instance of the <code>GLMNML</code> class from the <code>glm_nml</code> sub-module. Then pass in the dictionaries of parameters:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">my_nml</span> <span class="o">=</span> <span class="n">glm_nml</span><span class="o">.</span><span class="n">GLMNML</span><span class="p">(</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>  <span class="n">glm_setup</span><span class="o">=</span><span class="n">glm_setup</span><span class="o">.</span><span class="n">get_params</span><span class="p">(),</span>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>  <span class="n">mixing</span><span class="o">=</span><span class="n">mixing</span><span class="o">.</span><span class="n">get_params</span><span class="p">(),</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>  <span class="n">morphometry</span><span class="o">=</span><span class="n">morphometry</span><span class="o">.</span><span class="n">get_params</span><span class="p">(),</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>  <span class="n">time</span><span class="o">=</span><span class="n">time_params</span><span class="p">,</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>  <span class="n">output</span><span class="o">=</span><span class="n">output_params</span><span class="p">,</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>  <span class="n">init_profiles</span><span class="o">=</span><span class="n">init_profiles_params</span><span class="p">,</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>  <span class="n">meteorology</span><span class="o">=</span><span class="n">meteorology_params</span><span class="p">,</span>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>  <span class="n">bird_model</span><span class="o">=</span><span class="n">bird_model_params</span><span class="p">,</span>
+</span><span id="__span-16-10"><a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>  <span class="n">light</span><span class="o">=</span><span class="n">light_params</span><span class="p">,</span>
+</span><span id="__span-16-11"><a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>  <span class="n">sediment</span><span class="o">=</span><span class="n">sediment_params</span>
+</span><span id="__span-16-12"><a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a><span class="p">)</span>
 </span></code></pre></div>
 <p>Finally, use the <code>write_nml()</code> method to save the <code>.nml</code> to your working directory:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="n">nml</span><span class="o">.</span><span class="n">write_nml</span><span class="p">(</span><span class="n">nml_file_path</span><span class="o">=</span><span class="s1">&#39;glm3.nml&#39;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="n">my_nml</span><span class="o">.</span><span class="n">write_nml</span><span class="p">(</span><span class="n">nml_file_path</span><span class="o">=</span><span class="s1">&#39;glm3.nml&#39;</span><span class="p">)</span>
 </span></code></pre></div>
 <h2 id="running-the-model">Running the model<a class="headerlink" href="#running-the-model" title="Permanent link">&para;</a></h2>
 <p>Model configuration is now complete! To run our Sparkling Lake simulation, import the <code>simulation</code> module:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span>
 </span></code></pre></div>
 <p>We now need to specify the location of any files that we'll use in the simulation. For Sparkling Lake, that's just your newly created <code>glm3.nml</code> and the meterological boundary condition file <code>nldas_driver.csv</code>. These will be defined in a dictionary where the key is the filename and the value is the file path:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a><span class="n">files</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="__span-25-2"><a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a>    <span class="s2">&quot;glm3.nml&quot;</span><span class="p">:</span> <span class="s2">&quot;glm3.nml&quot;</span><span class="p">,</span>
-</span><span id="__span-25-3"><a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a>    <span class="s2">&quot;nldas_driver.csv&quot;</span><span class="p">:</span> <span class="s2">&quot;bcs/nldas_driver.csv&quot;</span>
-</span><span id="__span-25-4"><a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="p">}</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="n">files</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>    <span class="s2">&quot;glm3.nml&quot;</span><span class="p">:</span> <span class="s2">&quot;glm3.nml&quot;</span><span class="p">,</span>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>    <span class="s2">&quot;nldas_driver.csv&quot;</span><span class="p">:</span> <span class="s2">&quot;bcs/nldas_driver.csv&quot;</span>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="p">}</span>
 </span></code></pre></div>
 <p>Now pass this dictionary to a new instance of the <code>GLMSim</code> class. <code>GLMSim</code> is used prepare a new directory of model inputs that we'll point GLM at . Set <code>api</code> to <code>False</code> to run the simulation locally and set <code>inputs_dir</code> to the name of the inputs directory that will be created:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">GLMSim</span><span class="p">(</span>
-</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>  <span class="n">input_files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span>
-</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>  <span class="n">api</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a>  <span class="n">inputs_dir</span><span class="o">=</span><span class="s2">&quot;inputs&quot;</span>
-</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">simulation</span><span class="o">.</span><span class="n">GLMSim</span><span class="p">(</span>
+</span><span id="__span-20-2"><a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a>  <span class="n">input_files</span><span class="o">=</span><span class="n">files</span><span class="p">,</span>
+</span><span id="__span-20-3"><a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a>  <span class="n">api</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-20-4"><a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a>  <span class="n">inputs_dir</span><span class="o">=</span><span class="s2">&quot;inputs&quot;</span>
+</span><span id="__span-20-5"><a id="__codelineno-20-5" name="__codelineno-20-5" href="#__codelineno-20-5"></a><span class="p">)</span>
 </span></code></pre></div>
 <p>Create the <code>inputs</code> directory by calling the <code>.prepare_inputs()</code> method:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="n">inputs_dir</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">prepare_inputs</span><span class="p">()</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="n">inputs_dir</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">prepare_inputs</span><span class="p">()</span>
 </span></code></pre></div>
 <p>You should now have a new directory that looks like this:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a>├── bcs
-</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>│   └── nldas_driver.csv
-</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>├── glm3.nml
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>├── bcs
+</span><span id="__span-22-2"><a id="__codelineno-22-2" name="__codelineno-22-2" href="#__codelineno-22-2"></a>│   └── nldas_driver.csv
+</span><span id="__span-22-3"><a id="__codelineno-22-3" name="__codelineno-22-3" href="#__codelineno-22-3"></a>├── glm3.nml
 </span></code></pre></div>
 <p>Finally, run the simulation by calling the <code>.glm_run()</code> method and pass in the <code>inputs_dir</code> object:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">glm_run</span><span class="p">(</span><span class="n">inputs_dir</span><span class="o">=</span><span class="n">inputs_dir</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">glm_run</span><span class="p">(</span><span class="n">inputs_dir</span><span class="o">=</span><span class="n">inputs_dir</span><span class="p">)</span>
 </span></code></pre></div>
 <p>Congratulations! You've now configured and run a GLM simulation entirely in Python. You should see a new sub-directory called <code>outputs</code> within the <code>inputs</code> directory that contains the model results.</p>
 

@@ -93,7 +93,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href=".." title="glm-py" class="md-header__button md-logo" aria-label="glm-py" data-md-component="logo">
       
-  <img src="../img/glm_icon_text_square.png" alt="logo">
+  <img src="../img/glm_icon_text.png" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -352,7 +352,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href=".." title="glm-py" class="md-nav__button md-logo" aria-label="glm-py" data-md-component="logo">
       
-  <img src="../img/glm_icon_text_square.png" alt="logo">
+  <img src="../img/glm_icon_text.png" alt="logo">
 
     </a>
     glm-py
@@ -710,6 +710,48 @@
       dimensions
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glmpy.dimensions.InvertedTruncatedCone" class="md-nav__link">
+    <span class="md-ellipsis">
+      InvertedTruncatedCone
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="InvertedTruncatedCone">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#glmpy.dimensions.InvertedTruncatedCone.get_heights" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_heights
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#glmpy.dimensions.InvertedTruncatedCone.get_surface_areas" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_surface_areas
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#glmpy.dimensions.InvertedTruncatedCone.get_volumes" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_volumes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -1189,6 +1231,48 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#glmpy.dimensions.InvertedTruncatedCone" class="md-nav__link">
+    <span class="md-ellipsis">
+      InvertedTruncatedCone
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="InvertedTruncatedCone">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#glmpy.dimensions.InvertedTruncatedCone.get_heights" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_heights
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#glmpy.dimensions.InvertedTruncatedCone.get_surface_areas" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_surface_areas
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#glmpy.dimensions.InvertedTruncatedCone.get_volumes" class="md-nav__link">
+    <span class="md-ellipsis">
+      get_volumes
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#glmpy.dimensions.InvertedTruncatedSquarePyramid" class="md-nav__link">
     <span class="md-ellipsis">
       InvertedTruncatedSquarePyramid
@@ -1268,6 +1352,388 @@
 
 
 
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="glmpy.dimensions.InvertedTruncatedCone" class="doc doc-heading">
+          <code>InvertedTruncatedCone</code>
+
+
+<a href="#glmpy.dimensions.InvertedTruncatedCone" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+  <div class="doc doc-contents ">
+
+  
+      <p>Calculates the volume and surface area of an inverted truncated cone.</p>
+<p>Useful for calculating the <code>A</code> and <code>H</code> morphometry parameters for 
+simple water bodies. Assumes only the height (i.e., depth), side slope,
+and surface radius of the water body are known.</p>
+
+
+
+  <p><strong>Attributes:</strong></p>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+          <td><code><span title="glmpy.dimensions.InvertedTruncatedCone.height">height</span></code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[float, int]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Height of the water body from the base to surface in metres.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="glmpy.dimensions.InvertedTruncatedCone.surface_radius">surface_radius</span></code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[float, int]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Surface radius of the water body in metres.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="glmpy.dimensions.InvertedTruncatedCone.num_vals">num_vals</span></code></td>
+          <td>
+                <code>int</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The number of values to be returned by the <code>get_volumes()</code>, 
+<code>get_surface_areas()</code>, and <code>get_heights()</code> methods. <code>num_vals</code> should 
+be the same as the <code>bsn_vals</code> parameter from the <code>&amp;morphometry</code> 
+configuration block (see <code>bsn_vals</code> in <code>nml.NMLMorphometry()</code>).</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="glmpy.dimensions.InvertedTruncatedCone.side_slope">side_slope</span></code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[float, int]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Side slope of water body - the rise over run (metre/metre). Default is 
+1/3.</p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="glmpy.dimensions.InvertedTruncatedCone.surface_elevation">surface_elevation</span></code></td>
+          <td>
+                <code>float</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Elevation at the water body surface. Shifts the values returned by
+<code>get_heights()</code> up or down. Default is 0.0.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+<p><strong>Examples:</strong></p>
+    <p>Import the <code>dimensions</code> and <code>nml</code> modules:</p>
+    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">dimensions</span><span class="p">,</span> <span class="n">nml</span>
+</span></code></pre></div>
+    <p>Consider a small circular reservoir that has a surface radius of 15m, a 
+slide slope of 1/3, and is 3m deep:</p>
+    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reservoir</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedCone</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">... </span>    <span class="n">surface_radius</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">height</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">surface_elevation</span><span class="o">=</span><span class="mi">0</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span><span class="p">)</span>
+</span></code></pre></div>
+    <p>Get a list of height values to use for the <code>H</code> parameter in the 
+<code>&amp;morphometry</code> configuration block by calling the <code>get_heights()</code> method. 
+The length of the list is determined by the <code>num_vals</code> attribute:</p>
+    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reservoir</span><span class="o">.</span><span class="n">get_heights</span><span class="p">())</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">[-3.0, -1.5, 0.0]</span>
+</span></code></pre></div>
+    <p>Get the water surface area at each of these heights by calling the 
+<code>get_surface_areas()</code> method:</p>
+    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reservoir</span><span class="o">.</span><span class="n">get_surface_areas</span><span class="p">())</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">[113.09733552923255, 346.3605900582747, 706.8583470577034]</span>
+</span></code></pre></div>
+    <p>Get the volume at each of these heights by calling the <code>get_volumes()</code> 
+method:</p>
+    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reservoir</span><span class="o">.</span><span class="n">get_volumes</span><span class="p">())</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">[0.0, 328.6891313818321, 1102.6990214100174]</span>
+</span></code></pre></div>
+    <p>Set the <code>A</code>, <code>H</code>, and <code>bsn_vals</code> attributes of <code>nml.NMLMorphometry()</code>:</p>
+    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">morphometry</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NMLMorphometry</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">... </span>    <span class="n">A</span><span class="o">=</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_surface_areas</span><span class="p">(),</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">H</span><span class="o">=</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_heights</span><span class="p">(),</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">bsn_vals</span><span class="o">=</span><span class="mi">3</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span><span class="p">)</span>
+</span></code></pre></div>
+
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="glmpy.dimensions.InvertedTruncatedCone.get_heights" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">get_heights</span><span class="p">()</span></code>
+
+<a href="#glmpy.dimensions.InvertedTruncatedCone.get_heights" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Calculates heights.</p>
+<p>Returns a list of heights (m) from base to surface. The number of 
+heights is determined by the <code>num_vals</code> attribute. Heights can be 
+adjusted for different surface elevations by increasing or decreasing
+the <code>surface_elevation</code> attribute.</p>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>heights</code></td>          <td>
+                <code>list</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Heights (m) from base to surface.</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+<p><strong>Examples:</strong></p>
+    <p>Get the height values for a water body that has a surface elevation of
+-3m:</p>
+    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">dimensions</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reservoir</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedCone</span><span class="p">(</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">surface_radius</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">height</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span>    <span class="n">surface_elevation</span><span class="o">=-</span><span class="mi">3</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reservoir</span><span class="o">.</span><span class="n">get_heights</span><span class="p">())</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">[-6.0, -4.5, -3.0]</span>
+</span></code></pre></div>
+
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="glmpy.dimensions.InvertedTruncatedCone.get_surface_areas" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">get_surface_areas</span><span class="p">()</span></code>
+
+<a href="#glmpy.dimensions.InvertedTruncatedCone.get_surface_areas" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Calculates surface areas.</p>
+<p>Returns a list of surface areas (m^2) that correspond with the heights 
+returned by <code>get_heights()</code>. The length of the list is determined by 
+the <code>num_vals</code> attribute. Surface areas are returned as a list of 
+floats where the first item is the area at the bottom of the water body 
+and the last is the area at the surface.</p>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>surface_areas</code></td>          <td>
+                <code>list</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Surface areas of water body (m^2).</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+<p><strong>Examples:</strong></p>
+    <p>Get a list of 5 surface areas at each height in <code>get_heights()</code>:</p>
+    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">dimensions</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reservoir</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedCone</span><span class="p">(</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">surface_radius</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">height</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span>    <span class="n">surface_elevation</span><span class="o">=</span><span class="mi">0</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reservoir</span><span class="o">.</span><span class="n">get_heights</span><span class="p">())</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">[-3.0, -2.25, -1.5, -0.75, 0.0]</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reservoir</span><span class="o">.</span><span class="n">get_surface_areas</span><span class="p">())</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="go">[113.09733552923255, 213.8246499849553, 346.3605900582747, </span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="go">510.70515574919074, 706.8583470577034]</span>
+</span></code></pre></div>
+    <p>Get a list of 3 surface areas at each height in <code>get_heights()</code>:</p>
+    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">dimensions</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reservoir</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedCone</span><span class="p">(</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">surface_radius</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">height</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span>    <span class="n">surface_elevation</span><span class="o">=</span><span class="mi">0</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reservoir</span><span class="o">.</span><span class="n">get_heights</span><span class="p">())</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">[-3.0, -1.5, 0.0]</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reservoir</span><span class="o">.</span><span class="n">get_surface_areas</span><span class="p">())</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="go">[113.09733552923255, 346.3605900582747, 706.8583470577034]</span>
+</span></code></pre></div>
+
+  </div>
+
+</div>
+
+
+<div class="doc doc-object doc-function">
+
+
+
+<h3 id="glmpy.dimensions.InvertedTruncatedCone.get_volumes" class="doc doc-heading">
+          <code class="highlight language-python"><span class="n">get_volumes</span><span class="p">()</span></code>
+
+<a href="#glmpy.dimensions.InvertedTruncatedCone.get_volumes" class="headerlink" title="Permanent link">&para;</a></h3>
+
+
+  <div class="doc doc-contents ">
+  
+      <p>Calculates volumes</p>
+<p>Returns a list of volumes (m^3) that correspond with the heights 
+returned by <code>get_heights()</code>. The length of the list is determined by 
+the <code>num_vals</code> attribute. Volumes are returned as a list of floats 
+where the first item is the volume at the bottom of the water body and 
+the last is the volume at the surface.</p>
+
+
+
+  <p><strong>Returns:</strong></p>
+  <table>
+    <thead>
+      <tr>
+<th>Name</th>        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+        <tr>
+<td><code>volume</code></td>          <td>
+                <code>list</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>The water body volumes (m^3).</p>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+
+
+
+<p><strong>Examples:</strong></p>
+    <p>Get a list of 5 volumes at each height in <code>get_heights()</code>:</p>
+    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">dimensions</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reservoir</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedCone</span><span class="p">(</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">surface_radius</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">height</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span>    <span class="n">surface_elevation</span><span class="o">=</span><span class="mi">0</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reservoir</span><span class="o">.</span><span class="n">get_heights</span><span class="p">())</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">[-3.0, -2.25, -1.5, -0.75, 0.0]</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reservoir</span><span class="o">.</span><span class="n">get_volumes</span><span class="p">())</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="go">[0.0, 120.60770546672065, 328.6891313818321, 648.1007469585319, </span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="go">1102.6990214100174]</span>
+</span></code></pre></div>
+    <p>Get a list of 3 volumes at each height in <code>get_heights()</code>:</p>
+    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">dimensions</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">reservoir</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedCone</span><span class="p">(</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">surface_radius</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">height</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span>    <span class="n">surface_elevation</span><span class="o">=</span><span class="mi">0</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reservoir</span><span class="o">.</span><span class="n">get_heights</span><span class="p">())</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">[-3.0, -1.5, 0.0]</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">reservoir</span><span class="o">.</span><span class="n">get_volumes</span><span class="p">())</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="go">[0.0, 328.6891313818321, 1102.6990214100174]</span>
+</span></code></pre></div>
+
+  </div>
+
+</div>
+
+
+
+  </div>
+
+  </div>
+
+
+</div>
 
 <div class="doc doc-object doc-class">
 
@@ -1382,16 +1848,18 @@ deep, and has a side slope of 1/3:</p>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span><span class="p">)</span>
 </span></code></pre></div>
     <p>Get a list of height values to use for the <code>H</code> parameter in the 
-<code>&amp;morphometry</code> configuration block. The length of the list is determined by
-the <code>num_vals</code> attribute:</p>
+<code>&amp;morphometry</code> configuration block by calling the <code>get_heights()</code> method. 
+The length of the list is determined by the <code>num_vals</code> attribute:</p>
     <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_heights</span><span class="p">())</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">[-6.0, -5.0, -4.0, -3.0, -2.0, -1.0, 0.0]</span>
 </span></code></pre></div>
-    <p>Get the water surface area at each of these heights:</p>
+    <p>Get the water surface area at each of these heights by calling the 
+<code>get_surface_areas()</code> method:</p>
     <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_surface_areas</span><span class="p">())</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">[16.0, 100.0, 256.0, 484.0, 784.0, 1156.0, 1600.0]</span>
 </span></code></pre></div>
-    <p>Get the volumes at each of these heights:</p>
+    <p>Get the volume at each of these heights by calling the <code>get_volumes()</code> 
+method:</p>
     <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_volumes</span><span class="p">())</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">[0.0, 52.0, 224.0, 588.0, 1216.0, 2180.0, 3552.0]</span>
 </span></code></pre></div>
@@ -1434,35 +1902,6 @@ the <code>num_vals</code> attribute:</p>
 heights is determined by the <code>num_vals</code> attribute. Heights can be 
 adjusted for different surface elevations by increasing or decreasing
 the <code>surface_elevation</code> attribute.</p>
-
-
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>None</code></td>
-          <td>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
 
 
@@ -1528,35 +1967,6 @@ returned by <code>get_heights()</code>. The length of the list is determined by
 the <code>num_vals</code> attribute. Surface areas are returned as a list of 
 floats where the first item is the area at the bottom of the water body 
 and the last is the area at the surface.</p>
-
-
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>None</code></td>
-          <td>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
 
 
@@ -1635,35 +2045,6 @@ returned by <code>get_heights()</code>. The length of the list is determined by
 the <code>num_vals</code> attribute. Volumes are returned as a list of floats 
 where the first item is the volume at the bottom of the water body and 
 the last is the volume at the surface.</p>
-
-
-
-  <p><strong>Parameters:</strong></p>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Description</th>
-        <th>Default</th>
-      </tr>
-    </thead>
-    <tbody>
-        <tr>
-          <td><code>None</code></td>
-          <td>
-          </td>
-          <td>
-            <div class="doc-md-description">
-              
-            </div>
-          </td>
-          <td>
-              <em>required</em>
-          </td>
-        </tr>
-    </tbody>
-  </table>
 
 
 
