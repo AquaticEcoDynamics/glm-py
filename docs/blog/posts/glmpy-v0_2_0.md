@@ -33,18 +33,4 @@ NML file (GLM or AED).
   - Both classes provide functionality to explicitly control how each parameter
   is read/written to file.
 - `InvertedTruncatedCone` class added to the `dimensions` module to calculate
-morphometry parameters for simple circular water bodies. 
-
-## Upcoming release/s
-
-- Plots module for common GLM visulisations.
-- Validation of parameters set using classes in the `glm_nml` sub-module. 
-This will help to ensure compliance with GLM and better differentiate the 
-use-cases of this sub-module from those of the low-level tools in the `nml` 
-sub-module.
-- An `aed_nml` sub-module that mirrors the functionality of the `glm_nml`
-sub-module.
-- Deprecating `InvertedTruncatedSquarePyramid` from the `dimensions` module in 
-favour of a new `InvertedTruncatedRectangularPyramid`.
-
-
+morphometry parameters for simple circular water bodies.

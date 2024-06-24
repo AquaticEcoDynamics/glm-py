@@ -12,7 +12,7 @@ def test_write_nml_str():
     python_str = 'temp'
     assert nml.NMLWriter.write_nml_str(python_str) == f"'{python_str}'"
 
-@pytest.mark.parametrize("python_syntax, nml_syntax, syntax_func", [
+@pytest.mark.parametrize("python_syntax, nml_syntax, converter_func", [
     ([True], ".true.", nml.NMLWriter.write_nml_bool),
     (
         [True, False, True], ".true.,.false.,.true.", 
@@ -28,10 +28,10 @@ def test_write_nml_str():
     ([12.3, 32.4, 64.2], "12.3,32.4,64.2", None)
 ])
 
-def test_write_nml_list(python_syntax, nml_syntax, syntax_func):
+def test_write_nml_list(python_syntax, nml_syntax, converter_func):
     assert nml.NMLWriter.write_nml_list(
         python_list=python_syntax,
-        syntax_func=syntax_func
+        converter_func=converter_func
     ) == nml_syntax
 
 @pytest.fixture
@@ -55,73 +55,73 @@ def example_python_params():
         ]
     }
 
-def test_write_nml_parameter(example_python_params):
-    assert nml.NMLWriter.write_nml_parameter(
+def test_write_nml_param(example_python_params):
+    assert nml.NMLWriter.write_nml_param(
         param_name="param1",
         param_value=example_python_params["param1"],
-        syntax_func=None
+        converter_func=None
     ) == "   param1 = 123\n"
-    assert nml.NMLWriter.write_nml_parameter(
+    assert nml.NMLWriter.write_nml_param(
         param_name="param2",
         param_value=example_python_params["param2"],
-        syntax_func=None
+        converter_func=None
     ) == "   param2 = 1.23\n"
-    assert nml.NMLWriter.write_nml_parameter(
+    assert nml.NMLWriter.write_nml_param(
         param_name="param3",
         param_value=example_python_params["param3"],
-        syntax_func=nml.NMLWriter.write_nml_str
+        converter_func=nml.NMLWriter.write_nml_str
     ) == "   param3 = 'foo'\n"
-    assert nml.NMLWriter.write_nml_parameter(
+    assert nml.NMLWriter.write_nml_param(
         param_name="param4",
         param_value=example_python_params["param4"],
-        syntax_func=nml.NMLWriter.write_nml_bool
+        converter_func=nml.NMLWriter.write_nml_bool
     ) == "   param4 = .true.\n"
-    assert nml.NMLWriter.write_nml_parameter(
+    assert nml.NMLWriter.write_nml_param(
         param_name="param5",
         param_value=example_python_params["param5"],
-        syntax_func=nml.NMLWriter.write_nml_list
+        converter_func=nml.NMLWriter.write_nml_list
     ) == "   param5 = 1,2,3\n"
-    assert nml.NMLWriter.write_nml_parameter(
+    assert nml.NMLWriter.write_nml_param(
         param_name="param6",
         param_value=example_python_params["param6"],
-        syntax_func=nml.NMLWriter.write_nml_list
+        converter_func=nml.NMLWriter.write_nml_list
     ) == "   param6 = 1.1,2.1,3.1\n"
-    assert nml.NMLWriter.write_nml_parameter(
+    assert nml.NMLWriter.write_nml_param(
         param_name="param7",
         param_value=example_python_params["param7"],
-        syntax_func=lambda x: nml.NMLWriter.write_nml_list(
+        converter_func=lambda x: nml.NMLWriter.write_nml_list(
             x, nml.NMLWriter.write_nml_str
         )
     ) == "   param7 = 'foo','bar','baz'\n"
-    assert nml.NMLWriter.write_nml_parameter(
+    assert nml.NMLWriter.write_nml_param(
         param_name="param8",
         param_value=example_python_params["param8"],
-        syntax_func=lambda x: nml.NMLWriter.write_nml_list(
+        converter_func=lambda x: nml.NMLWriter.write_nml_list(
             x, nml.NMLWriter.write_nml_bool
         )
     ) == "   param8 = .true.,.false.,.true.\n"
-    assert nml.NMLWriter.write_nml_parameter(
+    assert nml.NMLWriter.write_nml_param(
         param_name="param9",
         param_value=example_python_params["param9"],
-        syntax_func=nml.NMLWriter.write_nml_array
+        converter_func=nml.NMLWriter.write_nml_array
     ) == (
         "   param9 = 1,2,3,\n"+
         "            1,2,3,\n"+
         "            1,2,3\n"
     )
-    assert nml.NMLWriter.write_nml_parameter(
+    assert nml.NMLWriter.write_nml_param(
         param_name="param10",
         param_value=example_python_params["param10"],
-        syntax_func=nml.NMLWriter.write_nml_array
+        converter_func=nml.NMLWriter.write_nml_array
     ) == (
         "   param10 = 1.1,2.1,3.1,\n"+
         "             1.1,2.1,3.1,\n"+
         "             1.1,2.1,3.1\n"
     )
-    assert nml.NMLWriter.write_nml_parameter(
+    assert nml.NMLWriter.write_nml_param(
         param_name="param11",
         param_value=example_python_params["param11"],
-        syntax_func=lambda x: nml.NMLWriter.write_nml_array(
+        converter_func=lambda x: nml.NMLWriter.write_nml_array(
             x, nml.NMLWriter.write_nml_str
         )
     ) == (
@@ -129,10 +129,10 @@ def test_write_nml_parameter(example_python_params):
         "             'foo','bar','baz',\n"+
         "             'foo','bar','baz'\n"
     )
-    assert nml.NMLWriter.write_nml_parameter(
+    assert nml.NMLWriter.write_nml_param(
         param_name="param12",
         param_value=example_python_params["param12"],
-        syntax_func=lambda x: nml.NMLWriter.write_nml_array(
+        converter_func=lambda x: nml.NMLWriter.write_nml_array(
             x, nml.NMLWriter.write_nml_bool
         )
     ) == (
@@ -402,20 +402,20 @@ def test_write_nml(
     snow_ice = glm_nml.SnowIceBlock()
     wq_setup = glm_nml.WQSetupBlock()
 
-    glm_setup.set_attributes(example_glm_setup_parameters)
-    morphometry.set_attributes(example_morphometry_parameters)
-    time.set_attributes(example_time_parameters)
-    init_profiles.set_attributes(example_init_profiles_parameters)
-    mixing.set_attributes(example_mixing_parameters)
-    output.set_attributes(example_output_parameters)
-    meteorology.set_attributes(example_meteorology_parameters)
-    light.set_attributes(example_light_parameters)
-    bird_model.set_attributes(example_bird_model_parameters)
-    inflow.set_attributes(example_inflow_parameters)
-    outflow.set_attributes(example_outflow_parameters)
-    sediment.set_attributes(example_sediment_parameters)
-    snow_ice.set_attributes(example_snow_ice_parameters)
-    wq_setup.set_attributes(example_wq_setup_parameters)
+    glm_setup.set_attrs(example_glm_setup_parameters)
+    morphometry.set_attrs(example_morphometry_parameters)
+    time.set_attrs(example_time_parameters)
+    init_profiles.set_attrs(example_init_profiles_parameters)
+    mixing.set_attrs(example_mixing_parameters)
+    output.set_attrs(example_output_parameters)
+    meteorology.set_attrs(example_meteorology_parameters)
+    light.set_attrs(example_light_parameters)
+    bird_model.set_attrs(example_bird_model_parameters)
+    inflow.set_attrs(example_inflow_parameters)
+    outflow.set_attrs(example_outflow_parameters)
+    sediment.set_attrs(example_sediment_parameters)
+    snow_ice.set_attrs(example_snow_ice_parameters)
+    wq_setup.set_attrs(example_wq_setup_parameters)
 
     nml_file = glm_nml.GLMNML(
         glm_setup=glm_setup.get_params(),
@@ -432,7 +432,7 @@ def test_write_nml(
         sediment=sediment.get_params(),
         snow_ice=snow_ice.get_params(),
         wq_setup=wq_setup.get_params(),
-        check_errors=False
+        check_params=False
     )
     file_path = tmp_path / "test.nml"
     nml_file.write_nml(file_path)
@@ -682,35 +682,35 @@ def test_read_nml_methods(example_nml_parameters):
     ) == "foo"
     assert nml.NMLReader.read_nml_list(
         nml_list=example_nml_parameters["nml_list_1"],
-        syntax_func=nml.NMLReader.read_nml_str
+        converter_func=nml.NMLReader.read_nml_str
     ) == ["foo", "bar", "baz"]
     assert nml.NMLReader.read_nml_list(
         nml_list=example_nml_parameters["nml_list_2"],
-        syntax_func=nml.NMLReader.read_nml_int
+        converter_func=nml.NMLReader.read_nml_int
     ) == [1, 2, 3]
     assert nml.NMLReader.read_nml_list(
         nml_list=example_nml_parameters["nml_list_3"],
-        syntax_func=nml.NMLReader.read_nml_float
+        converter_func=nml.NMLReader.read_nml_float
     ) == [1.1, 2.1, 3.1]
     assert nml.NMLReader.read_nml_list(
         nml_list=example_nml_parameters["nml_list_4"],
-        syntax_func=nml.NMLReader.read_nml_bool
+        converter_func=nml.NMLReader.read_nml_bool
     ) == [True, False, True, False]
     assert nml.NMLReader.read_nml_array(
         nml_array=example_nml_parameters["nml_array_1"],
-        syntax_func=nml.NMLReader.read_nml_int
+        converter_func=nml.NMLReader.read_nml_int
     ) == [[1, 2, 3], [4, 5, 6]]
     assert nml.NMLReader.read_nml_array(
         nml_array=example_nml_parameters["nml_array_2"],
-        syntax_func=nml.NMLReader.read_nml_float
+        converter_func=nml.NMLReader.read_nml_float
     ) == [[1.1, 2.1, 3.1], [1.2, 2.2, 3.2]] 
     assert nml.NMLReader.read_nml_array(
         nml_array=example_nml_parameters["nml_array_3"],
-        syntax_func=nml.NMLReader.read_nml_str
+        converter_func=nml.NMLReader.read_nml_str
     ) == [['foo', 'bar', 'baz'], ["foo", "bar", "baz"]]
     assert nml.NMLReader.read_nml_array(
         nml_array=example_nml_parameters["nml_array_4"],
-        syntax_func=nml.NMLReader.read_nml_bool
+        converter_func=nml.NMLReader.read_nml_bool
     ) == [[True, False], [True, False]]
 
 def test_read_nml_int_exceptions():
@@ -774,15 +774,15 @@ def test_read_nml_list_exceptions():
     )
     with pytest.raises(TypeError) as error:
         input = "foo"
-        syntax_func = "foo"
-        nml.NMLReader.read_nml_list(input, syntax_func)
+        converter_func = "foo"
+        nml.NMLReader.read_nml_list(input, converter_func)
     assert str(error.value) == (
-        f"Expected a Callable but got type: {type(syntax_func)}."
+        f"Expected a Callable but got type: {type(converter_func)}."
     )
     with pytest.raises(TypeError) as error:
         input = ["foo, baz, bar", 123]
-        syntax_func = nml.NMLReader.read_nml_str
-        nml.NMLReader.read_nml_list(input, syntax_func)
+        converter_func = nml.NMLReader.read_nml_str
+        nml.NMLReader.read_nml_list(input, converter_func)
     assert str(error.value) == (
         f"Expected a string for item {1} of nml_list but got "
         f"type: {type(input[1])}"
@@ -797,15 +797,15 @@ def test_read_nml_array_exceptions():
     )
     with pytest.raises(TypeError) as error:
         input = ["1.1, 1.2, 1.3", "2.1, 2.2, 2.3"]
-        syntax_func = "foo"
-        nml.NMLReader.read_nml_array(input, syntax_func)
+        converter_func = "foo"
+        nml.NMLReader.read_nml_array(input, converter_func)
     assert str(error.value) == (
-        f"Expected a Callable but got type: {type(syntax_func)}."
+        f"Expected a Callable but got type: {type(converter_func)}."
     )
     with pytest.raises(TypeError) as error:
         input = ["1.1, 1.2, 1.3", 123]
-        syntax_func = nml.NMLReader.read_nml_float
-        nml.NMLReader.read_nml_array(input, syntax_func)
+        converter_func = nml.NMLReader.read_nml_float
+        nml.NMLReader.read_nml_array(input, converter_func)
     assert str(error.value) == (
         f"Expected a string for item {1} of nml_array but got "
         f"type: {type(input[1])}"
@@ -841,22 +841,22 @@ def test_NMLReader_get_block_invalid(ellenbrook_nml):
             "'bird_model', 'inflow', 'outflow', 'snowice', 'sediment'."
     )
             
-def test_NMLReader_type_mappings_block(ellenbrook_nml):
-    type_mappings = {
+def test_NMLReader_converters_block(ellenbrook_nml):
+    converters = {
         "debugging": {
             "disable_evap": nml.NMLReader.read_nml_bool
         }
     }
     my_nml = nml.NMLReader(nml_file=ellenbrook_nml)
-    my_nml.set_type_mappings(type_mappings)
+    my_nml.set_converters(converters)
     expected_debugging = {
         "disable_evap": False
     }
     debugging = my_nml.get_block("debugging")
     assert debugging == expected_debugging
 
-def test_NMLReader_type_mappings_param(ellenbrook_nml):
-    type_mappings = {
+def test_NMLReader_converters_param(ellenbrook_nml):
+    converters = {
         "init_profiles": {
             "foo": nml.NMLReader.read_nml_str,
             "bar": lambda x: nml.NMLReader.read_nml_list(
@@ -866,7 +866,7 @@ def test_NMLReader_type_mappings_param(ellenbrook_nml):
         }
     }
     my_nml = nml.NMLReader(nml_file=ellenbrook_nml)
-    my_nml.set_type_mappings(type_mappings)
+    my_nml.set_converters(converters)
     expected_init_profiles = {
         "lake_depth": 0.15,
         "num_depths": "2",
@@ -894,7 +894,7 @@ def test_NMLReader_type_mappings_param(ellenbrook_nml):
 def test_NMLReader_get_nml(ellenbrook_nml, ellenbrook_json):
     with open(ellenbrook_json, 'r') as file:
         ellenbrook_dict = json.load(file)
-    type_mappings = {
+    converters = {
         "init_profiles": {
             "foo": nml.NMLReader.read_nml_str,
             "bar": lambda x: nml.NMLReader.read_nml_list(
@@ -906,7 +906,7 @@ def test_NMLReader_get_nml(ellenbrook_nml, ellenbrook_json):
         }
     }
     my_nml = nml.NMLReader(nml_file=ellenbrook_nml)
-    my_nml.set_type_mappings(type_mappings)
+    my_nml.set_converters(converters)
     my_nml_dict = my_nml.get_nml()
     assert my_nml_dict == ellenbrook_dict
 
@@ -934,7 +934,7 @@ def test_NMLReader_invalid_json_file(ellenbrook_nml):
 def test_NMLReader_json_file(tmp_path, ellenbrook_nml, ellenbrook_json):
     with open(ellenbrook_json, 'r') as file:
         expected_ellenbrook_dict = json.load(file)
-    type_mappings = {
+    converters = {
         "init_profiles": {
             "foo": nml.NMLReader.read_nml_str,
             "bar": lambda x: nml.NMLReader.read_nml_list(
@@ -946,7 +946,7 @@ def test_NMLReader_json_file(tmp_path, ellenbrook_nml, ellenbrook_json):
         }
     }
     my_nml = nml.NMLReader(nml_file=ellenbrook_nml)
-    my_nml.set_type_mappings(type_mappings)
+    my_nml.set_converters(converters)
     test_json_file = tmp_path / "test_glm3_nml.json"
     my_nml.write_json(test_json_file)
     with open(test_json_file, 'r') as file:

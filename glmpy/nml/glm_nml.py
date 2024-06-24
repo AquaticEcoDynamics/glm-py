@@ -145,7 +145,6 @@ class GLMNML:
     ...     sediment=sediment(),
     ...     snow_ice=snow_ice(),
     ...     wq_setup=wq_setup()
-    ...     check_errors=False
     ... )
 
     Write the `.nml` file with the `write_nml()` method.
@@ -167,7 +166,7 @@ class GLMNML:
         sediment: Union[dict, None] = None,
         snow_ice: Union[dict, None] = None,
         wq_setup: Union[dict, None] = None,  
-        check_errors: bool = False      
+        check_params: bool = False      
     ):
         self.glm_setup = glm_setup
         self.mixing = mixing
@@ -184,7 +183,7 @@ class GLMNML:
         self.snow_ice = snow_ice
         self.wq_setup = wq_setup
 
-        if check_errors:
+        if check_params:
             warnings.warn(
                 "Error checking is not stable and lacks complete coverage. "
                 "Erroneous parameters may not be raised.",
@@ -261,7 +260,7 @@ class GLMNML:
         )
         return NMLWriter.write_nml_list(
             python_list=python_list,
-            syntax_func=syntax_func
+            converter_func=syntax_func
         )
     
     @staticmethod
@@ -279,7 +278,7 @@ class GLMNML:
         )
         return NMLWriter.write_nml_array(
             python_array=python_array,
-            syntax_func=syntax_func
+            converter_func=syntax_func
         )
 
     @staticmethod
@@ -298,10 +297,10 @@ class GLMNML:
         if param_dict[param] is None:
             return ""
         else:
-            return NMLWriter.write_nml_parameter(
+            return NMLWriter.write_nml_param(
                 param_name=param,
                 param_value=param_dict[param],
-                syntax_func=syntax_func
+                converter_func=syntax_func
             )
 
 class NML(GLMNML):
@@ -383,11 +382,28 @@ class SetupBlock(_BaseBlock):
         self, 
         check_params: bool = False
     ) -> dict[str, Union[float, int, str, bool, None]]:
+        """Returns a dictionary of model parameters.
+
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
+
+        Parameters
+        ----------
+        check_params : bool, optional
+            If `True`, performs validation checks on the parameters to ensure 
+            compliance with GLM. Default is `False`.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
+        """
         if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
         glm_setup_dict = {
@@ -499,11 +515,28 @@ class MixingBlock(_BaseBlock):
         self, 
         check_params: bool = False
     ) -> dict[str, Union[float, int, None]]:
+        """Returns a dictionary of model parameters.
+
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
+
+        Parameters
+        ----------
+        check_params : bool, optional
+            If `True`, performs validation checks on the parameters to ensure 
+            compliance with GLM. Default is `False`.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
+        """
         if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
         mixing_dict = {
@@ -606,11 +639,28 @@ class WQSetupBlock(_BaseBlock):
         self, 
         check_params: bool = False
     ) -> dict[str, Union[float, int, str, bool, None]]:
+        """Returns a dictionary of model parameters.
+
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
+
+        Parameters
+        ----------
+        check_params : bool, optional
+            If `True`, performs validation checks on the parameters to ensure 
+            compliance with GLM. Default is `False`.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
+        """
         if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
         wq_setup_dict = {
@@ -741,11 +791,28 @@ class MorphometryBlock(_BaseBlock):
         self, 
         check_params: bool = False
     ) -> dict[str, Union[float, str, List[float], None]]:
+        """Returns a dictionary of model parameters.
+
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
+
+        Parameters
+        ----------
+        check_params : bool, optional
+            If `True`, performs validation checks on the parameters to ensure 
+            compliance with GLM. Default is `False`.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
+        """
         if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
         morphometry_dict = {
@@ -844,11 +911,28 @@ class TimeBlock(_BaseBlock):
         self, 
         check_params: bool = False
     ) -> dict[str, Union[float, int, str, None]]:
+        """Returns a dictionary of model parameters.
+
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
+
+        Parameters
+        ----------
+        check_params : bool, optional
+            If `True`, performs validation checks on the parameters to ensure 
+            compliance with GLM. Default is `False`.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
+        """
         if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
         time_dict = {
@@ -996,6 +1080,23 @@ class OutputBlock(_BaseBlock):
     ) -> dict[
         str, Union[float, int, str, bool, List[float], List[str], None]
     ]:
+        """Returns a dictionary of model parameters.
+
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
+
+        Parameters
+        ----------
+        check_params : bool, optional
+            If `True`, performs validation checks on the parameters to ensure 
+            compliance with GLM. Default is `False`.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
+        """
         self.csv_point_frombot = self._single_value_to_list(
             self.csv_point_frombot
         )
@@ -1004,9 +1105,9 @@ class OutputBlock(_BaseBlock):
         self.csv_outlet_vars = self._single_value_to_list(self.csv_outlet_vars)       
         if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
         output_dict = {
@@ -1132,6 +1233,23 @@ class InitProfilesBlock(_BaseBlock):
     ) -> dict[
         str, Union[float, int, str, List[float], List[str], None]
     ]:
+        """Returns a dictionary of model parameters.
+
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
+
+        Parameters
+        ----------
+        check_params : bool, optional
+            If `True`, performs validation checks on the parameters to ensure 
+            compliance with GLM. Default is `False`.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
+        """
         self.the_depths = self._single_value_to_list(self.the_depths)
         self.the_temps = self._single_value_to_list(self.the_temps)
         self.the_depths = self._single_value_to_list(self.the_depths)
@@ -1139,9 +1257,9 @@ class InitProfilesBlock(_BaseBlock):
         self.wq_init_vals = self._single_value_to_list(self.wq_init_vals)
         if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
         init_profiles_dict = {
@@ -1245,14 +1363,31 @@ class LightBlock(_BaseBlock):
     def get_params(
         self, 
         check_params: bool = False
-    ) -> dict[str, Union[float, int, str, List[float], None]]:   
+    ) -> dict[str, Union[float, int, str, List[float], None]]: 
+        """Returns a dictionary of model parameters.
+
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
+
+        Parameters
+        ----------
+        check_params : bool, optional
+            If `True`, performs validation checks on the parameters to ensure 
+            compliance with GLM. Default is `False`.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
+        """
         self.light_extc = self._single_value_to_list(self.light_extc)   
         self.energy_frac = self._single_value_to_list(self.energy_frac)
         if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
         light_dict = {
@@ -1346,11 +1481,28 @@ class BirdModelBlock(_BaseBlock):
         self, 
         check_params: bool = False
     ) -> dict[str, Union[float, None]]:
+        """Returns a dictionary of model parameters.
+
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
+
+        Parameters
+        ----------
+        check_params : bool, optional
+            If `True`, performs validation checks on the parameters to ensure 
+            compliance with GLM. Default is `False`.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
+        """
         if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
         bird_model_dict = {
@@ -1471,6 +1623,23 @@ class SedimentBlock(_BaseBlock):
         self, 
         check_params: bool = False
     ) -> dict[str, Union[float, int, List[float], List[int], None]]:
+        """Returns a dictionary of model parameters.
+
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
+
+        Parameters
+        ----------
+        check_params : bool, optional
+            If `True`, performs validation checks on the parameters to ensure 
+            compliance with GLM. Default is `False`.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
+        """
         self.sed_temp_mean = self._single_value_to_list(self.sed_temp_mean)
         self.sed_temp_amplitude = self._single_value_to_list(
             self.sed_temp_amplitude
@@ -1485,9 +1654,9 @@ class SedimentBlock(_BaseBlock):
         self.sed_roughness = self._single_value_to_list(self.sed_roughness)
         if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
         sediment_dict = {
@@ -1569,11 +1738,28 @@ class SnowIceBlock(_BaseBlock):
         self, 
         check_params: bool = False
     ) -> dict[str, Union[float, None]]:
+        """Returns a dictionary of model parameters.
+
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
+
+        Parameters
+        ----------
+        check_params : bool, optional
+            If `True`, performs validation checks on the parameters to ensure 
+            compliance with GLM. Default is `False`.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
+        """
         if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
         snowice_dict = {
@@ -1790,11 +1976,28 @@ class MeteorologyBlock(_BaseBlock):
         self, 
         check_params: bool = False
     ) -> dict[str, Union[float, int, str, bool, None]]:
+        """Returns a dictionary of model parameters.
+
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
+
+        Parameters
+        ----------
+        check_params : bool, optional
+            If `True`, performs validation checks on the parameters to ensure 
+            compliance with GLM. Default is `False`.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
+        """
         if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
         meteorology_dict = {
@@ -1959,6 +2162,23 @@ class InflowBlock(_BaseBlock):
             float, int, str, bool, List[float], List[str], List[bool], None
         ]
     ]:
+        """Returns a dictionary of model parameters.
+
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
+
+        Parameters
+        ----------
+        check_params : bool, optional
+            If `True`, performs validation checks on the parameters to ensure 
+            compliance with GLM. Default is `False`.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
+        """
         self.names_of_strms = self._single_value_to_list(self.names_of_strms)
         self.subm_flag = self._single_value_to_list(self.subm_flag)
         self.strm_hf_angle = self._single_value_to_list(self.strm_hf_angle)
@@ -1972,11 +2192,11 @@ class InflowBlock(_BaseBlock):
         self.inflow_vars = self._single_value_to_list(self.inflow_vars)
         if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
-            )     
+            )    
         inflow_dict = {
             "num_inflows": self.num_inflows,
             "names_of_strms": self.names_of_strms,
@@ -2193,6 +2413,23 @@ class OutflowBlock(_BaseBlock):
                 float, int, str, bool, List[float], List[int], List[bool], None
             ]
         ]:
+        """Returns a dictionary of model parameters.
+
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
+
+        Parameters
+        ----------
+        check_params : bool, optional
+            If `True`, performs validation checks on the parameters to ensure 
+            compliance with GLM. Default is `False`.
+
+        Returns
+        -------
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
+        """
         self.outflow_fl = self._single_value_to_list(self.outflow_fl)
         self.outflow_factor = self._single_value_to_list(self.outflow_factor)
         self.outflow_thick_limit = self._single_value_to_list(
@@ -2208,9 +2445,9 @@ class OutflowBlock(_BaseBlock):
         self.bsn_wid_outl = self._single_value_to_list(self.bsn_wid_outl)
         if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
         outflow_dict = {

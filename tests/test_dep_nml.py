@@ -395,8 +395,7 @@ def test_write_nml(
         outflow=outflow(),
         sediment=sediment(),
         snow_ice=snow_ice(),
-        wq_setup=wq_setup(),
-        check_errors=False
+        wq_setup=wq_setup()
     )
     file_path = tmp_path / "test.nml"
     nml_file.write_nml(file_path)
