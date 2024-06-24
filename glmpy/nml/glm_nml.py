@@ -1,85 +1,115 @@
 import warnings
 
+from .nml import _BaseBlock, NMLWriter
 from typing import Union, List, Any, Callable
 
-class NML:
-    """Generate .nml files.
+def _deprecated_static_method_warning(
+        deprecated_method: str, 
+        new_method: str, 
+        new_class: str,
+        new_module: str
+    ) -> str:
+    warn = (
+        f"{deprecated_method} is deprecated and will be removed in glm-py "
+        f"1.0.0. Use `{new_module}.{new_class}.{new_method}` instead. Import "
+        "it with:\n"
+        f"`>>> from glmpy.nml import {new_module}`"
+    )
+    return warn
+
+def _deprecated_class_warning(
+        deprecated_class: str, 
+        new_class: str,
+        new_module: str
+    ) -> str:
+    warn = (
+        f"{deprecated_class} is deprecated and will be removed in glm-py "
+        f"1.0.0. Use `{new_module}.{new_class}` instead. Import "
+        "it with:\n"
+        f"`>>> from glmpy.nml import {new_module}`"
+    )
+    return warn
+
+class GLMNML:
+    """Write GLM NML files.
 
     The General Lake Model (GLM) namelist file (`.nml`) describes the parameter
-    configuration for running simulations. The `NML` class builds an `.nml` 
+    configuration for running simulations. The `GLMNML` class builds a NML 
     file by combining dictionaries of parameters that correspond with each 
     configuration block, e.g., `&glm_setup`, `&morphometry`, and `&time`. Each
-    dictionary of parameters can be created using the respective `nml.NML*`
-    classes, e.g., `nml.NMLGLMSetup`, `nml.NMLMorphometry`, and `nml.NMLTime`.
+    dictionary of parameters can be constructed using the respective block
+    classes, e.g., `glm_nml.SetupBlock`, `glm_nml.MorphometryBlock`, and 
+    `glm_nml.TimeBlock`.
+    
     An optional `check_errors` argument can be set to raise errors when 
-    parameters from separate configuration blocks are in conflict. The `.nml`
+    parameters from separate configuration blocks are in conflict. The NML
     file can be saved using the `write_nml()` method.
 
     Attributes
     ----------
     glm_setup : dict
-        Dictionary of `&glm_setup` parameters. See `nml.NMLGLMSetup`. Required 
-        for every GLM simulation.
+        Dictionary of `&glm_setup` parameters. See `glm_nml.SetupBlock`. 
+        Required for every GLM simulation.
     morphometry : dict
-        Dictionary of `&morphometry` parameters. See `nml.NMLMorphometry`. 
-        Required for every GLM simulation.
+        Dictionary of `&morphometry` parameters. See `glm_nml.MorphometryBlock`
+        . Required for every GLM simulation.
     time : dict
-        Dictionary of `&time` parameters. See `nml.NMLTime`. Required for every 
-        GLM simulation.
+        Dictionary of `&time` parameters. See `glm_nml.TimeBlock`. Required for 
+        every GLM simulation.
     init_profiles : dict
-        Dictionary of `&init_profiles` parameters. See `nml.NMLInitProfiles`. 
-        Required for every GLM simulation.
+        Dictionary of `&init_profiles` parameters. See 
+        `glm_nml.InitProfilesBlock`. Required for every GLM simulation.
     mixing : Union[dict, None]
-        Dictionary of `&mixing` parameters. See `nml.NMLMixing`. Default is 
-        `None`.
+        Dictionary of `&mixing` parameters. See `glm_nml.MixingBlock`. Default 
+        is `None`.
     output : Union[dict, None]
-        Dictionary of `&output` parameters. See `nml.NMLOutput`. Default is 
-        `None`.
+        Dictionary of `&output` parameters. See `glm_nml.OutputBlock`. Default 
+        is `None`.
     meteorology : Union[dict, None]
-        Dictionary of `&meteorology` parameters. See `nml.NMLMeteorology`. 
-        Default is `None`.
+        Dictionary of `&meteorology` parameters. See `glm_nml.MeteorologyBlock`
+        . Default is `None`.
     light : Union[dict, None]
-        Dictionary of `&light` parameters. See `nml.NMLLight`. Default is 
+        Dictionary of `&light` parameters. See `glm_nml.LightBlock`. Default is 
         `None`.
     bird_model : Union[dict, None]
-        Dictionary of `&bird_model` parameters. See `nml.NMLBirdModel`. Default 
-        is `None`.
+        Dictionary of `&bird_model` parameters. See `glm_nml.BirdModelBlock`. 
+        Default is `None`.
     inflow : Union[dict, None]
-        Dictionary of `&inflow` parameters. See `nml.NMLInflow`. Default is 
-        `None`.
+        Dictionary of `&inflow` parameters. See `glm_nml.InflowBlock`. Default 
+        is `None`.
     outflow : Union[dict, None]
-        Dictionary of `&outflow` parameters. See `nml.NMLOutflow`. Default is 
-        `None`.
+        Dictionary of `&outflow` parameters. See `glm_nml.OutflowBlock`. 
+        Default is `None`.
     sediment : Union[dict, None]
-        Dictionary of `&sediment` parameters. See `nml.NMLSediment`. Default is 
-        `None`.
+        Dictionary of `&sediment` parameters. See `glm_nml.SedimentBlock`. 
+        Default is `None`.
     snow_ice : Union[dict, None]
-        Dictionary of `&snow_ice` parameters. See `nml.NMLSnowIce`. Default is 
-        `None`.
+        Dictionary of `&snow_ice` parameters. See `glm_nml.SnowIceBlock`. 
+        Default is `None`.
     wq_setup : Union[dict, None]
-        Dictionary of `&wq_setup` parameters. See `nml.NMLWQSetup`. Default is 
-        `None`.
+        Dictionary of `&wq_setup` parameters. See `glm_nml.WQSetupBlock`. 
+        Default is `None`.
 
     Examples
     --------
-    Import the `nml` module:
-    >>> from glmpy import nml
+    Import the `glm_nml` module:
+    >>> from glmpy.nml import glm_nml
 
-    Initialise `nml.NML*` class instances:
-    >>> glm_setup = nml.NMLGLMSetup()
-    >>> morphometry = nml.NMLMorphometry()
-    >>> time = nml.NMLTime()
-    >>> init_profiles = nml.NMLInitProfiles()
-    >>> mixing = nml.NMLMixing()
-    >>> output = nml.NMLOutput()
-    >>> meteorology = nml.NMLMeteorology()
-    >>> light = nml.NMLLight()
-    >>> bird_model = nml.NMLBirdModel()
-    >>> inflow = nml.NMLInflow()
-    >>> outflow = nml.NMLOutflow()
-    >>> sediment = nml.NMLSediment()
-    >>> snow_ice = nml.NMLSnowIce()
-    >>> wq_setup = nml.NMLWQSetup()
+    Initialise instances of the NML configuration block classes:
+    >>> glm_setup = glm_nml.SetupBlock()
+    >>> morphometry = glm_nml.MorphometryBlock()
+    >>> time = glm_nml.TimeBlock()
+    >>> init_profiles = glm_nml.InitProfilesBlock()
+    >>> mixing = glm_nml.MixingBlock()
+    >>> output = glm_nml.OutputBlock()
+    >>> meteorology = glm_nml.MeteorologyBlock()
+    >>> light = glm_nml.LightBlock()
+    >>> bird_model = glm_nml.BirdModelBlock()
+    >>> inflow = glm_nml.InflowBlock()
+    >>> outflow = glm_nml.OutflowBlock()
+    >>> sediment = glm_nml.SedimentBlock()
+    >>> snow_ice = glm_nml.SnowIceBlock()
+    >>> wq_setup = glm_nml.WQSetupBlock()
 
     Set the instance attributes from dictionaries of GLM parameters (omitted 
     for brevity):
@@ -98,9 +128,9 @@ class NML:
     >>> snow_ice.set_attributes(snow_ice_attrs)
     >>> wq_setup.set_attributes(wq_setup_attrs)
 
-    Initialise the `NML` class and pass in the consolidated dictionaries (
-    returned by the call method of `nml.NML*` class instances).
-    >>> nml_file = nml.NML(
+    Initialise the `GLMNML` class and pass in the consolidated dictionaries (
+    returned by the call method of block classes).
+    >>> nml_file = glm_nml.GLMNML(
     ...     glm_setup=glm_setup(),
     ...     morphometry=morphometry(),
     ...     time=time(),
@@ -115,7 +145,6 @@ class NML:
     ...     sediment=sediment(),
     ...     snow_ice=snow_ice(),
     ...     wq_setup=wq_setup()
-    ...     check_errors=False
     ... )
 
     Write the `.nml` file with the `write_nml()` method.
@@ -137,7 +166,7 @@ class NML:
         sediment: Union[dict, None] = None,
         snow_ice: Union[dict, None] = None,
         wq_setup: Union[dict, None] = None,  
-        check_errors: bool = False      
+        check_params: bool = False      
     ):
         self.glm_setup = glm_setup
         self.mixing = mixing
@@ -154,7 +183,7 @@ class NML:
         self.snow_ice = snow_ice
         self.wq_setup = wq_setup
 
-        if check_errors:
+        if check_params:
             warnings.warn(
                 "Error checking is not stable and lacks complete coverage. "
                 "Erroneous parameters may not be raised.",
@@ -176,127 +205,81 @@ class NML:
         --------
         >>> nml_file.write_nml(nml_file_path="my_lake.nml")
         """
-        nml_string = ""
-
-        if self.glm_setup is not None:
-            nml_string += self._write_nml_glm_setup(self.glm_setup) + "\n"
-        if self.mixing is not None:
-            nml_string += self._write_nml_mixing(self.mixing) + "\n"
-        if self.wq_setup is not None:
-            nml_string += self._write_nml_wq_setup(self.wq_setup) + "\n"
-        if self.morphometry is not None:
-            nml_string += self._write_nml_morphometry(self.morphometry) + "\n"
-        if self.time is not None:
-            nml_string += self._write_nml_time(self.time) + "\n"
-        if self.output is not None:
-            nml_string += self._write_nml_output(self.output) + "\n"
-        if self.init_profiles is not None:
-            nml_string += self._write_nml_init_profiles(
-                self.init_profiles
-            ) + "\n"
-        if self.light is not None:
-            nml_string += self._write_nml_light(self.light) + "\n"
-        if self.bird_model is not None:
-            nml_string += self._write_nml_bird_model(self.bird_model) + "\n"
-        if self.sediment is not None:
-            nml_string += self._write_nml_sediment(self.sediment) + "\n"
-        if self.snow_ice is not None:
-            nml_string += self._write_nml_snow_ice(self.snow_ice) + "\n"
-        if self.meteorology is not None:
-            nml_string += self._write_nml_meteorology(self.meteorology) + "\n"
-        if self.inflow is not None:
-            nml_string += self._write_nml_inflow(self.inflow) + "\n"
-        if self.outflow is not None:
-            nml_string += self._write_nml_outflow(self.outflow) + "\n"
+        nml_dict = {}
+        block_dicts = [
+            self.glm_setup, self.mixing, self.morphometry, self.time, 
+            self.output, self.init_profiles, self.meteorology, self.light,
+            self.bird_model, self.inflow, self.outflow, self.sediment,
+            self.snow_ice, self.wq_setup
+        ]
+        block_names = [
+            "glm_setup", "mixing", "morphometry", "time", "output", 
+            "init_profiles", "meteorology", "light", "bird_model", "inflow",
+            "outflow", "sediment", "snowice", "wq_setup"
+        ]
+        for i in range(0, len(block_dicts)):
+            if block_dicts[i] is not None:
+                nml_dict[block_names[i]] = block_dicts[i]
         
-        with open(file=nml_file_path, mode="w") as file:
-            file.write(nml_string)
-
+        out_nml = NMLWriter(nml_dict=nml_dict, detect_types=False)
+        out_nml.write_nml(nml_file_path)
+    
     @staticmethod
     def nml_bool(python_bool: bool) -> str:
-        """Python boolean to Fortran boolean.
-
-        Convert a Python boolean to a string representation of a Fortran 
-        boolean. 
-
-        Parameters
-        ----------
-        python_bool : bool
-            A Python boolean
-
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> bool = nml.NML.nml_bool(True)
-        >>> print(bool)
-        .true.
-        """
-        if python_bool is True:
-            return '.true.'
-        else:
-            return '.false.'
+        warnings.warn(
+            _deprecated_static_method_warning(
+                "nml_bool", "write_nml_bool", "NMLWriter", "nml"
+            ),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return NMLWriter.write_nml_bool(python_bool=python_bool)
 
     @staticmethod    
     def nml_str(python_str: str) -> str:
-        """Python string to Fortran string.
-
-        Convert a Python string to a Fortran string by adding inverted commas.
-
-        Parameters
-        ----------
-        python_str : str
-            A Python string
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> string = nml.NML.nml_str("GLM")
-        >>> print(string)
-        'GLM'
-        """
-        return f"'{python_str}'"
+        warnings.warn(
+            _deprecated_static_method_warning(
+                "nml_str", "write_nml_str", "NMLWriter", "nml"
+            ),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return NMLWriter.write_nml_str(python_str=python_str)
 
     @staticmethod
     def nml_list(
             python_list: List[Any], 
             syntax_func: Union[Callable, None] = None
         ) -> str:
-        """Python list to comma-separated list.
-
-        Convert a Python list to a comma-separated list. A function can be 
-        optionally passed to the `syntax_func` parameter to format the syntax 
-        of each list item, e.g., `nml_str()` and `nml_bool()`.
-
-        Parameters
-        ----------
-        python_list : List[Any]
-            A Python list
-        syntax_func: Union[Callable, None], optional
-            A function used to format each list item. Default is `None`.
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> list = nml.NML.nml_list([1, 2, 3])
-        >>> print(list)
-        1,2,3
-        >>> list = nml.NML.nml_list(
-        ...     [True, False, True], 
-        ...     syntax_func=nml.NML.nml_bool
-        ... )
-        >>> print(list)
-        .true.,.false.,.true.
-        """
-        if len(python_list) == 1:
-            if syntax_func is not None:
-                return syntax_func(python_list[0])
-            else:
-                return str(python_list[0])
-        else:
-            if syntax_func is not None:
-                return ','.join(syntax_func(val) for val in python_list)
-            else:
-                return ','.join(str(val) for val in python_list)
+        warnings.warn(
+            _deprecated_static_method_warning(
+                "nml_list", "write_nml_list", "NMLWriter", "nml"
+            ),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return NMLWriter.write_nml_list(
+            python_list=python_list,
+            converter_func=syntax_func
+        )
+    
+    @staticmethod
+    def nml_array(
+            python_array: List[List[Any]], 
+            row_indent: int = 18,
+            syntax_func: Union[Callable, None] = None,
+        ) -> str:
+        warnings.warn(
+            _deprecated_static_method_warning(
+                "nml_array", "write_nml_array", "NMLWriter", "nml"
+            ),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        return NMLWriter.write_nml_array(
+            python_array=python_array,
+            converter_func=syntax_func
+        )
 
     @staticmethod
     def nml_param_val(
@@ -304,497 +287,41 @@ class NML:
         param: str, 
         syntax_func: Union[Callable, None] = None
     ) -> str:
-        """GLM parameter/value string.
-
-        Construct a string containing a GLM parameter and value with the 
-        correct`.nml` syntax formatting.
-
-        Parameters
-        ----------
-        param_dict: dict
-            A dictionary containing GLM parameters (keys) and values, e.g.,
-            from the `__call__()` method of a `nml.NMLGLMSetup` instance.
-        param: str
-            The dictionary key, i.e., GLM parameter, to construct the string
-            for.
-        syntax_func: Union[Callable, None], optional
-            A function used to format the syntax of the value. Default is 
-            `None`.
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> light_params = {
-        ...     "light_mode": 0,
-        ...     "Kw": 0.4,
-        ...     "n_bands": 4,
-        ...     "light_extc": [1.0, 0.5, 2.0, 4.0],
-        ...     "energy_frac": [0.51, 0.45, 0.035, 0.005],
-        ...     "Benthic_Imin": 10
-        ... }
-        >>> formatted_param = nml.NML.nml_param_val(
-        ...     param_dict=light_params,
-        ...     param="energy_frac",
-        ...     syntax_func=nml.NML.nml_list
-        ... )
-        >>> print(formatted_param)
-           energy_frac = 0.51,0.45,0.035,0.005
-
-        """
-        if param_dict[param] is not None:
-            if syntax_func is not None:
-                return f"   {param} = {syntax_func(param_dict[param])}\n"
-            else:
-                return f"   {param} = {param_dict[param]}\n"
-        else:
+        warnings.warn(
+            _deprecated_static_method_warning(
+                "nml_param_val", "write_nml_parameter", "NMLWriter", "nml"
+            ),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        if param_dict[param] is None:
             return ""
-    
-    def _write_nml_glm_setup(self, glm_setup: dict) -> str:
-        """
-        Construct a string of the `&glm_setup` model configuration block. 
-        Private method for use in generating `.nml` files.
-        """
-        glm_setup_str = (
-            "&glm_setup\n" +
-            self.nml_param_val(glm_setup, "sim_name", self.nml_str) +
-            self.nml_param_val(glm_setup, "max_layers") +
-            self.nml_param_val(glm_setup, "min_layer_vol") +
-            self.nml_param_val(glm_setup, "min_layer_thick") +
-            self.nml_param_val(glm_setup, "max_layer_thick") +
-            self.nml_param_val(glm_setup, "density_model") +
-            self.nml_param_val(glm_setup, "non_avg", self.nml_bool) +
-            "/"
-        )
-
-        return glm_setup_str
-    
-    def _write_nml_mixing(self, mixing: dict) -> str:
-        """
-        Construct a string of the `&mixing` model configuration block. 
-        Private method for use in generating `.nml` files.
-        """
-        mixing_str = (
-            "&mixing\n" +
-            self.nml_param_val(mixing, "surface_mixing") +
-            self.nml_param_val(mixing, "coef_mix_conv") +
-            self.nml_param_val(mixing, "coef_wind_stir") +
-            self.nml_param_val(mixing, "coef_mix_shear") +
-            self.nml_param_val(mixing, "coef_mix_turb") +
-            self.nml_param_val(mixing, "coef_mix_KH") +
-            self.nml_param_val(mixing, "deep_mixing") +
-            self.nml_param_val(mixing, "coef_mix_hyp") +
-            self.nml_param_val(mixing, "diff") +
-            "/"
-        )
-
-        return mixing_str
-
-    def _write_nml_wq_setup(self, wq_setup: dict) -> str:
-        """
-        Construct a string of the `&wq_setup` model configuration block. 
-        Private method for use in generating `.nml` files.
-        """
-        wq_setup_str = (
-            "&wq_setup\n" +
-            self.nml_param_val(wq_setup, "wq_lib", self.nml_str) +
-            self.nml_param_val(wq_setup, "wq_nml_file", self.nml_str) +
-            self.nml_param_val(
-                wq_setup, "bioshade_feedback", self.nml_bool
-            ) +
-            self.nml_param_val(wq_setup, "mobility_off", self.nml_bool)+
-            self.nml_param_val(wq_setup, "ode_method") +
-            self.nml_param_val(wq_setup, "split_factor") +
-            self.nml_param_val(wq_setup, "repair_state", self.nml_bool) +
-            "/"
-        )
-
-        return wq_setup_str
-    
-    def _write_nml_morphometry(self, morphometry: dict) -> str:
-        """
-        Construct a string of the `&morphometry` model configuration block. 
-        Private method for use in generating `.nml` files.
-        """
-        morphometry_str = (
-            "&morphometry\n" +
-            self.nml_param_val(morphometry, "lake_name", self.nml_str) +
-            self.nml_param_val(morphometry, "latitude") +
-            self.nml_param_val(morphometry, "longitude") +
-            self.nml_param_val(morphometry, "base_elev") +
-            self.nml_param_val(morphometry, "crest_elev") +
-            self.nml_param_val(morphometry, "bsn_len") +
-            self.nml_param_val(morphometry, "bsn_wid") +
-            self.nml_param_val(morphometry, "bsn_vals") +
-            self.nml_param_val(morphometry, "H", self.nml_list) +
-            self.nml_param_val(morphometry, "A", self.nml_list) +
-            "/"
-        )
-
-        return morphometry_str
-
-    def _write_nml_time(self, time: dict) -> str:
-        """
-        Construct a string of the `&time` model configuration block. Private 
-        method for use in generating `.nml` files.
-        """
-        time_str = (
-            "&time\n" +
-            self.nml_param_val(time, "timefmt") +
-            self.nml_param_val(time, "start", self.nml_str) +
-            self.nml_param_val(time, "stop", self.nml_str) +
-            self.nml_param_val(time, "dt") +
-            self.nml_param_val(time, "num_days") +
-            self.nml_param_val(time, "timezone") +
-            "/"
-        )
-
-        return time_str
-
-    def _write_nml_output(self, output: dict) -> str:
-        """
-        Construct a string of the `&output` model configuration block. Private 
-        method for use in generating `.nml` files.
-        """
-        output_str = (
-            "&output\n" +
-            self.nml_param_val(output, "out_dir", self.nml_str) +
-            self.nml_param_val(output, "out_fn", self.nml_str) +
-            self.nml_param_val(output, "nsave") +
-            self.nml_param_val(output, "csv_lake_fname", self.nml_str) +
-            self.nml_param_val(output, "csv_point_nlevs") +
-            self.nml_param_val(output, "csv_point_fname", self.nml_str) +
-            self.nml_param_val(output, "csv_point_frombot", self.nml_list) +
-            self.nml_param_val(output, "csv_point_at", self.nml_list) +
-            self.nml_param_val(output, "csv_point_nvars") +
-            self.nml_param_val(
-                output, 
-                "csv_point_vars", 
-                lambda x: self.nml_list(x, self.nml_str)
-            ) +
-            self.nml_param_val(
-                output, "csv_outlet_allinone", self.nml_bool
-            ) +
-            self.nml_param_val(output, "csv_outlet_fname", self.nml_str) +
-            self.nml_param_val(output, "csv_outlet_nvars") +
-            self.nml_param_val(
-                output, 
-                "csv_outlet_vars", 
-                lambda x: self.nml_list(x, self.nml_str)
-            ) +
-            self.nml_param_val(output, "csv_ovrflw_fname", self.nml_str) +
-            "/"
-        )
-
-        return output_str
-
-    def _write_nml_init_profiles(self, init_profiles: dict) -> str:
-        """
-        Construct a string of the `&init_profiles` model configuration block.
-        Private method for use in generating `.nml` files.
-        """
-        init_profiles_str = (
-            "&init_profiles\n" +
-            self.nml_param_val(init_profiles, "lake_depth") +
-            self.nml_param_val(init_profiles, "num_depths") +
-            self.nml_param_val(init_profiles, "the_depths", self.nml_list) +
-            self.nml_param_val(init_profiles, "the_temps", self.nml_list) +
-            self.nml_param_val(init_profiles, "the_sals", self.nml_list) +
-            self.nml_param_val(init_profiles, "num_wq_vars") +
-            self.nml_param_val(
-                init_profiles, 
-                "wq_names", 
-                lambda x: self.nml_list(x, self.nml_str)
-            ) +
-            self.nml_param_val(
-                init_profiles, "wq_init_vals", self.nml_list
-            ) +
-            "/"
-        )
-
-        return init_profiles_str
-
-    def _write_nml_light(self, light: dict) -> str:
-        """
-        Construct a string of the `&light` model configuration block. Private 
-        method for use in generating `.nml` files.
-        """
-        light_str = (
-            "&light\n" +
-            self.nml_param_val(light, "light_mode") +
-            self.nml_param_val(light, "Kw") +
-            self.nml_param_val(light, "Kw_file", self.nml_str) +
-            self.nml_param_val(light, "n_bands") +
-            self.nml_param_val(light, "light_extc", self.nml_list) +
-            self.nml_param_val(light, "energy_frac", self.nml_list) +
-            self.nml_param_val(light, "Benthic_Imin") +
-            "/"
-        )
-
-        return light_str
-    
-    def _write_nml_bird_model(self, bird_model: dict) -> str:
-        """
-        Construct a string of the `&bird_model` model configuration block. 
-        Private method for use in generating `.nml` files.
-        """
-        bird_model_str = (
-            "&bird_model\n" +
-            self.nml_param_val(bird_model, "AP") +
-            self.nml_param_val(bird_model, "Oz") +
-            self.nml_param_val(bird_model, "WatVap") +
-            self.nml_param_val(bird_model, "AOD500") +
-            self.nml_param_val(bird_model, "AOD380") +
-            self.nml_param_val(bird_model, "Albedo") +
-            "/"
-        )
-
-        return bird_model_str    
-    
-    def _write_nml_sediment(self, sediment: dict) -> str:
-        """
-        Construct a string of the `&sediment` model configuration block. 
-        Private method for use in generating `.nml` files.
-        """
-        sediment_str = (
-            "&sediment\n" +
-            self.nml_param_val(sediment, "sed_heat_Ksoil") +
-            self.nml_param_val(sediment, "sed_temp_depth") +
-            self.nml_param_val(sediment, "sed_temp_mean", self.nml_list) +
-            self.nml_param_val(
-                sediment, "sed_temp_amplitude", self.nml_list
-            ) +
-            self.nml_param_val(
-                sediment, "sed_temp_peak_doy", self.nml_list
-            ) +
-            self.nml_param_val(sediment, "benthic_mode") +
-            self.nml_param_val(sediment, "n_zones") +
-            self.nml_param_val(sediment, "zone_heights", self.nml_list) +
-            self.nml_param_val(sediment, "sed_reflectivity", self.nml_list) +
-            self.nml_param_val(sediment, "sed_roughness", self.nml_list) +            
-            "/"
-        )
-
-        return sediment_str
-
-    def _write_nml_snow_ice(self, snow_ice: dict) -> str:
-        """
-        Construct a string of the `&snowice` model configuration block. Private 
-        method for use in generating `.nml` files.
-        """
-        snow_ice_str = (
-            "&snowice\n" +
-            self.nml_param_val(snow_ice, "snow_albedo_factor") +
-            self.nml_param_val(snow_ice, "snow_rho_min") +
-            self.nml_param_val(snow_ice, "snow_rho_max") +
-            "/"
-        )
-
-        return snow_ice_str
-
-    def _write_nml_meteorology(self, meteorology: dict) -> str:
-        """
-        Construct a string of the `&meteorology` model configuration block. 
-        Private method for use in generating `.nml` files.
-        """
-        meteorology_str = (
-            "&meteorology\n" +
-            self.nml_param_val(meteorology, "met_sw", self.nml_bool) +
-            self.nml_param_val(meteorology, "meteo_fl", self.nml_str) +
-            self.nml_param_val(meteorology, "subdaily", self.nml_bool) +
-            self.nml_param_val(meteorology, "time_fmt", self.nml_str) +
-            self.nml_param_val(meteorology, "rad_mode") +
-            self.nml_param_val(meteorology, "albedo_mode") +
-            self.nml_param_val(meteorology, "sw_factor") +
-            self.nml_param_val(meteorology, "lw_type", self.nml_str) +
-            self.nml_param_val(meteorology, "cloud_mode") +
-            self.nml_param_val(meteorology, "lw_factor") +
-            self.nml_param_val(meteorology, "atm_stab") +
-            self.nml_param_val(meteorology, "rh_factor") +
-            self.nml_param_val(meteorology, "at_factor") +
-            self.nml_param_val(meteorology, "ce") +
-            self.nml_param_val(meteorology, "ch") +
-            self.nml_param_val(meteorology, "rain_sw", self.nml_bool) +
-            self.nml_param_val(meteorology, "rain_factor") +
-            self.nml_param_val(meteorology, "catchrain", self.nml_bool) +
-            self.nml_param_val(meteorology, "rain_threshold") +
-            self.nml_param_val(meteorology, "runoff_coef") +
-            self.nml_param_val(meteorology, "cd") +
-            self.nml_param_val(meteorology, "wind_factor") +
-            self.nml_param_val(meteorology, "fetch_mode") +
-            self.nml_param_val(meteorology, "Aws") +
-            self.nml_param_val(meteorology, "Xws") +
-            self.nml_param_val(meteorology, "num_dir") +
-            self.nml_param_val(meteorology, "wind_dir") +
-            self.nml_param_val(meteorology, "fetch_scale") +
-            "/"
-        )
-
-        return meteorology_str
-
-    def _write_nml_inflow(self, inflow: dict) -> str:
-        """
-        Construct a string of the `&inflow` model configuration block. Private 
-        method for use in generating `.nml` files.
-        """
-        inflow_str = (
-            "&inflow\n" +
-            self.nml_param_val(inflow, "num_inflows") +
-            self.nml_param_val(
-                inflow, 
-                "names_of_strms", 
-                lambda x: self.nml_list(x, self.nml_str)
-            ) +
-            self.nml_param_val(
-                inflow, 
-                "subm_flag", 
-                lambda x: self.nml_list(x, self.nml_bool)
-            ) +
-            self.nml_param_val(inflow, "strm_hf_angle", self.nml_list) +
-            self.nml_param_val(inflow, "strmbd_slope", self.nml_list) +
-            self.nml_param_val(inflow, "strmbd_drag", self.nml_list) +
-            self.nml_param_val(inflow, "coef_inf_entrain", self.nml_list) +
-            self.nml_param_val(inflow, "inflow_factor", self.nml_list) +
-            self.nml_param_val(
-                inflow, 
-                "inflow_fl", 
-                lambda x: self.nml_list(x, self.nml_str)
-            ) +
-            self.nml_param_val(inflow, "inflow_varnum") +
-            self.nml_param_val(
-                inflow, 
-                "inflow_vars", 
-                lambda x: self.nml_list(x, self.nml_str)
-            ) +
-            self.nml_param_val(inflow, "time_fmt", self.nml_str) +
-            "/"
-        )
-
-        return inflow_str
-
-    def _write_nml_outflow(self, outflow: dict) -> str:
-        """
-        Construct a string of the `&outflow` model configuration block. Private 
-        method for use in generating `.nml` files.
-        """
-        outflow_str = (
-            "&outflow\n" +
-            self.nml_param_val(outflow, "num_outlet")+
-            self.nml_param_val(outflow, "outflow_fl", self.nml_str) +
-            self.nml_param_val(outflow, "time_fmt", self.nml_str) +
-            self.nml_param_val(outflow, "outflow_factor", self.nml_list) +
-            self.nml_param_val(
-                outflow, "outflow_thick_limit", self.nml_list
-            ) +
-            self.nml_param_val(
-                outflow, 
-                "single_layer_draw", 
-                lambda x: self.nml_list(x, self.nml_bool)
-            ) +
-            self.nml_param_val(
-                outflow, 
-                "flt_off_sw", 
-                lambda x: self.nml_list(x, self.nml_bool)
-            ) +
-            self.nml_param_val(outflow, "outlet_type", self.nml_list) +
-            self.nml_param_val(outflow, "outl_elvs", self.nml_list) +
-            self.nml_param_val(outflow, "bsn_len_outl", self.nml_list) +
-            self.nml_param_val(outflow, "bsn_wid_outl", self.nml_list) +
-            self.nml_param_val(outflow, "crit_O2") +
-            self.nml_param_val(outflow, "crit_O2_dep") +
-            self.nml_param_val(outflow, "crit_O2_days") +
-            self.nml_param_val(outflow, "outlet_crit") +
-            self.nml_param_val(outflow, "O2name", self.nml_str) +
-            self.nml_param_val(outflow, "O2idx", self.nml_str) +
-            self.nml_param_val(outflow, "target_temp") +
-            self.nml_param_val(outflow, "min_lake_temp") +
-            self.nml_param_val(outflow, "fac_range_upper") +
-            self.nml_param_val(outflow, "fac_range_lower") +
-            self.nml_param_val(outflow, "mix_withdraw", self.nml_bool) +
-            self.nml_param_val(outflow, "coupl_oxy_sw", self.nml_bool) +
-            self.nml_param_val(outflow, "withdrTemp_fl", self.nml_str) +
-            self.nml_param_val(outflow, "seepage", self.nml_bool) +
-            self.nml_param_val(outflow, "seepage_rate") +
-            self.nml_param_val(outflow, "crest_width") +
-            self.nml_param_val(outflow, "crest_factor") +
-            "/"
-        )
-
-        return outflow_str
-
-class NMLBase:
-    """
-    Base class for all `nml.NML*` classes.
-    """
-    def set_attributes(self, attrs_dict: dict):
-        """Set attributes for an instance of a `nml.NML*` class.
-        
-        Set attributes using a dictionary of model parameters for `nml.NML*` 
-        classes, e.g., `nml.NMLGLMSetup`, `nml.NMLMixing`, 
-        `nml.NMLWQSetup`.
-
-        Parameters
-        ----------
-        attrs_dict: dict
-            A dictionary of GLM parameters to set the respective attributes in 
-            a `nml.NML*` class instance.
-
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> glm_setup_attrs = {
-        ...     "sim_name": "Example Simulation #1",
-        ...     "max_layers": 500,
-        ...     "min_layer_thick": 0.15,
-        ...     "max_layer_thick": 1.50,
-        ...     "min_layer_vol": 0.025,
-        ...     "density_model": 1,
-        ...     "non_avg": False
-        ... }
-        >>> glm_setup = nml.NMLGLMSetup()
-        >>> glm_setup.set_attributes(glm_setup_attrs)
-        """
-        for key, value in attrs_dict.items():
-            setattr(self, key, value)
-
-    def _single_value_to_list(
-            self, 
-            value: Any
-        ) -> List[Any]:
-        """Convert a single value to a list.
-
-        Many GLM parameters expect a comma-separated list of values, e.g., a 
-        list of floats, a list of integers, or a list of strings. Often this
-        list may only contain a single value. Consider the `csv_point_vars` 
-        attribute of `NMLOutput()`. Here GLM expects a comma-separated list of 
-        variable names. `glmpy` needs to convert lists such as 
-        `['temp', 'salt']` and `['temp']` to `"'temp', 'salt'"` and `"'temp'"`,
-        respectively. When setting attributes of `NMLOutput()`, 
-        `csv_point_vars='temp'` is preferrable to `csv_point_vars=['temp']`. 
-        The `_single_value_to_list` method will convert the value to a python 
-        list providing it is not `None`. Private method for use in `nml.NML*` 
-        classes.
-
-        Parameters
-        ----------
-        value: Any
-            The value to convert to a list.
-        """
-        if not isinstance(value, list) and value is not None:
-            list_value = [value]
         else:
-            list_value = value
-        return list_value
- 
+            return NMLWriter.write_nml_param(
+                param_name=param,
+                param_value=param_dict[param],
+                converter_func=syntax_func
+            )
 
-class NMLGLMSetup(NMLBase):
+class NML(GLMNML):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecated_class_warning("NML", "GLMNML", "glm_nml"),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__(*args, **kwargs)
+
+class SetupBlock(_BaseBlock):
     """Construct the `&glm_setup` model parameters.
 
     The `&glm_setup` parameters define the vertical series of layers that GLM 
-    resolves when modelling a water body. `NMLGLMSetup` provides the means to
-    construct a dictionary containing these parameters for use in the `nml.NML`
-    class. Model parameters are set as attributes upon initialising an instance
-    of the class or using the `set_attributes()` method. Class instances are 
-    callable and return the dictionary of parameters.
+    resolves when modelling a water body. `SetupBlock` provides the means to
+    construct a dictionary containing these parameters for use in the 
+    `glm_nml.GLMNML` class. Model parameters are set as attributes upon 
+    initialising an instance of the class or using the `set_attributes()` 
+    method. The `get_params()` method returns the parameter dictionary and
+    performs optional error checking to ensure compliant parameters. 
 
     Attributes
     ----------
@@ -818,8 +345,8 @@ class NMLGLMSetup(NMLBase):
     
     Examples
     --------
-    >>> from glmpy import nml
-    >>> glm_setup = nml.NMLGLMSetup(
+    >>> from glmpy.nml import glm_nml
+    >>> glm_setup = glm_nml.SetupBlock(
     ...     sim_name="Example Simulation #1",
     ...     max_layers=250
     ... )
@@ -851,56 +378,34 @@ class NMLGLMSetup(NMLBase):
         self.density_model = density_model
         self.non_avg = non_avg
     
-    def __call__(
+    def get_params(
         self, 
-        check_errors: bool = False
+        check_params: bool = False
     ) -> dict[str, Union[float, int, str, bool, None]]:
-        """Consolidate the `&glm_setup` parameters and return them as a 
-        dictionary.
+        """Returns a dictionary of model parameters.
 
-        The `__call__()` method consolidates model parameters set during class 
-        instance initialisation, or updated through `set_attributes()`, into a 
-        dictionary suitable for use with the `nml.NML` class. If `check_errors` 
-        is `True`, the method performs validation checks on the parameters to 
-        ensure they comply with expected formats and constraints. 
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
 
         Parameters
         ----------
-        check_errors : bool, optional
+        check_params : bool, optional
             If `True`, performs validation checks on the parameters to ensure 
             compliance with GLM. Default is `False`.
 
         Returns
         -------
-        dict[str, Union[float, int, str, bool, None]]
-            A dictionary containing the `&glm_setup` parameters.
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> glm_setup = NMLGLMSetup(
-        ...     sim_name="Example Simulation #1", 
-        ...     max_layers=100
-        ... )
-        >>> print(glm_setup(check_errors=False))
-        {
-            'sim_name': 'Example Simulation #1', 
-            'max_layers': 100, 
-            'min_layer_vol': None, 
-            'min_layer_thick': None, 
-            'max_layer_thick': None, 
-            'density_model': None, 
-            'non_avg': None
-        }
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
         """
-        if check_errors:
+        if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
-
         glm_setup_dict = {
             "sim_name": self.sim_name,
             "max_layers": self.max_layers,
@@ -910,18 +415,34 @@ class NMLGLMSetup(NMLBase):
             "density_model": self.density_model,
             "non_avg": self.non_avg
         }
-
         return glm_setup_dict
 
-class NMLMixing(NMLBase):
+    def __call__(
+        self, 
+        check_errors: bool = False
+    ) -> dict[str, Union[float, int, str, bool, None]]:
+        return self.get_params(check_params=check_errors)
+        
+
+class NMLGLMSetup(SetupBlock):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecated_class_warning("NMLGLMSetup", "SetupBlock", "glm_nml"),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__(*args, **kwargs)
+
+class MixingBlock(_BaseBlock):
     """Construct the `&mixing` model parameters.
 
     The `&mixing` parameters define the dynamics of layer mixing in the 
-    modelled water body. `NMLMixing` provides the means to construct a 
-    dictionary containing these parameters for use in the `nml.NML` class. 
-    Model parameters are set as attributes upon initialising an instance of the
-    class or using the `set_attributes()` method. Class instances are callable 
-    and return the dictionary of parameters.
+    modelled water body. `MixingBlock` provides the means to construct a 
+    dictionary containing these parameters for use in the `glm_nml.GLMNML` 
+    class. Model parameters are set as attributes upon initialising an instance 
+    of the class or using the `set_attributes()` method. The `get_params()` 
+    method returns the parameter dictionary and performs optional error 
+    checking to ensure compliant parameters. 
 
     Attributes
     ----------
@@ -951,8 +472,8 @@ class NMLMixing(NMLBase):
     
     Examples
     --------
-    >>> from glmpy import nml
-    >>> mixing = nml.NMLMixing(
+    >>> from glmpy.nml import glm_nml
+    >>> mixing = glm_nml.MixingBlock(
     ...     surface_mixing=1,
     ...     coef_mix_conv=0.1,
     ... )
@@ -990,58 +511,34 @@ class NMLMixing(NMLBase):
         self.coef_mix_hyp = coef_mix_hyp
         self.diff = diff 
     
-    def __call__(
+    def get_params(
         self, 
-        check_errors: bool = False
+        check_params: bool = False
     ) -> dict[str, Union[float, int, None]]:
-        """Consolidate the `&mixing` parameters and return them as a 
-        dictionary.
+        """Returns a dictionary of model parameters.
 
-        The `__call__()` method consolidates model parameters set during class 
-        instance initialisation, or updated through `set_attributes()`, into a 
-        dictionary suitable for use with the `nml.NML` class. If `check_errors` 
-        is `True`, the method performs validation checks on the parameters to 
-        ensure they comply with expected formats and constraints. 
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
 
         Parameters
         ----------
-        check_errors : bool, optional
+        check_params : bool, optional
             If `True`, performs validation checks on the parameters to ensure 
             compliance with GLM. Default is `False`.
 
         Returns
         -------
-        dict[str, Union[float, int, None]]
-            A dictionary containing the `&mixing` parameters.
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> mixing = nml.NMLMixing(
-        ...     surface_mixing=1,
-        ...     coef_mix_conv=0.1,
-        ... )
-        >>> print(mixing(check_errors=False))
-        {
-            'surface_mixing': 1, 
-            'coef_mix_conv': 0.1, 
-            'coef_wind_stir': None, 
-            'coef_mix_shear': None, 
-            'coef_mix_turb': None, 
-            'coef_mix_KH': None, 
-            'deep_mixing': None, 
-            'coef_mix_hyp': None, 
-            'diff': None
-        }
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
         """
-        if check_errors:
+        if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
-
         mixing_dict = {
             "surface_mixing": self.surface_mixing,
             "coef_mix_conv": self.coef_mix_conv,
@@ -1053,19 +550,34 @@ class NMLMixing(NMLBase):
             "coef_mix_hyp": self.coef_mix_hyp,
             "diff": self.diff
         }
-
         return mixing_dict
+    
+    def __call__(
+        self, 
+        check_errors: bool = False
+    ) -> dict[str, Union[float, int, None]]:
+        return self.get_params(check_params=check_errors)
 
-class NMLWQSetup(NMLBase):
+class NMLMixing(MixingBlock):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecated_class_warning("NMLMixing", "MixingBlock", "glm_nml"),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__(*args, **kwargs)
+
+class WQSetupBlock(_BaseBlock):
     """Construct the `&wq_setup` model parameters.
 
     The `&wq_setup` parameters define the coupling of GLM with water quality 
-    and biogeochemical model libraries, e.g., AED2. `NMLWQSetup` provides the 
+    and biogeochemical model libraries, e.g., AED2. `WQSetupBlock` provides the 
     means to construct a dictionary containing these parameters for use in the 
-    `nml.NML` class. Model parameters are set as attributes upon initialising 
-    an instance of the class or using the `set_attributes()` method. Class 
-    instances are callable and return the dictionary of parameters.
-    
+    `glm_nml.GLMNML` class. Model parameters are set as attributes upon 
+    initialising an instance of the class or using the `set_attributes()` 
+    method. The `get_params()` method returns the parameter dictionary and
+    performs optional error checking to ensure compliant parameters. 
+
     wq_lib : Union[str, None]
         Water quality model selection. Options are `"aed2"` and `"fabm"`. 
         Default is `None`.
@@ -1090,8 +602,8 @@ class NMLWQSetup(NMLBase):
     
     Examples
     --------
-    >>> from glmpy import nml
-    >>> wq_setup = nml.NMLWQSetup(
+    >>> from glmpy.nml import glm_nml
+    >>> wq_setup = glm_nml.WQSetupBlock(
     ...     wq_lib="aed2",
     ...     wq_nml_file = "aed2/aed2.nml"
     ... )
@@ -1123,56 +635,34 @@ class NMLWQSetup(NMLBase):
         self.split_factor = split_factor
         self.repair_state = repair_state
 
-    def __call__(
+    def get_params(
         self, 
-        check_errors: bool = False
+        check_params: bool = False
     ) -> dict[str, Union[float, int, str, bool, None]]:
-        """Consolidate the `&wq_setup` parameters and return them as a 
-        dictionary.
+        """Returns a dictionary of model parameters.
 
-        The `__call__()` method consolidates model parameters set during class 
-        instance initialisation, or updated through `set_attributes()`, into a 
-        dictionary suitable for use with the `nml.NML` class. If `check_errors` 
-        is `True`, the method performs validation checks on the parameters to 
-        ensure they comply with expected formats and constraints. 
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
 
         Parameters
         ----------
-        check_errors : bool, optional
+        check_params : bool, optional
             If `True`, performs validation checks on the parameters to ensure 
             compliance with GLM. Default is `False`.
 
         Returns
         -------
-        dict[str, Union[float, int, str, bool, None]]
-            A dictionary containing the `&wq_setup` parameters.
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> wq_setup = nml.NMLWQSetup(
-        ...     wq_lib="aed2",
-        ...     wq_nml_file = "./aed2.nml"
-        ... )
-        >>> print(wq_setup(check_errors=False))
-        {
-            'wq_lib': 'aed2', 
-            'wq_nml_file': './aed2.nml', 
-            'bioshade_feedback': None, 
-            'mobility_off': None, 
-            'ode_method': None, 
-            'split_factor': None, 
-            'repair_state': None
-        }
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
         """
-        if check_errors:
+        if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
-
         wq_setup_dict = {
             "wq_lib": self.wq_lib,
             "wq_nml_file": self.wq_nml_file,
@@ -1182,18 +672,33 @@ class NMLWQSetup(NMLBase):
             "split_factor": self.split_factor,
             "repair_state": self.repair_state
         }
-
         return wq_setup_dict
+    
+    def __call__(
+        self, 
+        check_errors: bool = False
+    ) -> dict[str, Union[float, int, str, bool, None]]:
+        return self.get_params(check_params=check_errors)
 
-class NMLMorphometry(NMLBase):
+class NMLWQSetup(WQSetupBlock):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecated_class_warning("NMLWQSetup", "WQSetupBlock", "glm_nml"),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__(*args, **kwargs)
+
+class MorphometryBlock(_BaseBlock):
     """Construct the `&morphometry` model parameters.
 
     The `&morphometry` parameters define the physical dimensions and location 
-    of the water body. `NMLMorphometry` provides the means to construct a 
-    dictionary containing these parameters for use in the `nml.NML` class. 
-    Model parameters are set as attributes upon initialising an instance of the
-    class or using the `set_attributes()` method. Class instances are callable 
-    and return the dictionary of parameters.
+    of the water body. `MorphometryBlock` provides the means to construct a 
+    dictionary containing these parameters for use in the `glm_nml.GLMNML` 
+    class. Model parameters are set as attributes upon initialising an instance 
+    of the class or using the `set_attributes()` method. The `get_params()` 
+    method returns the parameter dictionary and performs optional error 
+    checking to ensure compliant parameters. 
 
     Attributes
     ----------
@@ -1224,8 +729,8 @@ class NMLMorphometry(NMLBase):
     
     Examples
     --------
-    >>> from glmpy import nml
-    >>> morphometry = nml.NMLMorphometry(
+    >>> from glmpy.nml import glm_nml
+    >>> morphometry = glm_nml.MorphometryBlock(
     ...     lake_name='Example Lake',
     ...     latitude=30.0
     ... )
@@ -1282,59 +787,34 @@ class NMLMorphometry(NMLBase):
         self.H = H
         self.A = A
     
-    def __call__(
+    def get_params(
         self, 
-        check_errors: bool = False
+        check_params: bool = False
     ) -> dict[str, Union[float, str, List[float], None]]:
-        """Consolidate the `&morphometry` parameters and return them as a 
-        dictionary.
+        """Returns a dictionary of model parameters.
 
-        The `__call__()` method consolidates model parameters set during class 
-        instance initialisation, or updated through `set_attributes()`, into a 
-        dictionary suitable for use with the `nml.NML` class. If `check_errors` 
-        is `True`, the method performs validation checks on the parameters to 
-        ensure they comply with expected formats and constraints. 
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
 
         Parameters
         ----------
-        check_errors : bool, optional
+        check_params : bool, optional
             If `True`, performs validation checks on the parameters to ensure 
             compliance with GLM. Default is `False`.
 
         Returns
         -------
-        dict[str, Union[float, int, str, bool, None]]
-            A dictionary containing the `&morphometry` parameters.
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> morphometry = nml.NMLMorphometry(
-        ...     lake_name='Example Lake',
-        ...     latitude=30.0
-        ... )
-        >>> print(morphometry(check_errors=False))
-        {
-            'lake_name': 'Example Lake', 
-            'latitude': 30.0, 
-            'longitude': None, 
-            'base_elev': None, 
-            'crest_elev': None, 
-            'bsn_len': None, 
-            'bsn_wid': None, 
-            'bsn_vals': None, 
-            'H': None, 
-            'A': None
-        }
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
         """
-        if check_errors:
+        if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
-
         morphometry_dict = {
             "lake_name": self.lake_name,
             "latitude": self.latitude,
@@ -1347,18 +827,35 @@ class NMLMorphometry(NMLBase):
             "H": self.H,
             "A": self.A
         }
-
         return morphometry_dict
 
-class NMLTime(NMLBase):
+    def __call__(
+        self, 
+        check_errors: bool = False
+    ) -> dict[str, Union[float, str, List[float], None]]:
+        return self.get_params(check_params=check_errors)
+
+class NMLMorphometry(MorphometryBlock):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecated_class_warning(
+                "NMLMorphometry", "MorphometryBlock", "glm_nml"
+            ),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__(*args, **kwargs) 
+
+class TimeBlock(_BaseBlock):
     """Construct the `&time` model parameters.
 
     The `&time` parameters define the duration and timestep of a GLM 
-    simulation. `NMLTime` provides the means to construct a dictionary 
-    containing these parameters for use in the `nml.NML` class. Model 
+    simulation. `TimeBlock` provides the means to construct a dictionary 
+    containing these parameters for use in the `glm_nml.GLMNML` class. Model 
     parameters are set as attributes upon initialising an instance of the class 
-    or using the `set_attributes()` method. Class instances are callable and 
-    return the dictionary of parameters.
+    or using the `set_attributes()` method. The `get_params()` method returns 
+    the parameter dictionary and performs optional error checking to ensure 
+    compliant parameters. 
 
     Attributes
     ----------
@@ -1380,8 +877,8 @@ class NMLTime(NMLBase):
     
     Examples
     --------
-    >>> from glmpy import nml
-    >>> time = nml.NMLTime(
+    >>> from glmpy.nml import glm_nml
+    >>> time = glm_nml.TimeBlock(
     ...     timefmt=3,
     ...     start="1998-01-01 00:00:00"
     ... )
@@ -1410,55 +907,34 @@ class NMLTime(NMLBase):
         self.num_days = num_days
         self.timezone = timezone       
     
-    def __call__(
+    def get_params(
         self, 
-        check_errors: bool = False
+        check_params: bool = False
     ) -> dict[str, Union[float, int, str, None]]:
-        """Consolidate the `&time` parameters and return them as a 
-        dictionary.
+        """Returns a dictionary of model parameters.
 
-        The `__call__()` method consolidates model parameters set during class 
-        instance initialisation, or updated through `set_attributes()`, into a 
-        dictionary suitable for use with the `nml.NML` class. If `check_errors` 
-        is `True`, the method performs validation checks on the parameters to 
-        ensure they comply with expected formats and constraints. 
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
 
         Parameters
         ----------
-        check_errors : bool, optional
+        check_params : bool, optional
             If `True`, performs validation checks on the parameters to ensure 
             compliance with GLM. Default is `False`.
 
         Returns
         -------
-        dict[str, Union[float, int, str, None]]
-            A dictionary containing the `&time` parameters.
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> time = nml.NMLTime(
-        ...     timefmt=3,
-        ...     start="1998-01-01 00:00:00"
-        ... )
-        >>> print(time(check_errors=False))
-        ... {
-        ...     'timefmt': 3, 
-        ...     'start': '1998-01-01 00:00:00', 
-        ...     'stop': None, 
-        ...     'dt': None, 
-        ...     'num_days': None, 
-        ...     'timezone': None
-        ... }
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
         """
-        if check_errors:
+        if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
-
         time_dict = {
             "timefmt": self.timefmt,
             "start": self.start,
@@ -1467,18 +943,33 @@ class NMLTime(NMLBase):
             "num_days": self.num_days,
             "timezone": self.timezone
         }
-
-        return time_dict    
+        return time_dict  
     
-class NMLOutput(NMLBase):
+    def __call__(
+        self, 
+        check_errors: bool = False
+    ) -> dict[str, Union[float, int, str, None]]:
+        return self.get_params(check_params=check_errors)
+
+class NMLTime(TimeBlock):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecated_class_warning("NMLTime", "TimeBlock", "glm_nml"),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__(*args, **kwargs)
+
+class OutputBlock(_BaseBlock):
     """Construct the `&output` model parameters.
 
     The `&output` parameters define the contents and location of GLM output 
-    files. `NMLOutput` provides the means to construct a dictionary containing 
-    these parameters for use in the `nml.NML` class. Model parameters are set 
-    as attributes upon initialising an instance of the class or using the 
-    `set_attributes()` method. Class instances are callable and return the 
-    dictionary of parameters.
+    files. `OutputBlock` provides the means to construct a dictionary 
+    containing these parameters for use in the `glm_nml.GLMNML` class. Model 
+    parameters are set as attributes upon initialising an instance of the class 
+    or using the `set_attributes()` method. The `get_params()` method returns 
+    the parameter dictionary and performs optional error checking to ensure 
+    compliant parameters. 
 
     Attributes
     ----------
@@ -1524,8 +1015,8 @@ class NMLOutput(NMLBase):
 
     Examples
     --------
-    >>> from glmpy import nml
-    >>> output = nml.NMLOutput(
+    >>> from glmpy.nml import glm_nml
+    >>> output = glm_nml.OutputBlock(
     ...     out_dir="output",
     ...     out_fn="output_file"
     ... )
@@ -1583,74 +1074,42 @@ class NMLOutput(NMLBase):
         self.csv_outlet_vars = csv_outlet_vars
         self.csv_ovrflw_fname = csv_ovrflw_fname
 
-    def __call__(
+    def get_params(
         self, 
-        check_errors: bool = False
+        check_params: bool = False
     ) -> dict[
         str, Union[float, int, str, bool, List[float], List[str], None]
     ]:
-        """Consolidate the `&output` parameters and return them as a 
-        dictionary.
+        """Returns a dictionary of model parameters.
 
-        The `__call__()` method consolidates model parameters set during class 
-        instance initialisation, or updated through `set_attributes()`, into a 
-        dictionary suitable for use with the `nml.NML` class. If `check_errors` 
-        is `True`, the method performs validation checks on the parameters to 
-        ensure they comply with expected formats and constraints. 
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
 
         Parameters
         ----------
-        check_errors : bool, optional
+        check_params : bool, optional
             If `True`, performs validation checks on the parameters to ensure 
             compliance with GLM. Default is `False`.
 
         Returns
         -------
-        dict[str, Union[float, int, str, bool, List[float], List[str], None]
-            A dictionary containing the `&output` parameters.
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> output = nml.NMLOutput(
-        ...     out_dir="output",
-        ...     out_fn="output_file"
-        ... )
-        >>> print(output(check_errors=False))
-        {
-            'out_dir': 'output', 
-            'out_fn': 'output_file', 
-            'nsave': None, 
-            'csv_lake_fname': None, 
-            'csv_point_nlevs': None, 
-            'csv_point_fname': None, 
-            'csv_point_frombot': None, 
-            'csv_point_at': None, 
-            'csv_point_nvars': None, 
-            'csv_point_vars': None, 
-            'csv_outlet_allinone': None, 
-            'csv_outlet_fname': None, 
-            'csv_outlet_nvars': None, 
-            'csv_outlet_vars': None, 
-            'csv_ovrflw_fname': None
-        }
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
         """
-
         self.csv_point_frombot = self._single_value_to_list(
             self.csv_point_frombot
         )
         self.csv_point_at = self._single_value_to_list(self.csv_point_at)
         self.csv_point_vars = self._single_value_to_list(self.csv_point_vars)    
         self.csv_outlet_vars = self._single_value_to_list(self.csv_outlet_vars)       
-
-        if check_errors:
+        if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
-
         output_dict = {
             "out_dir": self.out_dir,
             "out_fn": self.out_fn,
@@ -1668,18 +1127,34 @@ class NMLOutput(NMLBase):
             "csv_outlet_vars": self.csv_outlet_vars,
             "csv_ovrflw_fname": self.csv_ovrflw_fname
         }
-
         return output_dict
+    
+    def __call__(
+        self, 
+        check_errors: bool = False
+    ) -> dict[
+        str, Union[float, int, str, bool, List[float], List[str], None]]:
+        return self.get_params(check_params=check_errors)
 
-class NMLInitProfiles(NMLBase):
+class NMLOutput(OutputBlock):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecated_class_warning("NMLOutput", "OutputBlock", "glm_nml"),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__(*args, **kwargs)
+
+class InitProfilesBlock(_BaseBlock):
     """Construct the `&init_profiles` model parameters.
 
     The `&init_profiles` parameters define the initial conditions at specific 
-    depths in the water body. `NMLInitProfiles` provides the means to construct 
-    a dictionary containing these parameters for use in the `nml.NML` class. 
-    Model parameters are set as attributes upon initialising an instance of 
-    the class or using the `set_attributes()` method. Class instances are 
-    callable and return the dictionary of parameters.
+    depths in the water body. `InitProfilesBlock` provides the means to 
+    construct a dictionary containing these parameters for use in the 
+    `glm_nml.GLMNML` class. Model parameters are set as attributes upon 
+    initialising an instance of the class or using the `set_attributes()` 
+    method. The `get_params()` method returns the parameter dictionary and
+    performs optional error checking to ensure compliant parameters. 
 
     Attributes
     ----------
@@ -1707,8 +1182,8 @@ class NMLInitProfiles(NMLBase):
     
     Examples
     --------
-    >>> from glmpy import nml
-    >>> init_profiles = nml.NMLInitProfiles(
+    >>> from glmpy.nml import glm_nml
+    >>> init_profiles = glm_nml.InitProfilesBlock(
     ...     lake_depth=43,
     ...     num_depths=2
     ... )
@@ -1752,65 +1227,41 @@ class NMLInitProfiles(NMLBase):
         self.wq_names = wq_names
         self.wq_init_vals = wq_init_vals
 
-    def __call__(
+    def get_params(
         self, 
-        check_errors: bool = False
+        check_params: bool = False
     ) -> dict[
         str, Union[float, int, str, List[float], List[str], None]
     ]:
-        """Consolidate the `&init_profiles` parameters and return them as a 
-        dictionary.
+        """Returns a dictionary of model parameters.
 
-        The `__call__()` method consolidates model parameters set during class 
-        instance initialisation, or updated through `set_attributes()`, into a 
-        dictionary suitable for use with the `nml.NML` class. If `check_errors` 
-        is `True`, the method performs validation checks on the parameters to 
-        ensure they comply with expected formats and constraints. 
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
 
         Parameters
         ----------
-        check_errors : bool, optional
+        check_params : bool, optional
             If `True`, performs validation checks on the parameters to ensure 
             compliance with GLM. Default is `False`.
 
         Returns
         -------
-        dict[str, Union[float, int, str, List[float], List[str], None]
-            A dictionary containing the `&init_profiles` parameters.
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> init_profiles = nml.NMLInitProfiles(
-        ...     lake_depth=43,
-        ...     num_depths=2
-        ... )
-        >>> print(init_profiles(check_errors=False))
-        {
-            'lake_depth': 43, 
-            'num_depths': 2, 
-            'the_depths': None, 
-            'the_temps': None, 
-            'the_sals': None, 
-            'num_wq_vars': None, 
-            'wq_names': None, 
-            'wq_init_vals': None
-        }
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
         """
         self.the_depths = self._single_value_to_list(self.the_depths)
         self.the_temps = self._single_value_to_list(self.the_temps)
         self.the_depths = self._single_value_to_list(self.the_depths)
         self.wq_names = self._single_value_to_list(self.wq_names)
         self.wq_init_vals = self._single_value_to_list(self.wq_init_vals)
-
-        if check_errors:
+        if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
-
         init_profiles_dict = {
             "lake_depth": self.lake_depth,
             "num_depths": self.num_depths,
@@ -1821,18 +1272,37 @@ class NMLInitProfiles(NMLBase):
             "wq_names": self.wq_names,
             "wq_init_vals": self.wq_init_vals
         }
-
         return init_profiles_dict
     
-class NMLLight(NMLBase):
+    def __call__(
+        self, 
+        check_errors: bool = False
+    ) -> dict[str, Union[float, int, str, List[float], List[str], None]]:
+        return self.get_params(check_params=check_errors)
+
+class NMLInitProfiles(InitProfilesBlock):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecated_class_warning(
+                "NMLInitProfiles", 
+                "InitProfilesBlock", 
+                "glm_nml"
+            ),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__(*args, **kwargs)
+
+class LightBlock(_BaseBlock):
     """Construct the `&light` model parameters.
 
     The `&light` parameters define light penertration into the water body. 
-    `NMLLight` provides the means to construct a dictionary containing these 
-    parameters for use in the `nml.NML` class. Model parameters are set as 
-    attributes upon initialising an instance of the class or using the 
-    `set_attributes()` method. Class instances are callable and return the 
-    dictionary of parameters.
+    `LightBlock` provides the means to construct a dictionary containing these 
+    parameters for use in the `glm_nml.GLMNML` class. Model parameters are set 
+    as attributes upon initialising an instance of the class or using the 
+    `set_attributes()` method. The `get_params()` method returns the parameter 
+    dictionary andperforms optional error checking to ensure compliant 
+    parameters. 
 
     Attributes
     ----------
@@ -1859,8 +1329,8 @@ class NMLLight(NMLBase):
 
     Examples
     --------
-    >>> from glmpy import nml
-    >>> light = nml.NMLLight(
+    >>> from glmpy.nml import glm_nml
+    >>> light = glm_nml.LightBlock(
     ...     light_mode=0,
     ...     Kw=0.5
     ... )
@@ -1890,59 +1360,36 @@ class NMLLight(NMLBase):
         self.energy_frac = energy_frac
         self.Benthic_Imin = Benthic_Imin   
 
-    def __call__(
+    def get_params(
         self, 
-        check_errors: bool = False
-    ) -> dict[str, Union[float, int, str, List[float], None]]:
-        """Consolidate the `&light` parameters and return them as a 
-        dictionary.
+        check_params: bool = False
+    ) -> dict[str, Union[float, int, str, List[float], None]]: 
+        """Returns a dictionary of model parameters.
 
-        The `__call__()` method consolidates model parameters set during class 
-        instance initialisation, or updated through `set_attributes()`, into a 
-        dictionary suitable for use with the `nml.NML` class. If `check_errors` 
-        is `True`, the method performs validation checks on the parameters to 
-        ensure they comply with expected formats and constraints. 
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
 
         Parameters
         ----------
-        check_errors : bool, optional
+        check_params : bool, optional
             If `True`, performs validation checks on the parameters to ensure 
             compliance with GLM. Default is `False`.
 
         Returns
         -------
-        dict[str, Union[float, int, str, List[float], None]]
-            A dictionary containing the `&light` parameters.
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> light = nml.NMLLight(
-        ...    light_mode=0,
-        ...    Kw=0.5
-        ... )
-        >>> print(light(check_errors=False))
-        {
-            'light_mode': 0, 
-            'Kw': 0.5, 
-            'Kw_file': None, 
-            'n_bands': None, 
-            'light_extc': None, 
-            'energy_frac': None, 
-            'Benthic_Imin': None
-        }
-        """        
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
+        """
         self.light_extc = self._single_value_to_list(self.light_extc)   
         self.energy_frac = self._single_value_to_list(self.energy_frac)
-
-        if check_errors:
+        if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
-
         light_dict = {
             "light_mode": self.light_mode,
             "Kw": self.Kw,
@@ -1952,18 +1399,33 @@ class NMLLight(NMLBase):
             "energy_frac": self.energy_frac,
             "Benthic_Imin": self.Benthic_Imin
         }     
-
         return light_dict
 
-class NMLBirdModel(NMLBase):
+    def __call__(
+        self, 
+        check_errors: bool = False
+    ) -> dict[str, Union[float, int, str, List[float], None]]:
+        return self.get_params(check_params=check_errors)
+
+class NMLLight(LightBlock):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecated_class_warning("NMLLight", "LightBlock", "glm_nml"),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__(*args, **kwargs)
+
+class BirdModelBlock(_BaseBlock):
     """Construct the `&bird_model` model parameters.
 
     The `&bird_model` parameters define the surface irradiance based on the 
-    Bird Clear Sky Model (BCSM) (Bird, 1984). `NMLBirdModel` provides the means 
-    to construct a dictionary containing these parameters for use in the 
-    `nml.NML` class. Model parameters are set as attributes upon initialising 
-    an instance of the class or using the `set_attributes()` method. Class 
-    instances are callable and return the dictionary of parameters.
+    Bird Clear Sky Model (BCSM) (Bird, 1984). `BirdModelBlock` provides the 
+    means to construct a dictionary containing these parameters for use in the 
+    `glm_nml.GLMNML` class. Model parameters are set as attributes upon 
+    initialising an instance of the class or using the `set_attributes()` 
+    method. The `get_params()` method returns the parameter dictionary and
+    performs optional error checking to ensure compliant parameters. 
 
     Attributes
     ----------
@@ -1985,8 +1447,8 @@ class NMLBirdModel(NMLBase):
     
     Examples
     --------
-    >>> from glmpy import nml
-    >>> bird_model = nml.NMLBirdModel(
+    >>> from glmpy.nml import glm_nml
+    >>> bird_model = glm_nml.BirdModelBlock(
     ...     AP=973,
     ...     Oz=0.2
     ... )
@@ -2015,55 +1477,34 @@ class NMLBirdModel(NMLBase):
         self.AOD380 = AOD380
         self.Albedo = Albedo
     
-    def __call__(
+    def get_params(
         self, 
-        check_errors: bool = False
+        check_params: bool = False
     ) -> dict[str, Union[float, None]]:
-        """Consolidate the `&bird_model` parameters and return them as a 
-        dictionary.
+        """Returns a dictionary of model parameters.
 
-        The `__call__()` method consolidates model parameters set during class 
-        instance initialisation, or updated through `set_attributes()`, into a 
-        dictionary suitable for use with the `nml.NML` class. If `check_errors` 
-        is `True`, the method performs validation checks on the parameters to 
-        ensure they comply with expected formats and constraints. 
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
 
         Parameters
         ----------
-        check_errors : bool, optional
+        check_params : bool, optional
             If `True`, performs validation checks on the parameters to ensure 
             compliance with GLM. Default is `False`.
 
         Returns
         -------
-        dict[str, Union[float, None]]
-            A dictionary containing the `&bird_model` parameters.
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> bird_model = nml.NMLBirdModel(
-        ...     AP=973,
-        ...     Oz=0.2
-        ... )
-        >>> print(bird_model(check_errors=False))
-        {
-            'AP': 973, 
-            'Oz': 0.2, 
-            'WatVap': None, 
-            'AOD500': None, 
-            'AOD380': None, 
-            'Albedo': None
-        }
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
         """
-        if check_errors:
+        if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
-
         bird_model_dict = {
             "AP": self.AP,
             "Oz": self.Oz,
@@ -2072,18 +1513,35 @@ class NMLBirdModel(NMLBase):
             "AOD380": self.AOD380,
             "Albedo": self.Albedo
         }
-
         return bird_model_dict
     
-class NMLSediment(NMLBase):
+    def __call__(
+        self, 
+        check_errors: bool = False
+    ) -> dict[str, Union[float, None]]:
+        return self.get_params(check_params=check_errors)
+
+class NMLBirdModel(BirdModelBlock):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecated_class_warning(
+                "NMLBirdModel", "BirdModelBlock", "glm_nml"
+            ),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__(*args, **kwargs)
+
+class SedimentBlock(_BaseBlock):
     """Construct the `&sediment` model parameters.
 
     The `&sediment` parameters define the thermal properties of the 
-    soil-sediment. `NMLSediment` provides the means to construct a dictionary 
-    containing these parameters for use in the `nml.NML` class. Model 
+    soil-sediment. `SedimentBlock` provides the means to construct a dictionary 
+    containing these parameters for use in the `glm_nml.GLMNML` class. Model 
     parameters are set as attributes upon initialising an instance of the class 
-    or using the `set_attributes()` method. Class instances are callable and 
-    return the dictionary of parameters.
+    or using the `set_attributes()` method. The `get_params()` method returns 
+    the parameter dictionary and performs optional error checking to ensure 
+    compliant parameters. 
 
     Attributes
     ----------
@@ -2119,8 +1577,8 @@ class NMLSediment(NMLBase):
 
     Examples
     --------
-    >>> from glmpy import nml
-    >>> sediment = nml.NMLSediment(
+    >>> from glmpy.nml import glm_nml
+    >>> sediment = glm_nml.SedimentBlock(
     ...     sed_heat_Ksoil=0.0,
     ...     sed_temp_depth=0.1
     ... )
@@ -2161,50 +1619,26 @@ class NMLSediment(NMLBase):
         self.sed_reflectivity = sed_reflectivity
         self.sed_roughness = sed_roughness
 
-    def __call__(
+    def get_params(
         self, 
-        check_errors: bool = False
+        check_params: bool = False
     ) -> dict[str, Union[float, int, List[float], List[int], None]]:
-        """Consolidate the `&sediment` parameters and return them as a 
-        dictionary.
+        """Returns a dictionary of model parameters.
 
-        The `__call__()` method consolidates model parameters set during class 
-        instance initialisation, or updated through `set_attributes()`, into a 
-        dictionary suitable for use with the `nml.NML` class. If `check_errors` 
-        is `True`, the method performs validation checks on the parameters to 
-        ensure they comply with expected formats and constraints. 
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
 
         Parameters
         ----------
-        check_errors : bool, optional
+        check_params : bool, optional
             If `True`, performs validation checks on the parameters to ensure 
             compliance with GLM. Default is `False`.
 
         Returns
         -------
-        dict[str, Union[float, int, List[float], List[int], None]]
-            A dictionary containing the `&sediment` parameters.
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> sediment = nml.NMLSediment(
-        ...     sed_heat_Ksoil=0.0,
-        ...     sed_temp_depth=0.1
-        >>> )
-        >>> print(sediment(check_errors=False))
-        {
-            'sed_heat_Ksoil': 0.0, 
-            'sed_temp_depth': 0.1, 
-            'sed_temp_mean': None, 
-            'sed_temp_amplitude': None, 
-            'sed_temp_peak_doy': None, 
-            'benthic_mode': None, 
-            'n_zones': None, 
-            'zone_heights': None, 
-            'sed_reflectivity': None, 
-            'sed_roughness': None
-        }
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
         """
         self.sed_temp_mean = self._single_value_to_list(self.sed_temp_mean)
         self.sed_temp_amplitude = self._single_value_to_list(
@@ -2218,15 +1652,13 @@ class NMLSediment(NMLBase):
             self.sed_reflectivity
         )
         self.sed_roughness = self._single_value_to_list(self.sed_roughness)
-
-        if check_errors:
+        if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
-
         sediment_dict = {
             "sed_heat_Ksoil": self.sed_heat_Ksoil,
             "sed_temp_depth": self.sed_temp_depth,
@@ -2239,18 +1671,35 @@ class NMLSediment(NMLBase):
             "sed_reflectivity": self.sed_reflectivity,
             "sed_roughness": self.sed_roughness
         }
-
         return sediment_dict
 
-class NMLSnowIce(NMLBase):
+    def __call__(
+        self, 
+        check_errors: bool = False
+    ) -> dict[str, Union[float, int, List[float], List[int], None]]:
+        return self.get_params(check_params=check_errors)
+
+class NMLSediment(SedimentBlock):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecated_class_warning(
+                "NMLSediment", "SedimentBlock", "glm_nml"
+            ),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__(*args, **kwargs)
+
+class SnowIceBlock(_BaseBlock):
     """Construct the `&snowice` model parameters.
 
     The `&snowice` parameters define the formation of snow and ice cover on the
-    water body. `NMLSnowIce` provides the means to construct a dictionary 
-    containing these parameters for use in the `nml.NML` class. Model 
+    water body. `SetupBlock` provides the means to construct a dictionary 
+    containing these parameters for use in the `glm_nml.GLMNML` class. Model 
     parameters are set as attributes upon initialising an instance of the 
-    class or using the `set_attributes()` method. Class instances are callable 
-    and return the dictionary of parameters.
+    class or using the `set_attributes()` method. The `get_params()` method 
+    returns the parameter dictionary and performs optional error checking to 
+    ensure compliant parameters. 
 
     Attributes
     ----------
@@ -2264,8 +1713,8 @@ class NMLSnowIce(NMLBase):
 
     Examples
     --------
-    >>> from glmpy import nml
-    >>> snow_ice = nml.NMLSnowIce(
+    >>> from glmpy.nml import glm_nml
+    >>> snow_ice = glm_nml.SnowIceBlock(
     ...     snow_albedo_factor=1.0,
     ...     snow_rho_min=40
     ... )
@@ -2285,70 +1734,67 @@ class NMLSnowIce(NMLBase):
         self.snow_rho_max = snow_rho_max
         self.snow_rho_min = snow_rho_min
     
-    def __call__(
+    def get_params(
         self, 
-        check_errors: bool = False
+        check_params: bool = False
     ) -> dict[str, Union[float, None]]:
-        """Consolidate the `&snowice` parameters and return them as a 
-        dictionary.
+        """Returns a dictionary of model parameters.
 
-        The `__call__()` method consolidates model parameters set during class 
-        instance initialisation, or updated through `set_attributes()`, into a 
-        dictionary suitable for use with the `nml.NML` class. If `check_errors` 
-        is `True`, the method performs validation checks on the parameters to 
-        ensure they comply with expected formats and constraints. 
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
 
         Parameters
         ----------
-        check_errors : bool, optional
+        check_params : bool, optional
             If `True`, performs validation checks on the parameters to ensure 
             compliance with GLM. Default is `False`.
 
         Returns
         -------
-        dict[str, Union[float, None]]
-            A dictionary containing the `&snowice` parameters.
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> snow_ice = nml.NMLSnowIce(
-        ...     snow_albedo_factor=1.0,
-        ...     snow_rho_min=40
-        ... )
-        >>> print(snow_ice(check_errors=False))
-        {
-            'snow_albedo_factor': 1.0, 
-            'snow_rho_min': 40, 
-            'snow_rho_max': None
-        }
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
         """
-        if check_errors:
+        if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
-
         snowice_dict = {
             "snow_albedo_factor": self.snow_albedo_factor,
             "snow_rho_min": self.snow_rho_min,
             "snow_rho_max": self.snow_rho_max
         }
-
         return snowice_dict
+    
+    def __call__(
+        self, 
+        check_errors: bool = False
+    ) -> dict[str, Union[float, None]]:
+        return self.get_params(check_params=check_errors)
 
-class NMLMeteorology(NMLBase):
+class NMLSnowIce(SnowIceBlock):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecated_class_warning("NMLSnowIce", "SnowIceBlock", "glm_nml"),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__(*args, **kwargs)
+
+class MeteorologyBlock(_BaseBlock):
     """Construct the `&meteorology` model parameters.
 
     The `&meteorology` parameters define a variety of meteorological 
     dynamics, e.g., rainfall, air temperature, radiation, wind, and cloud 
-    cover. `NMLMeteorology` provides the means to construct a dictionary 
-    containing these parameters for use in the `nml.NML` class. Model
+    cover. `MeteorologyBlock` provides the means to construct a dictionary 
+    containing these parameters for use in the `glm_nml.GLMNML` class. Model
     parameters are set as attributes upon initialising an instance of the 
-    class or using the `set_attributes()` method. Class instances are callable 
-    and return the dictionary of parameters.
+    class or using the `set_attributes()` method. The `get_params()` method 
+    returns the parameter dictionary and performs optional error checking to 
+    ensure compliant parameters. 
 
     Attributes
     ----------
@@ -2441,8 +1887,8 @@ class NMLMeteorology(NMLBase):
     
     Examples
     --------
-    >>> from glmpy import nml
-    >>> meteorology = nml.NMLMeteorology(
+    >>> from glmpy.nml import glm_nml
+    >>> meteorology = glm_nml.MeteorologyBlock(
     ...     met_sw=True,
     ...     lw_type='LW_NET'
     ... )
@@ -2526,77 +1972,34 @@ class NMLMeteorology(NMLBase):
         self.wind_dir = wind_dir
         self.fetch_scale = fetch_scale
 
-    def __call__(
+    def get_params(
         self, 
-        check_errors: bool = False
+        check_params: bool = False
     ) -> dict[str, Union[float, int, str, bool, None]]:
-        """Consolidate the `&meteorology` parameters and return them as a 
-        dictionary.
+        """Returns a dictionary of model parameters.
 
-        The `__call__()` method consolidates model parameters set during class 
-        instance initialisation, or updated through `set_attributes()`, into a 
-        dictionary suitable for use with the `nml.NML` class. If `check_errors` 
-        is `True`, the method performs validation checks on the parameters to 
-        ensure they comply with expected formats and constraints. 
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
 
         Parameters
         ----------
-        check_errors : bool, optional
+        check_params : bool, optional
             If `True`, performs validation checks on the parameters to ensure 
             compliance with GLM. Default is `False`.
 
         Returns
         -------
-        dict[str, Union[float, int, str, bool, None]]
-            A dictionary containing the `&meteorology` parameters.
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> meteorology = nml.NMLMeteorology(
-        ...     met_sw=True,
-        ...     lw_type='LW_NET'
-        ... )
-        >>> print(meteorology(check_errors=False))
-        {
-            'met_sw': True, 
-            'meteo_fl': None, 
-            'subdaily': None, 
-            'time_fmt': None, 
-            'rad_mode': None, 
-            'albedo_mode': None, 
-            'sw_factor': None, 
-            'lw_type': 'LW_NET', 
-            'cloud_mode': None, 
-            'lw_factor': None, 
-            'atm_stab': None, 
-            'rh_factor': None, 
-            'at_factor': None, 
-            'ce': None, 
-            'ch': None, 
-            'rain_sw': None, 
-            'rain_factor': None, 
-            'catchrain': None, 
-            'rain_threshold': None, 
-            'runoff_coef': None, 
-            'cd': None, 
-            'wind_factor': None, 
-            'fetch_mode': None, 
-            'Aws': None, 
-            'Xws': None, 
-            'num_dir': None, 
-            'wind_dir': None, 
-            'fetch_scale': None
-        }
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
         """
-        if check_errors:
+        if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
-
         meteorology_dict = {
             "met_sw": self.met_sw,
             "meteo_fl": self.meteo_fl,
@@ -2627,18 +2030,35 @@ class NMLMeteorology(NMLBase):
             "wind_dir": self.wind_dir,
             "fetch_scale": self.fetch_scale
         }
-
         return meteorology_dict
+    
+    def __call__(
+        self, 
+        check_errors: bool = False
+    ) -> dict[str, Union[float, int, str, bool, None]]:
+        return self.get_params(check_params=check_errors)
 
-class NMLInflow(NMLBase):
-    """Construct the `&inflow` model parameters.
+class NMLMeteorology(MeteorologyBlock):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecated_class_warning(
+                "NMLMeteorology", "MeteorologyBlock", "glm_nml"
+            ),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__(*args, **kwargs)
+
+class InflowBlock(_BaseBlock):
+    """Return the `&inflow` parameter dictionary.
 
     The `&inflow` parameters define river inflows and submerged inflows. 
-    `NMLInflow` provides the means to construct a dictionary containing these 
-    parameters for use in the `nml.NML` class. Model parameters are set as 
-    attributes upon initialising an instance of the class or using the 
-    `set_attributes()` method. Class instances are callable and return the 
-    dictionary of parameters.
+    `InflowBlock` provides the means to construct a dictionary containing these 
+    parameters for use in the `glm_nml.GLMNML` class. Model parameters are set 
+    as attributes upon initialising an instance of the class or using the 
+    `set_attributes()` method. The `get_params()` method returns the parameter 
+    dictionary and performs optional error checking to ensure compliant 
+    parameters. 
 
     Attributes
     ----------
@@ -2679,8 +2099,8 @@ class NMLInflow(NMLBase):
 
     Examples
     --------
-    >>> from glmpy import nml
-    >>> inflow = nml.NMLInflow(
+    >>> from glmpy.nml import glm_nml
+    >>> inflow = glm_nml.InflowBlock(
     ...     num_inflows=5,
     ...     names_of_strms= ['Inflow1','Inflow2','Inflow3','Inflow4','Inflow5']
     ... )
@@ -2734,65 +2154,30 @@ class NMLInflow(NMLBase):
         self.inflow_vars = inflow_vars
         self.time_fmt = time_fmt
     
-    def __call__(
+    def get_params(
         self,
-        check_errors: bool = False
+        check_params: bool = False
     ) -> dict[
         str, Union[
             float, int, str, bool, List[float], List[str], List[bool], None
         ]
     ]:
-        """Consolidate the `&inflow` parameters and return them as a 
-        dictionary.
+        """Returns a dictionary of model parameters.
 
-        The `__call__()` method consolidates model parameters set during class 
-        instance initialisation, or updated through `set_attributes()`, into a 
-        dictionary suitable for use with the `nml.NML` class. If `check_errors` 
-        is `True`, the method performs validation checks on the parameters to 
-        ensure they comply with expected formats and constraints. 
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
 
         Parameters
         ----------
-        check_errors : bool, optional
+        check_params : bool, optional
             If `True`, performs validation checks on the parameters to ensure 
             compliance with GLM. Default is `False`.
 
         Returns
         -------
-        dict[
-        str, 
-        Union[
-        float, int, str, bool, List[float], List[str], List[bool], None
-        ]
-        ]
-            A dictionary containing the `&inflow` parameters.
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> inflow = nml.NMLInflow(
-        ...     num_inflows=5,
-        ...     names_of_strms= [
-        ...         'Inflow1','Inflow2','Inflow3','Inflow4','Inflow5'
-        ...     ]
-        ... )
-        >>> print(inflow(check_errors=False))
-        {
-            'num_inflows': 5, 
-            'names_of_strms': [
-                'Inflow1', 'Inflow2', 'Inflow3', 'Inflow4', 'Inflow5'
-            ], 
-            'subm_flag': None, 
-            'strm_hf_angle': None, 
-            'strmbd_slope': None, 
-            'strmbd_drag': None, 
-            'coef_inf_entrain': None, 
-            'inflow_factor': None, 
-            'inflow_fl': None, 
-            'inflow_varnum': None, 
-            'inflow_vars': None, 
-            'time_fmt': None
-        }
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
         """
         self.names_of_strms = self._single_value_to_list(self.names_of_strms)
         self.subm_flag = self._single_value_to_list(self.subm_flag)
@@ -2805,15 +2190,13 @@ class NMLInflow(NMLBase):
         self.inflow_factor = self._single_value_to_list(self.inflow_factor)
         self.inflow_fl = self._single_value_to_list(self.inflow_fl)
         self.inflow_vars = self._single_value_to_list(self.inflow_vars)
-
-        if check_errors:
+        if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
-            )     
-
+            )    
         inflow_dict = {
             "num_inflows": self.num_inflows,
             "names_of_strms": self.names_of_strms,
@@ -2828,27 +2211,48 @@ class NMLInflow(NMLBase):
             "inflow_vars": self.inflow_vars,
             "time_fmt": self.time_fmt
         }
-
         return inflow_dict
+    
+    def __call__(
+        self, 
+        check_errors: bool = False
+    ) -> dict[
+            str, 
+            Union[
+                float, int, str, bool, List[float], List[str], List[bool], 
+                None
+            ]
+        ]:
+        return self.get_params(check_params=check_errors)
 
-class NMLOutflow(NMLBase):
+class NMLInflow(InflowBlock):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecated_class_warning("NMLInflow", "InflowBlock", "glm_nml"),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__(*args, **kwargs)
+
+class OutflowBlock(_BaseBlock):
     """Construct the `&outflow` model parameters.
 
     The `&outflow` parameters define withdrawals, outlets, offtakes, and 
-    seepage. `NMLOutflow` provides the means to construct a dictionary 
-    containing these parameters for use in the `nml.NML` class. Model 
+    seepage. `OutflowBlock` provides the means to construct a dictionary 
+    containing these parameters for use in the `glm_nml.GLMNML` class. Model 
     parameters are set as attributes upon initialising an instance of the class 
-    or using the `set_attributes()` method. Class instances are callable and 
-    return the dictionary of parameters.
+    or using the `set_attributes()` method. The `get_params()` method returns 
+    the parameter dictionary and performs optional error checking to ensure 
+    compliant parameters. 
 
     Attributes
     ----------
     num_outlet : Union[int, None]
         Number of outflows (including withdrawals, outlets or offtakes) to be
         included in this simulation. Default is `None`.
-    outflow_fl : Union[str, None]
-        Filename of the file containing the outflow time-series. Default is
-        `None`.
+    outflow_fl : Union[List[str], str, None]
+        Filename of the file containing the outflow time-series. 
+        A list if `num_outlet > 1`.Default is `None`.
     time_fmt : Union[str, None]
         Time format of the 1st column in the `outflow_fl`. Default is `None`.
     outflow_factor : Union[List[float], float, None]
@@ -2923,8 +2327,8 @@ class NMLOutflow(NMLBase):
 
     Examples
     --------
-    >>> from glmpy import nml
-    >>> outflow = nml.NMLOutflow(
+    >>> from glmpy.nml import glm_nml
+    >>> outflow = glm_nml.OutflowBlock(
     ...     num_outlet=1,
     ...     flt_off_sw=True
     ... )
@@ -2944,7 +2348,7 @@ class NMLOutflow(NMLBase):
     def __init__(
         self,
         num_outlet: Union[int, None] = None,
-        outflow_fl: Union[str, None] = None,
+        outflow_fl: Union[List[str], str, None] = None,
         time_fmt: Union[str, None] = None,
         outflow_factor: Union[List[float], float, None] = None, 
         outflow_thick_limit: Union[List[float], float, None] = None, 
@@ -3002,75 +2406,31 @@ class NMLOutflow(NMLBase):
         self.crest_width = crest_width
         self.crest_factor = crest_factor
 
-    def __call__(
+    def get_params(
         self,
-        check_errors: bool = False
+        check_params: bool = False
     ) -> dict[str, Union[
                 float, int, str, bool, List[float], List[int], List[bool], None
             ]
         ]:
-        """Consolidate the `&outflow` parameters and return them as a 
-        dictionary.
+        """Returns a dictionary of model parameters.
 
-        The `__call__()` method consolidates model parameters set during class 
-        instance initialisation, or updated through `set_attributes()`, into a 
-        dictionary suitable for use with the `nml.NML` class. If `check_errors` 
-        is `True`, the method performs validation checks on the parameters to 
-        ensure they comply with expected formats and constraints. 
+        Consolidate the model parameters set during class instance 
+        initialisation, or updated through `set_attributes()`, into a 
+        dictionary suitable for use with the `glm_nml.GLMNML` class. 
 
         Parameters
         ----------
-        check_errors : bool, optional
+        check_params : bool, optional
             If `True`, performs validation checks on the parameters to ensure 
             compliance with GLM. Default is `False`.
 
         Returns
         -------
-        dict[
-        str, 
-        Union[float, int, str, bool, List[float], List[int], List[bool], None]
-        ]
-            A dictionary containing the `&outflow` parameters.
-        
-        Examples
-        --------
-        >>> from glmpy import nml
-        >>> outflow = nml.NMLOutflow(
-        ...     num_outlet=1,
-        ...     flt_off_sw=True
-        ... )
-        >>> print(outflow(check_errors=False))
-        {
-            'num_outlet': 1, 
-            'outflow_fl': None, 
-            'time_fmt': None, 
-            'outflow_factor': None, 
-            'outflow_thick_limit': None, 
-            'single_layer_draw': None, 
-            'flt_off_sw': [True], 
-            'outlet_type': None, 
-            'outl_elvs': None, 
-            'bsn_len_outl': None, 
-            'bsn_wid_outl': None, 
-            'crit_O2': None, 
-            'crit_O2_dep': None, 
-            'crit_O2_days': None, 
-            'outlet_crit': None, 
-            'O2name': None, 
-            'O2idx': None, 
-            'target_temp': None, 
-            'min_lake_temp': None, 
-            'fac_range_upper': None, 
-            'fac_range_lower': None, 
-            'mix_withdraw': None, 
-            'coupl_oxy_sw': None, 
-            'withdrTemp_fl': None, 
-            'seepage': None, 
-            'seepage_rate': None, 
-            'crest_width': None, 
-            'crest_factor': None
-        }
+        dict[str, Any]
+            A dictionary containing the configuration block parameters.
         """
+        self.outflow_fl = self._single_value_to_list(self.outflow_fl)
         self.outflow_factor = self._single_value_to_list(self.outflow_factor)
         self.outflow_thick_limit = self._single_value_to_list(
             self.outflow_thick_limit
@@ -3083,15 +2443,13 @@ class NMLOutflow(NMLBase):
         self.outl_elvs = self._single_value_to_list(self.outl_elvs)
         self.bsn_len_outl = self._single_value_to_list(self.bsn_len_outl)
         self.bsn_wid_outl = self._single_value_to_list(self.bsn_wid_outl)
-
-        if check_errors:
+        if check_params:
             warnings.warn(
-                "Error checking is not stable and lacks complete coverage. "
-                "Erroneous parameters may not be raised.",
-                category=FutureWarning,
+                "As of glm-py 0.2.0, error checking with check_params is not"
+                " implemented. Erroneous parameters will not be raised.",
+                category=UserWarning,
                 stacklevel=2
             )
-
         outflow_dict = {
             "num_outlet": self.num_outlet,
             "outflow_fl": self.outflow_fl,
@@ -3122,5 +2480,22 @@ class NMLOutflow(NMLBase):
             "crest_width": self.crest_width,
             "crest_factor": self.crest_factor
         }
-
         return outflow_dict
+    
+    def __call__(
+        self, 
+        check_errors: bool = False
+    ) -> dict[
+        str, 
+        Union[float, int, str, bool, List[float], List[int], List[bool], None]
+        ]:
+        return self.get_params(check_params=check_errors)
+
+class NMLOutflow(OutflowBlock):
+    def __init__(self, *args, **kwargs):
+        warnings.warn(
+            _deprecated_class_warning("NMLOutflow", "OutflowBlock", "glm_nml"),
+            DeprecationWarning,
+            stacklevel=2
+        )
+        super().__init__(*args, **kwargs)
