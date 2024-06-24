@@ -1,6 +1,6 @@
 ---
 draft: false 
-date: 2024-06-21 
+date: 2024-06-24
 authors:
   - gknight
 categories:
@@ -23,13 +23,13 @@ reading and writing NML files.
 existing classes from the `nml` module in `0.1.3`.
   - Classes from `0.1.3` are automatically imported using 
   `from glmpy import nml` to maintain backwards compatibility until `1.0.0`.
-  - Classnames from `0.1.3` will be deprecated by `1.0.0` in favour of a new 
+  - Class names from `0.1.3` will be deprecated by `1.0.0` in favour of a new 
   naming convention that ensures forwards compatibility with AED. Warnings are 
   raised to encourage you to migrate to the new class names.
 - The new `nml` sub-module provides low-level tools for reading and writing any
 NML file (GLM or AED).
-  - `NMLWriter` converts a nested Python dictionary to a NML file. 
-  - `NMLReader` converts a NML file to a nested Python dictionary. 
+  - `NMLWriter` converts a nested Python dictionary to an NML file. 
+  - `NMLReader` converts an NML file to a nested Python dictionary. 
   - Both classes provide functionality to explicitly control how each parameter
   is read/written to file.
 - `InvertedTruncatedCone` class added to the `dimensions` module to calculate

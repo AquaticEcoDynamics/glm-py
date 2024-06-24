@@ -5,41 +5,43 @@
 
 glm-py is an open source project that is actively maintained by the [Aquatic 
 EcoDynamics research group][aed-group] at the University of Western Australia.
-Whether you're an experienced GLM user, or are new to modelling hydrodynamics,
-we would appreciate your feedback and input on using this package. 
+If you'd like to contribute to the project, please familiarise yourself with
+the contributing guide below.
+
+## Environment
+
+A Docker container can be used to create a development environment. You can 
+either build the Docker image:
+
+```
+docker build -t glm-py-dev .devcontainer
+```
+Or, you can develop glm-py using a dev-container.
+
+## Code style
+
+Code linting and formatting uses ruff and black. A script to format the glm-py 
+repository can be run: `./scripts/format.sh`. 
+
+pre-commit is used to run ruff and black. 
+
+## Tests
+
+<a href="https://docs.pytest.org/en/7.4.x/" target="_blank">pytest</a> is used 
+for testing glm-py. 
+
+If testing, please add tests under the `tests` directory. If you need test data 
+for running tests, add them as `pytest.fixtures` in `conftest.py`. 
+
+## Pull requests
+
+Submit pull requests to the `next-release` branch. This is where glm-py is 
+actively developed.
 
 ## Suggested contributions
 
+- An `aed_nml` sub-module for the `nml` module that mirrors the functionality
+of the `glm_nml` sub-module. 
+- Parameter documentation for the `glm_nml` sub-module.
+- Additional simple morphometries the `dimensions` module.
 
-
-<div class="grid cards" markdown>
-
-
--   :material-file-document-remove-outline: &nbsp;
-    __Documenting model parameters__
-
-    ---
-
-    Many GLM parameters are lacking adequate documentation in their respective
-    `nml.NML*` classes. Please open an issue if you can improve on the 
-    documentation or provide parameter units (where applicable).
-
-    ---
-
-    [:octicons-arrow-right-24: Open a docs issue][open-issue]
-
--   :material-bug-outline: &nbsp;
-    __Found a bug?__
-
-    ---
-
-    While glm-py is in its infancy, you may encounter a bug in unexpected use 
-    cases. Please open an issue and provide a reproducible example if you've 
-    identified a bug.
-
-    ---
-
-    [:octicons-arrow-right-24: Report a bug][open-issue]
-
-</div>
-  
