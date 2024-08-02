@@ -2,70 +2,11 @@ import json
 import os
 import shutil
 import zipfile
-import warnings
 import pandas as pd
 
 from typing import Union
 from fastapi import UploadFile
-
-class GLM:
-    def __init__(
-        self,
-        glm_nml: Union[UploadFile, dict], 
-        aed_nml: Union[UploadFile, dict, None] = None, 
-        bcs: Union[UploadFile, dict, None] = None,
-        inputs_dir: str = "/inputs",
-        api: bool = False
-    ):
-        self.glm_nml = glm_nml
-        self.aed_nml = aed_nml
-        self.bcs = bcs
-        self.inputs_dir = inputs_dir
-        self.api = api
-    
-    def _prepare_fastapi_inputs(self):
-        for f in self.glm_nml:
-            file_path = os.path.join(self.inputs_dir, f.filename)
-            with open(file_path, "wb") as f_tmp:
-                f_tmp.write(f.file.read())
-        if self.aed_nml is not None:
-            for f in self.aed_nml:
-                file_path = os.path.join(self.inputs_dir, "aed",  f.filename)
-                with open(file_path, "wb") as f_tmp:
-                    f_tmp.write(f.file.read())
-        if self.bcs is not None:
-            for f in self.bcs:
-                file_path = os.path.join(self.inputs_dir, "bcs",  f.filename)
-                with open(file_path, "wb") as f_tmp:
-                    f_tmp.write(f.file.read())
-    
-    def _prepare_local_inputs(self):
-        for f in self.glm_nml:
-            file_path = os.path.join(self.inputs_dir, f)
-            shutil.copy(self.glm_nml[f], file_path)
-        if self.aed_nml is not None:
-            for f in self.aed_nml:
-                file_path = os.path.join(self.inputs_dir, "aed", f)
-                shutil.copy(self.aed_nml[f], file_path)
-        if self.bcs is not None:
-            for f in self.bcs:
-                file_path = os.path.join(self.inputs_dir, "bcs", f)
-                shutil.copy(self.bcs[f], file_path)
-
-    def prepare_inputs(self) -> str:
-        if os.path.isdir(self.inputs_dir):
-                shutil.rmtree(self.inputs_dir)
-        os.mkdir(self.inputs_dir)
-        if self.bcs is not None:
-            os.mkdir(os.path.join(self.inputs_dir, "bcs"))
-        if self.aed_nml is not None:
-            os.mkdir(os.path.join(self.inputs_dir, "aed"))
-        if self.api:
-            self._prepare_fastapi_inputs()
-        else:
-            self._prepare_local_inputs()
-        return self.inputs_dir
-    
+   
 class GLMSim:
     """Prepare inputs and run a GLM simulation.
 
@@ -120,9 +61,7 @@ class GLMSim:
     """
     def __init__(
         self, 
-        input_files: Union[UploadFile, dict], 
-        api: bool, 
-        inputs_dir: str
+        input_files: Union[UploadFile, dict], api: bool, inputs_dir: str
     ):
         self.input_files = input_files
         self.fast_api = api
@@ -149,8 +88,6 @@ class GLMSim:
             if os.path.isdir(self.inputs_dir):
                 shutil.rmtree(self.inputs_dir)
             os.mkdir(self.inputs_dir)
-            os.mkdir(os.path.join(self.inputs_dir, "bcs"))
-            os.mkdir(os.path.join(self.inputs_dir, "aed"))
 
             for f in self.input_files:
                 if f.filename == "glm3.nml":
@@ -158,20 +95,23 @@ class GLMSim:
                     with open(nml_path, "wb") as f_tmp:
                         f_tmp.write(f.file.read())
                 elif f.filename in aed_files:
+                    os.makedirs(
+                        os.path.join(self.inputs_dir, "aed"), exist_ok=True
+                    )
                     aed_path = os.path.join(self.inputs_dir, "aed", f.filename)
                     with open(aed_path, "wb") as f_tmp:
                         f_tmp.write(f.file.read())
                 else:
+                    os.makedirs(
+                        os.path.join(self.inputs_dir, "bcs"), exist_ok=True
+                    )
                     bcs_path = os.path.join(self.inputs_dir, "bcs", f.filename)
-
                     with open(bcs_path, "wb") as f_tmp:
                         f_tmp.write(f.file.read())
         else:
             if os.path.isdir(self.inputs_dir):
                 shutil.rmtree(self.inputs_dir)
-            os.mkdir(self.inputs_dir)
-            os.mkdir(os.path.join(self.inputs_dir, "bcs"))
-            os.mkdir(os.path.join(self.inputs_dir, "aed"))
+            os.mkdir(self.inputs_dir)            
 
             input_fnames = self.input_files.keys()
             for f in input_fnames:
@@ -179,9 +119,15 @@ class GLMSim:
                     nml_path = os.path.join(self.inputs_dir, f)
                     shutil.copy(self.input_files[f], nml_path)
                 elif f in aed_files:
+                    os.makedirs(
+                        os.path.join(self.inputs_dir, "aed"), exist_ok=True
+                    )
                     aed_path = os.path.join(self.inputs_dir, "aed", f)
                     shutil.copy(self.input_files[f], aed_path)
                 else:
+                    os.makedirs(
+                        os.path.join(self.inputs_dir, "bcs"), exist_ok=True
+                    )
                     bcs_path = os.path.join(self.inputs_dir, "bcs", f)
                     shutil.copy(self.input_files[f], bcs_path)
 
