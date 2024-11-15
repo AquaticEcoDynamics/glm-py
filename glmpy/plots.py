@@ -1,10 +1,14 @@
+import netCDF4
+import numpy as np
 import pandas as pd
+import numpy.ma as ma
 import matplotlib.dates as mdates
 
-from datetime import datetime
 from typing import Union, List
 from matplotlib.axes import Axes
 from matplotlib.lines import Line2D
+from matplotlib.image import AxesImage
+from datetime import datetime, timedelta
 
 
 class LakePlotter:
@@ -13,7 +17,11 @@ class LakePlotter:
     def __init__(self, file_path):
         self.lake_csv = pd.read_csv(file_path)
         days = [date.split(" ")[0] for date in list(self.lake_csv["time"])]
-        self.x_dates = [datetime.strptime(date, "%Y-%m-%d") for date in days]
+        # days = list(self.lake_csv["time"])
+        self.x_dates = [
+            datetime.strptime(date, "%Y-%m-%d") + timedelta(days=1)
+            for date in days
+        ]
         self.date_formatter = mdates.DateFormatter("%d/%m/%y")
 
     def _set_default_plot_params(
@@ -238,11 +246,18 @@ class LakePlotter:
         ]
         for column_name, param_dict in components:
             if param_dict is not None:
-                (out_component,) = ax.plot(
-                    mdates.date2num(self.x_dates),
-                    self.lake_csv[column_name],
-                    **param_dict,
-                )
+                if column_name == "Tot Outflow Vol":
+                    (out_component,) = ax.plot(
+                        mdates.date2num(self.x_dates),
+                        -self.lake_csv[column_name],
+                        **param_dict,
+                    )
+                else:
+                    (out_component,) = ax.plot(
+                        mdates.date2num(self.x_dates),
+                        self.lake_csv[column_name],
+                        **param_dict,
+                    )
                 out.append(out_component)
         ax.xaxis.set_major_formatter(self.date_formatter)
         ax.set_ylabel("Flux ($\mathregular{m}^{3}$ $\mathregular{day}^{-1}$)")
@@ -398,6 +413,216 @@ class LakePlotter:
                 )
                 out.append(out_component)
         ax.xaxis.set_major_formatter(self.date_formatter)
-        ax.set_ylabel("Temperature within lake (°C)")
+        ax.set_ylabel("Lake temperature (°C)")
         ax.set_xlabel("Date")
         return out
+
+
+class NCHeatmap:
+    def __init__(
+            self, 
+            glm_nc: str, 
+            resolution: float=0.1,
+            remove_ice: bool=False,
+            remove_white_ice: bool=False,
+            remove_snow: bool=False
+        ):
+        self.glm_nc = glm_nc
+        self.resolution = resolution
+
+        nc = netCDF4.Dataset(glm_nc, "r", format="NETCDF4")
+        self.num_layers = nc.variables["NS"][:]
+        self.layer_heights = nc.variables["z"][:]
+        self.time = nc.variables["time"][:].data
+        self.start_datetime = nc.start_time
+        nc.close()
+
+        self.surface_height = self._get_surface_height()
+        if remove_ice or remove_white_ice or remove_snow:
+            sum = self._sum_ice_snow(
+                ice=remove_ice, white_ice=remove_white_ice, snow=remove_snow
+            )
+            self.surface_height = self.surface_height - sum
+        self.max_depth = max(self.surface_height)
+        self.depth_range = np.arange(0, self.max_depth, self.resolution)
+
+    def _set_default_plot_params(
+        self, param_dict: Union[dict, None], defaults_dict: dict
+    ):
+        if isinstance(param_dict, dict):
+            for key, value in defaults_dict.items():
+                if key not in param_dict:
+                    param_dict[key] = value
+
+    def _get_time(self):
+        start_datetime = datetime.strptime(
+            self.start_datetime, "%Y-%m-%d %H:%M:%S"
+        )
+        x_dates = [start_datetime + timedelta(hours=x) for x in self.time]
+        x_dates = mdates.date2num(x_dates)
+
+        return x_dates
+
+    def _get_surface_height(self):
+        """
+        Returns a 1D array of the lake surface height at each timestep.
+        """
+
+        surface_height = ma.empty(self.num_layers.shape)
+        for i in range(0, len(self.num_layers)):
+            surface_height[i] = self.layer_heights[
+                i, self.num_layers[i] - 1, 0, 0
+            ]
+
+        return surface_height
+    
+    def _sum_ice_snow(self, ice: bool, white_ice: bool, snow: bool):
+        nc = netCDF4.Dataset(self.glm_nc, "r", format="NETCDF4")
+        time = nc.variables["time"][:].data
+        sum = ma.zeros(shape=time.shape)
+        if ice:
+            ice_height = nc.variables["blue_ice_thickness"][:]
+            sum += ice_height
+        if white_ice:
+            white_ice_height = nc.variables["white_ice_thickness"][:]
+            sum += white_ice_height
+        if snow:
+            snow_height = nc.variables["snow_thickness"][:]
+            sum += snow_height
+        nc.close()
+        return sum
+
+    def _reproj_depth(
+            self, layer_heights, var, plot_depths, reference, surface_height
+        ):
+        mid_layer_heights = ma.concatenate(
+            [
+                [layer_heights[0] / 2],
+                layer_heights[0 : len(layer_heights) - 1]
+                + (np.diff(layer_heights) / 2),
+            ]
+        )
+        last_height = (
+            ma.masked_all((1))
+            if ma.is_masked(layer_heights[-1])
+            else ma.array([layer_heights[-1]])
+        )  
+        last_var = (
+            ma.masked_all((1))
+            if ma.is_masked(var[-1])
+            else ma.array([var[-1, 0, 0]])
+        )  
+        mid_layer_heights = ma.concatenate(
+            [ma.array([0]), mid_layer_heights, last_height]
+        )
+        var = ma.concatenate([ma.array(var[0, 0]), var[:, 0, 0], last_var])
+        valid_mask = ~ma.getmaskarray(mid_layer_heights) & ~ma.getmaskarray(
+            var
+        )
+        mid_layer_heights = mid_layer_heights[valid_mask]
+        var = var[valid_mask]
+        reproj_var = np.interp(plot_depths, mid_layer_heights, var)
+        if reference == "bottom":
+            reproj_var[plot_depths > surface_height] = np.nan
+        else:
+            reproj_var[plot_depths < 0] = np.nan
+
+        return reproj_var
+
+    def _get_reproj_var(self, var, reference):
+        nc = netCDF4.Dataset(self.glm_nc, "r", format="NETCDF4")
+        var = nc.variables[var][:]
+        nc.close()
+
+        max_num_layers = max(self.num_layers) + 1
+        layer_heights = self.layer_heights[:, 0:max_num_layers, :, :]
+        var = var[:, 0:max_num_layers, :, :]
+
+        timesteps = layer_heights.shape[0]
+        num_reproj_depths = len(self.depth_range)
+        reproj_var = np.ma.empty((timesteps, num_reproj_depths))
+        reproj_var[:] = np.nan
+
+        if reference == "bottom":
+            plot_depth_range = self.depth_range
+
+        for i in range(0, timesteps):
+            if reference == "surface":
+                plot_depth_range = self.surface_height[i] - self.depth_range
+            
+            
+            reproj_var[i, :] = self._reproj_depth(
+                layer_heights=layer_heights[i, :, 0, 0],
+                var=var[i, :],
+                plot_depths=plot_depth_range,
+                reference=reference,
+                surface_height=self.surface_height[i]
+            )
+            
+            # if self.surface_height[i] == self.max_depth:
+            #     pass
+        
+        if reference == "bottom":
+            reproj_var = np.rot90(reproj_var, 1)
+        else:
+            reproj_var = np.rot90(reproj_var, -1)
+            reproj_var = np.flip(reproj_var, 1)
+
+        return reproj_var
+
+    def plot_var(
+        self,
+        var: str,
+        ax: Axes,
+        reference: str = "bottom",
+        param_dict: dict = {},
+    ) -> AxesImage:
+        reproj_var = self._get_reproj_var(
+            var=var, reference=reference
+        )
+        x_dates = self._get_time()
+        self._set_default_plot_params(
+            param_dict,
+            {
+                "interpolation": "bilinear",
+                "aspect": "auto",
+                "cmap": "Spectral_r",
+                "extent": [x_dates[0], x_dates[-1], self.max_depth, 0],
+            },
+        )
+
+        out = ax.imshow(reproj_var, **param_dict)
+        locator = mdates.AutoDateLocator()
+        date_formatter = mdates.DateFormatter("%d/%m/%y")
+        ax.set_xticks(x_dates)
+        ax.xaxis.set_major_locator(locator)
+        ax.xaxis.set_major_formatter(date_formatter)
+        ax.set_ylabel("Depth (m)")
+        ax.set_xlabel("Date")
+
+        return out
+
+    def get_vars(self):
+        var_shape = self.layer_heights.shape
+        nc = netCDF4.Dataset(self.glm_nc, "r", format="NETCDF4")
+        vars = []
+        for key, value in nc.variables.items():
+            if nc.variables[key].shape == var_shape:
+                vars.append(key)
+        nc.close()
+        return vars
+
+    def get_units(self, var):
+        nc = netCDF4.Dataset(self.glm_nc, "r", format="NETCDF4")
+        units = nc.variables[var].units
+        nc.close()
+        return units
+
+    def get_long_name(self, var):
+        nc = netCDF4.Dataset(self.glm_nc, "r", format="NETCDF4")
+        long_name = nc.variables[var].long_name
+        nc.close()
+        return long_name
+
+    def get_start_datetime(self):
+        return datetime.strptime(self.start_datetime, "%Y-%m-%d %H:%M:%S")
