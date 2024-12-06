@@ -266,6 +266,11 @@ jobs:
           name: ${{ matrix.distribution}}
           path: dist/
 
+      - name: Random sleep to avoid PyPI 503
+        run: |
+          RANDOM_SLEEP=$(( RANDOM % 30 + 1 ))
+          sleep $RANDOM_SLEEP
+
       - name: Publish distribution to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
@@ -422,6 +427,11 @@ jobs:
         with:
           name: ${{ matrix.distribution }}
           path: dist/
+      
+      - name: Random sleep to avoid PyPI 503
+        run: |
+          RANDOM_SLEEP=$(( RANDOM % 30 + 1 ))
+          sleep $RANDOM_SLEEP
 
       - name: Publish distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

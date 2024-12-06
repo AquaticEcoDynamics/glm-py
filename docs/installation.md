@@ -33,8 +33,10 @@ The following table lists the GLM version that is bundled with the built distrib
 
 [glm_py_0_1_3]: https://github.com/AquaticEcoDynamics/glm-py/releases/tag/v0.1.3
 [glm_py_0_2_0]: https://github.com/AquaticEcoDynamics/glm-py/releases/tag/v0.2.0
+[glm_py_0_2_1]: https://github.com/AquaticEcoDynamics/glm-py/releases/tag/v0.2.1
 
 | glm-py version          | GLM version     |
 | --------------          | -----------     |
+| [`0.2.1`][glm_py_0_2_1] | `3.3.1a12 `     |
 | [`0.2.0`][glm_py_0_2_0] | `3.3.1a12 `     |
 | [`0.1.3`][glm_py_0_1_3] | `3.3.1a12 `     |
