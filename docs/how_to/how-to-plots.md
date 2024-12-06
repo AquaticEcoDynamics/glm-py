@@ -1,11 +1,5 @@
 # How-to: `plots` module
 
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-from glmpy import plots
-```
 The `plots` module of glm-py has been implemented to follow the recommended 
 signature function for wrapping the Matplotlib library:
 
@@ -25,6 +19,9 @@ and avoids adding unnecessary complexity to the wrapping method/function. See
 example use below:
 
 ```python
+import numpy as np
+import matplotlib.pyplot as plt
+
 # Creates two arrays of random data
 data1, data2 = np.random.randn(2, 25)  
 # Creates two subplots (the `Axes` object) and the enclosing `Figure` object
@@ -41,11 +38,24 @@ my_plotter(axs[1], data2, {'marker': 'o'})
 glm-py's implementation differs slightly by abstracting away the `data` 
 parameter of the plotting methods. This removes the need for the user to read
 and post-process GLM's output files when creating common plots. At most, the 
-user may need to provide a GLM variable name as a string.
+user may need to provide a GLM variable name as a string, e.g., when using the `NCProfile.plot_var` method.
+
+## Run the Sparkling example simulation
+
+Before any GLM plots can be made, a simulation must first be run to create the output files. 
+For this how-to, the [Sparkling](https://github.com/AquaticEcoDynamics/glm-aed/tree/main/glm-examples/Sparkling) simulation will be used.
+glm-py's `example_sims.sparkling` sub-module provides a convient function for running the simulation:
+
+```python
+from glmpy.example_sims import sparkling
+
+sparkling.run_sim()
+```
+Once the Sparkling simulation has run, glm-py will write output files to `sparkling/output`. Within this sub-directory are the `lake.csv` and `output.nc` files that can be visualised with the `plots` module.
 
 ## `lake.csv` plots with `LakePlotter`
 
-`LakePlotter` provides the following methods for plotting the `lake.csv` file:
+The `plots` module's `LakePlotter` class provides the following methods for plotting different aspects of the `lake.csv` file:
 
 - `lake_volume`
 - `lake_level`
@@ -61,7 +71,9 @@ To use one of these methods, first initialise `LakePlotter` with the path to
 the `lake.csv` file:
 
 ```python
-lake = plots.LakePlotter("example_outputs/lake.csv")
+from glmpy import plots
+
+lake = plots.LakePlotter("sparkling/output/lake.csv")
 ```
 
 Next, create the matplotlib `Figure` (`fig`) and `Axes` (`ax`) objects and pass the 
@@ -99,9 +111,8 @@ ax.xaxis.set_major_formatter(date_formatter)
 
 `LakePlotter` also provides two methods, `water_balance_components` and
 `heat_balance_components`, that plot multiple lines to the axes. Each line has
-its own "`param_dict`" parameter that, when set to `None`, removes the line from
-the plot. For example, the plot below turns off the local runoff, overflow, and
-snowfall lines while customising the rainfall line:
+its own `param_dict` parameter that, when set to `None`, removes the line from
+the plot. For example, the plot below turns off all but the rain and evaporation lines:
 
 ```python
 fig, ax = plt.subplots(figsize=(10, 5))
@@ -147,16 +158,15 @@ ax[1, 1].xaxis.set_major_formatter(date_formatter)
 ![LakePlotter-subplots](../img/how-to-plots/LakePlotter-subplots-light.png#only-light)
 ![LakePlotter-subplots](../img/how-to-plots/LakePlotter-subplots-dark.png#only-dark)
 
-## `output.nc` contour plots with `NCProfile`
+## `output.nc` profile plots with `NCProfile`
 
-To plot a variable for all depths and timesteps, initialise an instance of 
-`NCProfile` by providing a file path to GLM's `output.nc` file:
+The `NCProfile` class of the `plots` module can be used plot a variable for all depths and timesteps of the simulation. This class is initialised by providing a path to the `output.nc` NetCDF file:
 
 ```python
-nc = plots.ContourPlotter("example_outputs/output.nc")
+nc = plots.NCProfile("sparkling/output/output.nc")
 ```
 
-`NCProfile` provides a `plot_var` method that plots 3-D variables from
+`NCProfile`'s `plot_var` method will plot all 3-D variables from
 the NetCDF file onto an `Axes` object. Below, the lake temperature 
 (`"temp"` in the NetCDF) is plotted:
 
@@ -183,7 +193,7 @@ col_bar.set_label("Temperature (°C)")
 
 By default, `plot_var` will measure the lake depth from the bottom 
 (`reference="bottom"`) as this provides the most realistic representation of 
-fluctuating surface levels. To measure lake depth from the surface, set the 
+fluctuating surface levels. To reference lake depth from the surface, set the 
 `reference` to `"surface"`:
 
 ```python
@@ -199,7 +209,7 @@ col_bar.set_label("Temperature (°C)")
 
 `plot_var` wraps matplotlib's `imshow` method. Just like the methods of 
 `LakePlotter`, you can customise how `plot_var` plots by passing a dictionary 
-of `imshow` parameters to the `param_dict` parameter. Here, a contour plot 
+of `imshow` parameters to the `param_dict` parameter. Here, a profile plot 
 of the lake salinity is created with the colour map changed to `"viridis"`:
 
 ```python
@@ -218,35 +228,34 @@ Finally, `NCProfile` also provides methods to assist with automating the
 plotting of variables:
 
 - `get_vars` returns a list of variables that can be plotted with `plot_var`
-- `get_long_name` returns the unabbreviated name for a variable
-- `get_units` returns the units for a variable
+- `get_long_name` returns the unabbreviated name of a variable
+- `get_units` returns the units of a variable
 
 ```python
 vars = nc.get_vars()
-print(vars[22:26])
+print(vars)
 ```
 ```
-['CAR_dic', 'CAR_pH', 'CAR_ch4', 'CAR_ch4_bub']
-```
-```python
-[nc.get_long_name(var) for var in vars[22:26]]
-```
-```
-['dissolved inorganic carbon', 'pH', 'methane', 'methane bubbles']
+['z', 'H', 'V', 'salt', 'temp', 'dens', 'radn', 'extc', 'umean', 'uorb', 'taub']
 ```
 ```python
-[nc.get_units(var) for var in vars[22:26]]
+[nc.get_long_name(var) for var in vars[3:5]]
 ```
 ```
-['mmol C/m3', '-', 'mmol C/m3', 'mmol C/m3']
+['salinity', 'temperature']
+```
+```python
+[nc.get_units(var) for var in vars[3:5]]
+```
+```
+['g/kg', 'celsius']
 ```
 
 ```python
-plot_vars = vars[22:26]
-fig, axs = plt.subplots(nrows=2, ncols=2, figsize=(20, 10))
+plot_vars = vars[3:5]
+fig, axs = plt.subplots(nrows=2, ncols=1, figsize=(10, 10))
 for idx, var, in enumerate(plot_vars):
-    i, j = divmod(idx, 2)
-    out = nc.plot_var(axs[i, j], var)
+    out = nc.plot_var(axs[idx], var)
     long_name = nc.get_long_name(var)
     units = nc.get_units(var)
     col_bar = fig.colorbar(out)
