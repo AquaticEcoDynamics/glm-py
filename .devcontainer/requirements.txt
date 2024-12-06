@@ -2,3 +2,4 @@ pandas[excel]>=2.0.0
 fastapi[all]==0.88.0
 numpy>=1.26
 python-multipart
+netcdf4>=1.7.1.post2
