@@ -2,12 +2,19 @@
 
 ## Calculating the morphometry parameters for simple water bodies
 
-For simple water bodies, glm-py provides functionality to easily calculate the `H` and `A` (height and surface area) parameters for the `NMLMorphometry` class, i.e., the `&morphometry` configuration block.
+For simple water bodies, the `dimensions` module provides classes to easily 
+calculate the `H` and `A` (height and surface area) parameters for the 
+`MorphometryBlock` class, i.e., the `&morphometry` configuration block.
 
-The [`InvertedTruncatedSquarePyramid`](../dimensions.md#glmpy.dimensions.InvertedTruncatedSquarePyramid) class can be used to retrieve these parameters for pyramidal water bodies with a square base, e.g., an on-farm reservoir.
+The `InvertedTruncatedPyramid` class can be used for pyramidal water bodies 
+with a square/rectangular base while `InvertedTruncatedCone` is useful for 
+circular water bodies.
 
-![Graphical representation of the InvertedTruncatedSquarePyramid](../img/InvertedTruncatedSquarePyramid.png#only-light)
-![Graphical representation of the InvertedTruncatedSquarePyramid](../img/InvertedTruncatedSquarePyramid-dark.png#only-dark)
+![Graphical representation of the InvertedTruncatedPyramid](../img/InvertedTruncatedPyramid-light.png#only-light)
+![Graphical representation of the InvertedTruncatedPyramid](../img/InvertedTruncatedPyramid-dark.png#only-dark)
+
+![Graphical representation of the InvertedTruncatedCone](../img/InvertedTruncatedCone-light.png#only-light)
+![Graphical representation of the InvertedTruncatedCone](../img/InvertedTruncatedCone-dark.png#only-dark)
 
 ```python
 from glmpy import dimensions

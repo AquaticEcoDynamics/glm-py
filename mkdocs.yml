@@ -78,6 +78,7 @@ nav:
   - Install: installation.md
   - How-to: 
     - NML: how_to/how-to-nml.md
+    - Plots: how_to/how-to-plots.md
     - Dimensions: how_to/how-to-dimensions.md
     - Outflows: how_to/how-to-outflows.md
     - Inflows: how_to/how-to-inflows.md
