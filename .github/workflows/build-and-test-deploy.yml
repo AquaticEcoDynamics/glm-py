@@ -239,55 +239,46 @@ jobs:
           name: wheels-windows-amd64
           path: ./wheelhouse/*.whl
   
-  # publish-to-testpypi:
-  #   name: Publish distributions to TestPyPI
-  #   needs: [build-source-dist, build-wheels-manylinux-aarch64, build-wheels-manylinux-x86_64, build-wheels-macos-x86_64, build-wheels-macos-ARM64, build-wheel-windows-amd64]
-  #   runs-on: ubuntu-latest
-  #   strategy:
-  #     matrix:
-  #       distribution:
-  #         - source-dist
-  #         - wheels-manylinux2014-aarch64
-  #         - wheels-manylinux2014-x86_64
-  #         - wheels-macos-x86_64
-  #         - wheels-macos-arm64
-  #         - wheels-windows-amd64
+  publish-to-testpypi:
+    name: Publish distributions to TestPyPI
+    needs: [build-source-dist, build-wheels-manylinux-aarch64, build-wheels-manylinux-x86_64, build-wheels-macos-x86_64, build-wheels-macos-ARM64, build-wheel-windows-amd64]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distribution:
+          - source-dist
+          - wheels-manylinux2014-aarch64
+          - wheels-manylinux2014-x86_64
+          - wheels-macos-x86_64
+          - wheels-macos-arm64
+          - wheels-windows-amd64
 
-  #   environment:
-  #     name: testpypi
-  #     url: https://test.pypi.org/p/glm-py  
-  #   permissions:
-  #     id-token: write  
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/glm-py  
+    permissions:
+      id-token: write  
   
-  #   steps:
-  #     - name: Download distribution artifact
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: ${{ matrix.distribution}}
-  #         path: dist/
+    steps:
+      - name: Download distribution artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ matrix.distribution}}
+          path: dist/
 
-  #     - name: Random sleep to avoid PyPI 503
-  #       run: |
-  #         RANDOM_SLEEP=$(( RANDOM % 60 + 1 ))
-  #         sleep $RANDOM_SLEEP
+      - name: Random sleep to avoid PyPI 503
+        run: |
+          RANDOM_SLEEP=$(( RANDOM % 60 + 1 ))
+          sleep $RANDOM_SLEEP
 
-  #     - name: Publish distribution to TestPyPI
-  #       uses: pypa/gh-action-pypi-publish@release/v1
-  #       with:
-  #         repository-url: https://test.pypi.org/legacy/
-
-  # wait-for-testpypi-to-update:
-  #   name: Wait for TestPyPI to update
-  #   needs: publish-to-testpypi
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Sleep for 30 seconds
-  #       run: sleep 30s
-  #       shell: bash
+      - name: Publish distribution to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
 
   wait-for-testpypi-to-update:
     name: Wait for TestPyPI to update
-    needs: [build-source-dist, build-wheels-manylinux-aarch64, build-wheels-manylinux-x86_64, build-wheels-macos-x86_64, build-wheels-macos-ARM64, build-wheel-windows-amd64]
+    needs: publish-to-testpypi
     runs-on: ubuntu-latest
     steps:
       - name: Sleep for 30 seconds

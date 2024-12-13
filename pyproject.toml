@@ -34,6 +34,9 @@ toml = ["tomli; python_version < '3.11'"]
 [tool.setuptools]
 include-package-data = true
 
+[tool.setuptools.package-data]
+"glmpy.data" = ["sparkling_sim/*.json", "sparkling_sim/*.csv"]
+
 [project.urls]
 Repository = "https://github.com/AquaticEcoDynamics/glm-py"
 

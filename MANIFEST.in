@@ -1,2 +1,4 @@
 include glmpy/bin/*
 include glmpy/glmpy.c
+include glmpy/data/sparkling_sim/glm3.json
+include glmpy/data/sparkling_sim/nldas_driver.csv
