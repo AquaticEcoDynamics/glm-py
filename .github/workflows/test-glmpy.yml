@@ -18,6 +18,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install HDF5
       run: sudo apt-get install -y libhdf5-dev
+    - name: Install netCDF
+      run: sudo apt-get install -y libnetcdf-dev
     - name: Install dependencies
       run: |
         python -m pip install pip --upgrade
