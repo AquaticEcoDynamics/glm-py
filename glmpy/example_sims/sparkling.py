@@ -18,6 +18,8 @@ def load_nml() -> dict:
     """
     with resources.path("glmpy", "data") as data_path:
         path = data_path.joinpath("sparkling_sim", "glm3.json")
+        if not path.is_file():
+            raise FileNotFoundError(f"File not found: {path}")
         with open(path) as file:
             nml_json = json.load(file)
     return nml_json
@@ -32,6 +34,8 @@ def load_bcs() -> pd.DataFrame:
     """
     with resources.path("glmpy", "data") as data_path:
         path = data_path.joinpath("sparkling_sim", "nldas_driver.csv")
+        if not path.is_file():
+            raise FileNotFoundError(f"File not found: {path}")
         bcs = pd.read_csv(path)
     return bcs
 
