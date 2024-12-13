@@ -431,6 +431,8 @@
       
         
       
+        
+      
     
     
       
@@ -476,6 +478,27 @@
   
   <span class="md-ellipsis">
     NML
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how_to/how-to-plots/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Plots
   </span>
   
 
@@ -756,17 +779,17 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#glmpy.dimensions.InvertedTruncatedSquarePyramid" class="md-nav__link">
+  <a href="#glmpy.dimensions.InvertedTruncatedPyramid" class="md-nav__link">
     <span class="md-ellipsis">
-      InvertedTruncatedSquarePyramid
+      InvertedTruncatedPyramid
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="InvertedTruncatedSquarePyramid">
+    <nav class="md-nav" aria-label="InvertedTruncatedPyramid">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#glmpy.dimensions.InvertedTruncatedSquarePyramid.get_heights" class="md-nav__link">
+  <a href="#glmpy.dimensions.InvertedTruncatedPyramid.get_heights" class="md-nav__link">
     <span class="md-ellipsis">
       get_heights
     </span>
@@ -775,7 +798,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#glmpy.dimensions.InvertedTruncatedSquarePyramid.get_surface_areas" class="md-nav__link">
+  <a href="#glmpy.dimensions.InvertedTruncatedPyramid.get_surface_areas" class="md-nav__link">
     <span class="md-ellipsis">
       get_surface_areas
     </span>
@@ -784,7 +807,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#glmpy.dimensions.InvertedTruncatedSquarePyramid.get_volumes" class="md-nav__link">
+  <a href="#glmpy.dimensions.InvertedTruncatedPyramid.get_volumes" class="md-nav__link">
     <span class="md-ellipsis">
       get_volumes
     </span>
@@ -794,6 +817,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glmpy.dimensions.InvertedTruncatedSquarePyramid" class="md-nav__link">
+    <span class="md-ellipsis">
+      InvertedTruncatedSquarePyramid
+    </span>
+  </a>
   
 </li>
       
@@ -1273,17 +1305,17 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#glmpy.dimensions.InvertedTruncatedSquarePyramid" class="md-nav__link">
+  <a href="#glmpy.dimensions.InvertedTruncatedPyramid" class="md-nav__link">
     <span class="md-ellipsis">
-      InvertedTruncatedSquarePyramid
+      InvertedTruncatedPyramid
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="InvertedTruncatedSquarePyramid">
+    <nav class="md-nav" aria-label="InvertedTruncatedPyramid">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#glmpy.dimensions.InvertedTruncatedSquarePyramid.get_heights" class="md-nav__link">
+  <a href="#glmpy.dimensions.InvertedTruncatedPyramid.get_heights" class="md-nav__link">
     <span class="md-ellipsis">
       get_heights
     </span>
@@ -1292,7 +1324,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#glmpy.dimensions.InvertedTruncatedSquarePyramid.get_surface_areas" class="md-nav__link">
+  <a href="#glmpy.dimensions.InvertedTruncatedPyramid.get_surface_areas" class="md-nav__link">
     <span class="md-ellipsis">
       get_surface_areas
     </span>
@@ -1301,7 +1333,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#glmpy.dimensions.InvertedTruncatedSquarePyramid.get_volumes" class="md-nav__link">
+  <a href="#glmpy.dimensions.InvertedTruncatedPyramid.get_volumes" class="md-nav__link">
     <span class="md-ellipsis">
       get_volumes
     </span>
@@ -1311,6 +1343,15 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#glmpy.dimensions.InvertedTruncatedSquarePyramid" class="md-nav__link">
+    <span class="md-ellipsis">
+      InvertedTruncatedSquarePyramid
+    </span>
+  </a>
   
 </li>
       
@@ -1739,21 +1780,21 @@ the last is the volume at the surface.</p>
 
 
 
-<h2 id="glmpy.dimensions.InvertedTruncatedSquarePyramid" class="doc doc-heading">
-          <code>InvertedTruncatedSquarePyramid</code>
+<h2 id="glmpy.dimensions.InvertedTruncatedPyramid" class="doc doc-heading">
+          <code>InvertedTruncatedPyramid</code>
 
 
-<a href="#glmpy.dimensions.InvertedTruncatedSquarePyramid" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#glmpy.dimensions.InvertedTruncatedPyramid" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
   <div class="doc doc-contents ">
 
   
-      <p>Calculates the volume and surface area of an inverted truncated square 
-pyramid.</p>
+      <p>Calculates the volume and surface area of an inverted truncated pyramid.</p>
 <p>Useful for calculating the <code>A</code> and <code>H</code> morphometry parameters for simple 
 water bodies such as on-farm reservoirs. Assumes only the height 
-(i.e., depth), side slope, and surface length of the water body are known. </p>
+(i.e., depth), side slope, surface length, and surface width of the water 
+body are known. </p>
 
 
 
@@ -1768,7 +1809,7 @@ water bodies such as on-farm reservoirs. Assumes only the height
     </thead>
     <tbody>
         <tr>
-          <td><code><span title="glmpy.dimensions.InvertedTruncatedSquarePyramid.height">height</span></code></td>
+          <td><code><span title="glmpy.dimensions.InvertedTruncatedPyramid.height">height</span></code></td>
           <td>
                 <code><span title="typing.Union">Union</span>[float, int]</code>
           </td>
@@ -1779,19 +1820,29 @@ water bodies such as on-farm reservoirs. Assumes only the height
           </td>
         </tr>
         <tr>
-          <td><code><span title="glmpy.dimensions.InvertedTruncatedSquarePyramid.surface_length">surface_length</span></code></td>
+          <td><code><span title="glmpy.dimensions.InvertedTruncatedPyramid.surface_length">surface_length</span></code></td>
           <td>
                 <code><span title="typing.Union">Union</span>[float, int]</code>
           </td>
           <td>
             <div class="doc-md-description">
-              <p>Surface length of the water body in metres. Assumes surface width and 
-length are equal.</p>
+              <p>Surface length of the water body in metres. </p>
             </div>
           </td>
         </tr>
         <tr>
-          <td><code><span title="glmpy.dimensions.InvertedTruncatedSquarePyramid.num_vals">num_vals</span></code></td>
+          <td><code><span title="glmpy.dimensions.InvertedTruncatedPyramid.surface_width">surface_width</span></code></td>
+          <td>
+                <code><span title="typing.Union">Union</span>[float, int]</code>
+          </td>
+          <td>
+            <div class="doc-md-description">
+              <p>Surface width of the water body in metres. </p>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td><code><span title="glmpy.dimensions.InvertedTruncatedPyramid.num_vals">num_vals</span></code></td>
           <td>
                 <code>int</code>
           </td>
@@ -1800,12 +1851,12 @@ length are equal.</p>
               <p>The number of values to be returned by the <code>get_volumes()</code>, 
 <code>get_surface_areas()</code>, and <code>get_heights()</code> methods. <code>num_vals</code> should 
 be the same as the <code>bsn_vals</code> parameter from the <code>&amp;morphometry</code> 
-configuration block (see <code>bsn_vals</code> in <code>nml.NMLMorphometry()</code>).</p>
+configuration block (see <code>bsn_vals</code> in <code>MorphometryBlock</code>).</p>
             </div>
           </td>
         </tr>
         <tr>
-          <td><code><span title="glmpy.dimensions.InvertedTruncatedSquarePyramid.side_slope">side_slope</span></code></td>
+          <td><code><span title="glmpy.dimensions.InvertedTruncatedPyramid.side_slope">side_slope</span></code></td>
           <td>
                 <code><span title="typing.Union">Union</span>[float, int]</code>
           </td>
@@ -1817,7 +1868,7 @@ configuration block (see <code>bsn_vals</code> in <code>nml.NMLMorphometry()</co
           </td>
         </tr>
         <tr>
-          <td><code><span title="glmpy.dimensions.InvertedTruncatedSquarePyramid.surface_elevation">surface_elevation</span></code></td>
+          <td><code><span title="glmpy.dimensions.InvertedTruncatedPyramid.surface_elevation">surface_elevation</span></code></td>
           <td>
                 <code>float</code>
           </td>
@@ -1834,18 +1885,20 @@ configuration block (see <code>bsn_vals</code> in <code>nml.NMLMorphometry()</co
 
 
 <p><strong>Examples:</strong></p>
-    <p>Import the <code>dimensions</code> and <code>nml</code> modules:</p>
-    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">dimensions</span><span class="p">,</span> <span class="n">nml</span>
+    <p>Import the <code>dimensions</code> module and <code>glm_nml</code> sub-module:</p>
+    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">dimensions</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">glmpy.nml</span> <span class="kn">import</span> <span class="n">glm_nml</span>
 </span></code></pre></div>
-    <p>Consider a square on-farm reservoir (OFR) that is 40m long, 40m wide, 6m 
-deep, and has a side slope of 1/3:</p>
-    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ofr</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedSquarePyramid</span><span class="p">(</span>
+    <p>Consider a square on-farm reservoir that is 40m long, 40m wide, 6m deep, 
+and has a side slope of 1/3:</p>
+    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ofr</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedPyramid</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">... </span>    <span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">surface_length</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">surface_elevation</span><span class="o">=</span><span class="mi">0</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">surface_width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span>    <span class="n">surface_elevation</span><span class="o">=</span><span class="mi">0</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span><span class="p">)</span>
 </span></code></pre></div>
     <p>Get a list of height values to use for the <code>H</code> parameter in the 
 <code>&amp;morphometry</code> configuration block by calling the <code>get_heights()</code> method. 
@@ -1864,7 +1917,7 @@ method:</p>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="go">[0.0, 52.0, 224.0, 588.0, 1216.0, 2180.0, 3552.0]</span>
 </span></code></pre></div>
     <p>Set the <code>A</code>, <code>H</code>, and <code>bsn_vals</code> attributes of <code>nml.NMLMorphometry()</code>:</p>
-    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">morphometry</span> <span class="o">=</span> <span class="n">nml</span><span class="o">.</span><span class="n">NMLMorphometry</span><span class="p">(</span>
+    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">morphometry</span> <span class="o">=</span> <span class="n">glm_nml</span><span class="o">.</span><span class="n">MorphometryBlock</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">... </span>    <span class="n">A</span><span class="o">=</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_surface_areas</span><span class="p">(),</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">H</span><span class="o">=</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_heights</span><span class="p">(),</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">bsn_vals</span><span class="o">=</span><span class="mi">7</span>
@@ -1889,10 +1942,10 @@ method:</p>
 
 
 
-<h3 id="glmpy.dimensions.InvertedTruncatedSquarePyramid.get_heights" class="doc doc-heading">
+<h3 id="glmpy.dimensions.InvertedTruncatedPyramid.get_heights" class="doc doc-heading">
           <code class="highlight language-python"><span class="n">get_heights</span><span class="p">()</span></code>
 
-<a href="#glmpy.dimensions.InvertedTruncatedSquarePyramid.get_heights" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#glmpy.dimensions.InvertedTruncatedPyramid.get_heights" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -1933,15 +1986,16 @@ the <code>surface_elevation</code> attribute.</p>
     <p>Get the height values for a water body that has a surface elevation of
 -3m:</p>
     <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">dimensions</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ofr</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedSquarePyramid</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ofr</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedPyramid</span><span class="p">(</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">surface_length</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span>    <span class="n">surface_elevation</span><span class="o">=-</span><span class="mi">3</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span><span class="p">)</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_heights</span><span class="p">())</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">[-9.0, -8.0, -7.0, -6.0, -5.0, -4.0, -3.0]</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">surface_width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span>    <span class="n">surface_elevation</span><span class="o">=-</span><span class="mi">3</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_heights</span><span class="p">())</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="go">[-9.0, -8.0, -7.0, -6.0, -5.0, -4.0, -3.0]</span>
 </span></code></pre></div>
 
   </div>
@@ -1953,10 +2007,10 @@ the <code>surface_elevation</code> attribute.</p>
 
 
 
-<h3 id="glmpy.dimensions.InvertedTruncatedSquarePyramid.get_surface_areas" class="doc doc-heading">
+<h3 id="glmpy.dimensions.InvertedTruncatedPyramid.get_surface_areas" class="doc doc-heading">
           <code class="highlight language-python"><span class="n">get_surface_areas</span><span class="p">()</span></code>
 
-<a href="#glmpy.dimensions.InvertedTruncatedSquarePyramid.get_surface_areas" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#glmpy.dimensions.InvertedTruncatedPyramid.get_surface_areas" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -1997,29 +2051,31 @@ and the last is the area at the surface.</p>
 <p><strong>Examples:</strong></p>
     <p>Get a list of 7 surface areas at each height in <code>get_heights()</code>:</p>
     <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">dimensions</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ofr</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedSquarePyramid</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ofr</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedPyramid</span><span class="p">(</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">surface_length</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span>    <span class="n">surface_elevation</span><span class="o">=</span><span class="mi">0</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span><span class="p">)</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_heights</span><span class="p">())</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">[-6.0, -5.0, -4.0, -3.0, -2.0, -1.0, 0.0]</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_surface_areas</span><span class="p">())</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="go">[16.0, 100.0, 256.0, 484.0, 784.0, 1156.0, 1600.0]</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">surface_width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span>    <span class="n">surface_elevation</span><span class="o">=</span><span class="mi">0</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_heights</span><span class="p">())</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="go">[-6.0, -5.0, -4.0, -3.0, -2.0, -1.0, 0.0]</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_surface_areas</span><span class="p">())</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="go">[16.0, 100.0, 256.0, 484.0, 784.0, 1156.0, 1600.0]</span>
 </span></code></pre></div>
     <p>Get a list of 4 surface areas at each height in <code>get_heights()</code>:</p>
-    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ofr</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedSquarePyramid</span><span class="p">(</span>
+    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ofr</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedPyramid</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">... </span>    <span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">surface_length</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span><span class="p">)</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_heights</span><span class="p">())</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="go">[-6.0, -4.0, -2.0, 0.0]</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_surface_areas</span><span class="p">())</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">[16.0, 256.0, 784.0, 1600.0]</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">surface_width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_heights</span><span class="p">())</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="go">[-6.0, -4.0, -2.0, 0.0]</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_surface_areas</span><span class="p">())</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="go">[16.0, 256.0, 784.0, 1600.0]</span>
 </span></code></pre></div>
 
   </div>
@@ -2031,10 +2087,10 @@ and the last is the area at the surface.</p>
 
 
 
-<h3 id="glmpy.dimensions.InvertedTruncatedSquarePyramid.get_volumes" class="doc doc-heading">
+<h3 id="glmpy.dimensions.InvertedTruncatedPyramid.get_volumes" class="doc doc-heading">
           <code class="highlight language-python"><span class="n">get_volumes</span><span class="p">()</span></code>
 
-<a href="#glmpy.dimensions.InvertedTruncatedSquarePyramid.get_volumes" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#glmpy.dimensions.InvertedTruncatedPyramid.get_volumes" class="headerlink" title="Permanent link">&para;</a></h3>
 
 
   <div class="doc doc-contents ">
@@ -2075,34 +2131,73 @@ the last is the volume at the surface.</p>
 <p><strong>Examples:</strong></p>
     <p>Get a list of 7 volumes at each height in <code>get_heights()</code>:</p>
     <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">dimensions</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ofr</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedSquarePyramid</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ofr</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedPyramid</span><span class="p">(</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">surface_length</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">surface_width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span>    <span class="n">surface_elevation</span><span class="o">=</span><span class="mi">0</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">... </span><span class="p">)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_heights</span><span class="p">())</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="go">[-6.0, -5.0, -4.0, -3.0, -2.0, -1.0, 0.0]</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_volumes</span><span class="p">())</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="go">[0.0, 52.0, 224.0, 588.0, 1216.0, 2180.0, 3552.0]</span>
+</span></code></pre></div>
+    <p>Get a list of 4 volumes at each height in <code>get_heights()</code>:</p>
+    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ofr</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedPyramid</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">... </span>    <span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">surface_length</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">surface_width</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">... </span>    <span class="n">surface_elevation</span><span class="o">=</span><span class="mi">0</span>
 </span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="gp">... </span><span class="p">)</span>
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_heights</span><span class="p">())</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">[-6.0, -5.0, -4.0, -3.0, -2.0, -1.0, 0.0]</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">[-6.0, -4.0, -2.0, 0.0]</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_volumes</span><span class="p">())</span>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="go">[0.0, 52.0, 224.0, 588.0, 1216.0, 2180.0, 3552.0]</span>
-</span></code></pre></div>
-    <p>Get a list of 4 volumes at each height in <code>get_heights()</code>:</p>
-    <div class="highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="gp">&gt;&gt;&gt; </span><span class="n">ofr</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedSquarePyramid</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="gp">... </span>    <span class="n">height</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="gp">... </span>    <span class="n">surface_length</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="gp">... </span>    <span class="n">num_vals</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="gp">... </span>    <span class="n">side_slope</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="gp">... </span><span class="p">)</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_heights</span><span class="p">())</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="go">[-6.0, -4.0, -2.0, 0.0]</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">ofr</span><span class="o">.</span><span class="n">get_volumes</span><span class="p">())</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="go">[0.0, 224.0, 1216.0, 3552.0]</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="go">[0.0, 224.0, 1216.0, 3552.0]</span>
 </span></code></pre></div>
 
   </div>
 
 </div>
+
+
+
+  </div>
+
+  </div>
+
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="glmpy.dimensions.InvertedTruncatedSquarePyramid" class="doc doc-heading">
+          <code>InvertedTruncatedSquarePyramid</code>
+
+
+<a href="#glmpy.dimensions.InvertedTruncatedSquarePyramid" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+  <div class="doc doc-contents ">
+
+
+
+  
+
+  <div class="doc doc-children">
+
+
+
+
+
+
+
+
 
 
 

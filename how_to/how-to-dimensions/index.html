@@ -9,7 +9,7 @@
       
       
       
-        <link rel="prev" href="../how-to-nml/">
+        <link rel="prev" href="../how-to-plots/">
       
       
         <link rel="next" href="../how-to-outflows/">
@@ -433,6 +433,8 @@
       
         
       
+        
+      
     
     
       
@@ -481,6 +483,27 @@
   
   <span class="md-ellipsis">
     NML
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to-plots/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Plots
   </span>
   
 
@@ -1257,10 +1280,16 @@
 
 <h1 id="how-to-dimensions-module">How-to: <code>dimensions</code> module<a class="headerlink" href="#how-to-dimensions-module" title="Permanent link">&para;</a></h1>
 <h2 id="calculating-the-morphometry-parameters-for-simple-water-bodies">Calculating the morphometry parameters for simple water bodies<a class="headerlink" href="#calculating-the-morphometry-parameters-for-simple-water-bodies" title="Permanent link">&para;</a></h2>
-<p>For simple water bodies, glm-py provides functionality to easily calculate the <code>H</code> and <code>A</code> (height and surface area) parameters for the <code>NMLMorphometry</code> class, i.e., the <code>&amp;morphometry</code> configuration block.</p>
-<p>The <a href="../../dimensions/#glmpy.dimensions.InvertedTruncatedSquarePyramid"><code>InvertedTruncatedSquarePyramid</code></a> class can be used to retrieve these parameters for pyramidal water bodies with a square base, e.g., an on-farm reservoir.</p>
-<p><img alt="Graphical representation of the InvertedTruncatedSquarePyramid" src="../../img/InvertedTruncatedSquarePyramid.png#only-light" />
-<img alt="Graphical representation of the InvertedTruncatedSquarePyramid" src="../../img/InvertedTruncatedSquarePyramid-dark.png#only-dark" /></p>
+<p>For simple water bodies, the <code>dimensions</code> module provides classes to easily 
+calculate the <code>H</code> and <code>A</code> (height and surface area) parameters for the 
+<code>MorphometryBlock</code> class, i.e., the <code>&amp;morphometry</code> configuration block.</p>
+<p>The <code>InvertedTruncatedPyramid</code> class can be used for pyramidal water bodies 
+with a square/rectangular base while <code>InvertedTruncatedCone</code> is useful for 
+circular water bodies.</p>
+<p><img alt="Graphical representation of the InvertedTruncatedPyramid" src="../../img/InvertedTruncatedPyramid-light.png#only-light" />
+<img alt="Graphical representation of the InvertedTruncatedPyramid" src="../../img/InvertedTruncatedPyramid-dark.png#only-dark" /></p>
+<p><img alt="Graphical representation of the InvertedTruncatedCone" src="../../img/InvertedTruncatedCone-light.png#only-light" />
+<img alt="Graphical representation of the InvertedTruncatedCone" src="../../img/InvertedTruncatedCone-dark.png#only-dark" /></p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">dimensions</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">my_dimensions</span> <span class="o">=</span> <span class="n">dimensions</span><span class="o">.</span><span class="n">InvertedTruncatedSquarePyramid</span><span class="p">(</span>
