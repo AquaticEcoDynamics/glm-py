@@ -24,6 +24,8 @@ dependencies = [
   "numpy>=1.26",
   "python-multipart",
   "regex>=2023.12.25",
+  "netcdf4>=1.7.1.post2",
+  "matplotlib>=3.9.0"
 ]
 
 [project.optional-dependencies]

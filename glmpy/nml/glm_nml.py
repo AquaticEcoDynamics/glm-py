@@ -718,7 +718,7 @@ class MorphometryBlock(_BaseBlock):
         Length of the lake basin, at crest height (m). Default is `None`.
     bsn_wid : Union[float, None]
         Width of the lake basin, at crest height (m). Default is `None`.
-    bsn_vals : Union[float, None]
+    bsn_vals : Union[int, None]
         Number of points being provided to described the hyposgraphic details.
         Default is `None`.
     H : Union[List[float], None]
@@ -772,7 +772,7 @@ class MorphometryBlock(_BaseBlock):
         crest_elev: Union[float, None] = None,
         bsn_len: Union[float, None] = None,
         bsn_wid: Union[float, None] = None,
-        bsn_vals: Union[float, None] = None,
+        bsn_vals: Union[int, None] = None,
         H: Union[List[float], None] = None,
         A: Union[List[float], None] = None,
     ):

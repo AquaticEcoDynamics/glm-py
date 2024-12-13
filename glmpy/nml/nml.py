@@ -1666,7 +1666,7 @@ class NMLReader(_NML):
                 "crest_elev": NMLReader.read_nml_float,
                 "bsn_len": NMLReader.read_nml_float,
                 "bsn_wid": NMLReader.read_nml_float,
-                "bsn_vals": NMLReader.read_nml_float,
+                "bsn_vals": NMLReader.read_nml_int,
                 "H": lambda x: NMLReader.read_nml_list(
                     x, NMLReader.read_nml_float
                 ),

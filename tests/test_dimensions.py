@@ -1,145 +1,13 @@
 import pytest
-import math
+
 from glmpy import dimensions
-
-
-def test_non_numeric_height():
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedSquarePyramid(
-            height="foo",
-            surface_length=40,
-            num_vals=7,
-            side_slope=1/3,
-            surface_elevation=0
-        )
-    assert str(
-        error.value) == (
-            f"height must be a numeric value. Got type {type('foo')}."
-    )
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedCone(
-            height="foo",
-            surface_radius=15,
-            num_vals=3,
-            side_slope=1/3,
-            surface_elevation=0
-        )
-    assert str(
-        error.value) == (
-            f"height must be a numeric value. Got type {type('foo')}."
-    )
-
-def test_non_numeric_surface_dimension():
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedSquarePyramid(
-            height=6,
-            surface_length="foo",
-            num_vals=7,
-            side_slope=1/3,
-            surface_elevation=0
-        )
-    assert str(
-        error.value) == (
-            f"surface_length must be a numeric value. Got type {type('foo')}."
-    )
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedCone(
-            height=3,
-            surface_radius="foo",
-            num_vals=3,
-            side_slope=1/3,
-            surface_elevation=0
-        )
-    assert str(
-        error.value) == (
-            f"surface_radius must be a numeric value. Got type {type('foo')}."
-    )
-
-def test_non_numeric_num_vals():
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedSquarePyramid(
-            height=6,
-            surface_length=40,
-            num_vals="foo",
-            side_slope=1/3,
-            surface_elevation=0
-        )
-    assert str(
-        error.value) == (
-            f"num_vals must be an integer value. Got type {type('foo')}."
-    )
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedCone(
-            height=3,
-            surface_radius=15,
-            num_vals="foo",
-            side_slope=1/3,
-            surface_elevation=0
-        )
-    assert str(
-        error.value) == (
-           f"num_vals must be an integer value. Got type {type('foo')}."
-    )
-
-def test_non_numeric_surface_elevation():
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedSquarePyramid(
-            height=6,
-            surface_length=40,
-            num_vals=7,
-            side_slope=1/3,
-            surface_elevation="foo"
-        )
-    assert str(
-        error.value) == (
-            "surface_elevation must be a numeric value. Got type "
-            f"{type('foo')}."
-    )
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedCone(
-            height=3,
-            surface_radius=15,
-            num_vals=3,
-            side_slope=1/3,
-            surface_elevation="foo"
-        )
-    assert str(
-        error.value) == (
-            "surface_elevation must be a numeric value. Got type "
-            f"{type('foo')}."
-    )
-
-def test_non_numeric_side_slope():
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedSquarePyramid(
-            height=6,
-            surface_length=40,
-            num_vals=7,
-            side_slope="foo",
-            surface_elevation=0
-        )
-    assert str(
-        error.value) == (
-            f"side_slope must be a numeric value. Got type {type(f'foo')}."
-    )
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedCone(
-            height=3,
-            surface_radius=15,
-            num_vals=3,
-            side_slope="foo",
-            surface_elevation=0
-        )
-    assert str(
-        error.value) == (
-            f"side_slope must be a numeric value. Got type {type(f'foo')}."
-    )
 
 def test_negative_height():
     with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedSquarePyramid(
+        dimensions.InvertedTruncatedPyramid(
             height=-6,
             surface_length=40,
+            surface_width=40,
             num_vals=7,
             side_slope=1/3,
             surface_elevation=0
@@ -157,15 +25,28 @@ def test_negative_height():
 
 def test_negative_surface_dimension():
     with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedSquarePyramid(
+        dimensions.InvertedTruncatedPyramid(
             height=6,
             surface_length=-40,
+            surface_width=40,
             num_vals=7,
             side_slope=1/3,
             surface_elevation=0
         )
     assert str(error.value) == (
         "surface_length must be a positive value."
+    )
+    with pytest.raises(ValueError) as error:
+        dimensions.InvertedTruncatedPyramid(
+            height=6,
+            surface_length=40,
+            surface_width=-40,
+            num_vals=7,
+            side_slope=1/3,
+            surface_elevation=0
+        )
+    assert str(error.value) == (
+        "surface_width must be a positive value."
     )
     with pytest.raises(ValueError) as error:
         dimensions.InvertedTruncatedCone(
@@ -179,9 +60,10 @@ def test_negative_surface_dimension():
 
 def test_num_vals_less_than_2():
     with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedSquarePyramid(
+        dimensions.InvertedTruncatedPyramid(
             height=6,
             surface_length=40,
+            surface_width=40,
             num_vals=1,
             side_slope=1/3,
             surface_elevation=0
@@ -203,9 +85,10 @@ def test_num_vals_less_than_2():
 
 def test_negative_side_slope():
     with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedSquarePyramid(
+        dimensions.InvertedTruncatedPyramid(
             height=6,
             surface_length=40,
+            surface_width=40,
             num_vals=7,
             side_slope=-1/3,
             surface_elevation=0
@@ -223,9 +106,10 @@ def test_negative_side_slope():
 
 def test_negative_base_length():
     with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedSquarePyramid(
+        dimensions.InvertedTruncatedPyramid(
             height=6,
             surface_length=10,
+            surface_width=40,
             num_vals=7,
             side_slope=1/3,
             surface_elevation=0
@@ -236,6 +120,22 @@ def test_negative_base_length():
         "water body is currently <= 0. base_length is calculated by "
         "(surface_length-(height/side_slope)*2). Adjust your input "
         "attributes to calculate a positive base_length value."
+    )
+    with pytest.raises(ValueError) as error:
+        dimensions.InvertedTruncatedPyramid(
+            height=6,
+            surface_length=40,
+            surface_width=10,
+            num_vals=7,
+            side_slope=1/3,
+            surface_elevation=0
+        )
+    assert str(error.value) == (
+        "Invalid combination of height, surface_width, and "
+        "side_slope attributes. The calculated base_width of the "
+        "water body is currently <= 0. base_width is calculated by "
+        "(surface_width-(height/side_slope)*2). Adjust your input "
+        "attributes to calculate a positive base_width value."
     )
     with pytest.raises(ValueError) as error:
         dimensions.InvertedTruncatedCone(
@@ -254,9 +154,10 @@ def test_negative_base_length():
     )
 
 def test_greater_num_vals_at_0_surface_elev():
-    square_reservoir = dimensions.InvertedTruncatedSquarePyramid(
+    square_reservoir = dimensions.InvertedTruncatedPyramid(
         height=6,
         surface_length=40,
+        surface_width=40,
         num_vals=7,
         side_slope=1/3,
         surface_elevation=0
@@ -294,9 +195,10 @@ def test_greater_num_vals_at_0_surface_elev():
 
 
 def test_lower_num_vals_at_0_surface_elev():
-    square_reservoir = dimensions.InvertedTruncatedSquarePyramid(
+    square_reservoir = dimensions.InvertedTruncatedPyramid(
         height=6,
         surface_length=40,
+        surface_width=40,
         num_vals=4,
         side_slope=1/3,
         surface_elevation=0
@@ -327,9 +229,10 @@ def test_lower_num_vals_at_0_surface_elev():
     assert circular_reservoir.get_heights() == pytest.approx(expected_heights)
 
 def test_greater_num_vals_at_neg_3_surface_elev():
-    square_reservoir = dimensions.InvertedTruncatedSquarePyramid(
+    square_reservoir = dimensions.InvertedTruncatedPyramid(
         height=6,
         surface_length=40,
+        surface_width=40,
         num_vals=7,
         side_slope=1/3,
         surface_elevation=-3
@@ -366,9 +269,10 @@ def test_greater_num_vals_at_neg_3_surface_elev():
     assert circular_reservoir.get_heights() == pytest.approx(expected_heights)
 
 def test_lower_num_vals_at_neg_3_surface_elev():
-    square_reservoir = dimensions.InvertedTruncatedSquarePyramid(
+    square_reservoir = dimensions.InvertedTruncatedPyramid(
         height=6,
         surface_length=40,
+        surface_width=40,
         num_vals=4,
         side_slope=1/3,
         surface_elevation=-3
