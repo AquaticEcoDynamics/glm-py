@@ -1,6 +1,6 @@
 {
  "glm_setup": {
-  "sim_name": "GLMSimulation",
+  "sim_name": "Sparkling",
   "max_layers": 500,
   "min_layer_vol": 0.5,
   "min_layer_thick": 0.15,

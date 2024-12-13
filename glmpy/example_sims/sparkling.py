@@ -4,8 +4,8 @@ import pandas as pd
 from typing import Union
 from glmpy.nml import nml
 from glmpy import simulation
-from tempfile import NamedTemporaryFile
 from importlib import resources
+from tempfile import NamedTemporaryFile
 
 
 def load_nml() -> dict:

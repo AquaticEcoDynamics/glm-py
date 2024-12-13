@@ -268,7 +268,7 @@ jobs:
 
       - name: Random sleep to avoid PyPI 503
         run: |
-          RANDOM_SLEEP=$(( RANDOM % 30 + 1 ))
+          RANDOM_SLEEP=$(( RANDOM % 60 + 1 ))
           sleep $RANDOM_SLEEP
 
       - name: Publish distribution to TestPyPI
@@ -430,7 +430,7 @@ jobs:
       
       - name: Random sleep to avoid PyPI 503
         run: |
-          RANDOM_SLEEP=$(( RANDOM % 30 + 1 ))
+          RANDOM_SLEEP=$(( RANDOM % 60 + 1 ))
           sleep $RANDOM_SLEEP
 
       - name: Publish distribution to PyPI
