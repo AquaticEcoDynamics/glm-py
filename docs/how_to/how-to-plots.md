@@ -19,8 +19,9 @@ and avoids adding unnecessary complexity to the wrapping method/function. See
 example use below:
 
 ```python
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+
 
 # Creates two arrays of random data
 data1, data2 = np.random.randn(2, 25)  
@@ -172,7 +173,7 @@ the NetCDF file onto an `Axes` object. Below, the lake temperature
 
 ```python
 fig, ax = plt.subplots(figsize=(10, 5))
-nc.contour_plot(ax=ax, var="temp")
+nc.plot_var(ax=ax, var="temp")
 ```
 
 ![lake-temp](../img/how-to-plots/lake-temp-light.png#only-light)
@@ -183,7 +184,7 @@ passed to the `colorbar` method of the figure object:
 
 ```python
 fig, ax = plt.subplots(figsize=(10, 5))
-out = nc.contour_plot(ax=ax, var="temp")
+out = nc.plot_var(ax=ax, var="temp")
 col_bar = fig.colorbar(out)
 col_bar.set_label("Temperature (°C)")
 ```

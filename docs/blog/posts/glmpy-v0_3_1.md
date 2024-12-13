@@ -7,11 +7,11 @@ categories:
   - Releases
 ---
 
-# glm-py `0.3.0`
+# glm-py `0.3.1`
 
 **Key changes from the latest release.**
 
-glm-py `0.3.0` adds a `plots` module for visualising GLM's `lake.csv` and 
+glm-py `0.3.1` adds a `plots` module for visualising GLM's `lake.csv` and 
 `output.nc` files with Matplotlib.
 
 <!-- more -->

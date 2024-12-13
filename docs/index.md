@@ -35,3 +35,7 @@ Tools to convert JSON data to `.nml` format data. Useful for handling client req
 ### Simulation
 
 Classes to handle running GLM simulations and processing output data into CSV, JSON, NetCDF files, or generating a JSON stream to pass onto clients. 
+
+### Plots
+
+Matplotlib-based plotting methods that process and plot GLM's output files.
