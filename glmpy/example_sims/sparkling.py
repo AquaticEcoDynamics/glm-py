@@ -7,7 +7,6 @@ from glmpy import simulation
 from importlib import resources
 from tempfile import NamedTemporaryFile
 
-
 def load_nml() -> dict:
     """Load the Sparkling Lake NML file.
 
@@ -16,12 +15,11 @@ def load_nml() -> dict:
     dict
         Dictionary of the Sparkling Lake NML file.
     """
-    with resources.path("glmpy", "data") as data_path:
-        path = data_path.joinpath("sparkling_sim", "glm3.json")
-        if not path.is_file():
-            raise FileNotFoundError(f"File not found: {path}")
-        with open(path) as file:
-            nml_json = json.load(file)
+    path = resources.files("glmpy.data.sparkling_sim").joinpath("glm3.json")
+    if not path.is_file():
+        raise FileNotFoundError(f"File not found: {path}")
+    with path.open() as file:
+        nml_json = json.load(file)
     return nml_json
 
 def load_bcs() -> pd.DataFrame:
@@ -32,11 +30,12 @@ def load_bcs() -> pd.DataFrame:
     pd.Dataframe
         Pandas dataframe of the Sparkling Lake meteorology CSV file.
     """
-    with resources.path("glmpy", "data") as data_path:
-        path = data_path.joinpath("sparkling_sim", "nldas_driver.csv")
-        if not path.is_file():
-            raise FileNotFoundError(f"File not found: {path}")
-        bcs = pd.read_csv(path)
+    path = resources.files("glmpy.data.sparkling_sim").joinpath(
+        "nldas_driver.csv"
+    )
+    if not path.is_file():
+        raise FileNotFoundError(f"File not found: {path}")
+    bcs = pd.read_csv(str(path))
     return bcs
 
 def run_sim(
