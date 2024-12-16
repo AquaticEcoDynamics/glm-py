@@ -85,11 +85,15 @@ nav:
     - GLM JSON: how_to/how-to-glm_json.md
   - API Reference:
     - NML: nml.md
-    - Dimensions: dimensions.md
-    - GLM_JSON: json-to-nml.md
     - Simulation: simulation.md
+    - Plots: plots.md
+    - Dimensions: dimensions.md
     - Inflows: inflows.md
     - Outflows: outflows.md
+    - GLM_JSON: json-to-nml.md
+    - Example sims: 
+      - Sparkling: sparkling.md
+    
   - Contributing:
     - contributing/index.md
   - Blog:
