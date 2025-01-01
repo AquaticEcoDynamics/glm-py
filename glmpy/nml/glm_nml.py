@@ -2410,7 +2410,7 @@ class OutflowBlock(_BaseBlock):
         self,
         check_params: bool = False
     ) -> dict[str, Union[
-                float, int, str, bool, List[float], List[int], List[bool], None
+                float, int, str, bool, List[float], List[int], List[str], List[bool], None
             ]
         ]:
         """Returns a dictionary of model parameters.
@@ -2487,9 +2487,10 @@ class OutflowBlock(_BaseBlock):
         check_errors: bool = False
     ) -> dict[
         str, 
-        Union[float, int, str, bool, List[float], List[int], List[bool], None]
+        Union[float, int, str, bool, List[float], List[int], List[str], List[bool], None]
         ]:
         return self.get_params(check_params=check_errors)
+    
 
 class NMLOutflow(OutflowBlock):
     def __init__(self, *args, **kwargs):
