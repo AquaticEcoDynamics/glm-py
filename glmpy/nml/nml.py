@@ -461,6 +461,10 @@ class NMLWriter(_NML):
         """
         if converter_func is None:
             converter_func = str
+        # Better type checking
+        if not hasattr(python_array[0], '__iter__') or isinstance(python_array[0], str):
+            # If first element isn't iterable or is a string, wrap the entire array in a list
+            python_array = [python_array]
         nrows = len(python_array)
         array_str = ''
         array_str += ','.join(converter_func(val) for val in python_array[0])
