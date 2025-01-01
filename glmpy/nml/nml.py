@@ -869,7 +869,7 @@ class NMLWriter(_NML):
             "outflow": {
                 "num_outlet": None,
                 "outflow_fl": lambda x: NMLWriter.write_nml_list(
-                    x, NMLWriter.write_nml_str
+                    x, NMLWriter.write_nml_str,
                 ),
                 "time_fmt": NMLWriter.write_nml_str,
                 "outflow_factor": NMLWriter.write_nml_list,
