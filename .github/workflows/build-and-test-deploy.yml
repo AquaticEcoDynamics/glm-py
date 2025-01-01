@@ -124,7 +124,7 @@ jobs:
   
   build-wheels-macos-x86_64:
     name: Build wheels on MacOS for x86_64
-    runs-on: macos-12
+    runs-on: macos-13
 
     steps:
       - name: Check out code
@@ -266,6 +266,11 @@ jobs:
           name: ${{ matrix.distribution}}
           path: dist/
 
+      - name: Random sleep to avoid PyPI 503
+        run: |
+          RANDOM_SLEEP=$(( RANDOM % 60 + 1 ))
+          sleep $RANDOM_SLEEP
+
       - name: Publish distribution to TestPyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
@@ -315,7 +320,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12"]
-    runs-on: macos-12
+    runs-on: macos-13
 
     steps:
     - name: Setup Python
@@ -422,6 +427,11 @@ jobs:
         with:
           name: ${{ matrix.distribution }}
           path: dist/
+      
+      - name: Random sleep to avoid PyPI 503
+        run: |
+          RANDOM_SLEEP=$(( RANDOM % 60 + 1 ))
+          sleep $RANDOM_SLEEP
 
       - name: Publish distribution to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1

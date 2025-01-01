@@ -4,7 +4,7 @@ repo_name: AquaticEcoDynamics/glm-py
 
 theme:
     name: material
-    logo: img/glm_icon_text_square.png
+    logo: img/glm_icon_text.png
     custom_dir: docs/custom_theme/
     features:
       - content.code.copy
@@ -45,7 +45,9 @@ plugins:
       python:
         options:
           docstring_style: numpy
+          show_submodules: true
           show_source: false
+          inherited_members: true
 
 
 markdown_extensions:
@@ -57,6 +59,8 @@ markdown_extensions:
       pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
+  - admonition
+  - pymdownx.details
   - pymdownx.superfences
   - md_in_html
   - attr_list
@@ -74,17 +78,22 @@ nav:
   - Install: installation.md
   - How-to: 
     - NML: how_to/how-to-nml.md
+    - Plots: how_to/how-to-plots.md
     - Dimensions: how_to/how-to-dimensions.md
     - Outflows: how_to/how-to-outflows.md
     - Inflows: how_to/how-to-inflows.md
     - GLM JSON: how_to/how-to-glm_json.md
   - API Reference:
     - NML: nml.md
-    - Dimensions: dimensions.md
-    - GLM_JSON: json-to-nml.md
     - Simulation: simulation.md
+    - Plots: plots.md
+    - Dimensions: dimensions.md
     - Inflows: inflows.md
     - Outflows: outflows.md
+    - GLM_JSON: json-to-nml.md
+    - Example sims: 
+      - Sparkling: sparkling.md
+    
   - Contributing:
     - contributing/index.md
   - Blog:
