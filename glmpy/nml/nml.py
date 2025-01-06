@@ -783,6 +783,7 @@ class NMLWriter(_NML):
                     x, NMLWriter.write_nml_str
                 ),
                 "wq_init_vals": NMLWriter.write_nml_array,
+                "restart_variables": NMLWriter.write_nml_array,
             },
             "light": {
                 "light_mode": None,
@@ -1728,6 +1729,9 @@ class NMLReader(_NML):
                     x, NMLReader.read_nml_str
                 ),
                 "wq_init_vals": lambda x: NMLReader.read_nml_array(
+                    x, NMLReader.read_nml_float
+                ),
+                "restart_variables": lambda x: NMLReader.read_nml_array(
                     x, NMLReader.read_nml_float
                 ),
             },
