@@ -11,6 +11,7 @@ from matplotlib.image import AxesImage
 from datetime import datetime, timedelta
 
 
+
 class LakePlotter:
     """Common plots for the `lake.csv` output.
     
