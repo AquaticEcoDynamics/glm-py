@@ -461,6 +461,10 @@ class NMLWriter(_NML):
         """
         if converter_func is None:
             converter_func = str
+        # Better type checking
+        if not hasattr(python_array[0], '__iter__') or isinstance(python_array[0], str):
+            # If first element isn't iterable or is a string, wrap the entire array in a list
+            python_array = [python_array]
         nrows = len(python_array)
         array_str = ''
         array_str += ','.join(converter_func(val) for val in python_array[0])
@@ -779,6 +783,7 @@ class NMLWriter(_NML):
                     x, NMLWriter.write_nml_str
                 ),
                 "wq_init_vals": NMLWriter.write_nml_array,
+                "restart_variables": NMLWriter.write_nml_array,
             },
             "light": {
                 "light_mode": None,
@@ -869,7 +874,7 @@ class NMLWriter(_NML):
             "outflow": {
                 "num_outlet": None,
                 "outflow_fl": lambda x: NMLWriter.write_nml_list(
-                    x, NMLWriter.write_nml_str
+                    x, NMLWriter.write_nml_str,
                 ),
                 "time_fmt": NMLWriter.write_nml_str,
                 "outflow_factor": NMLWriter.write_nml_list,
@@ -1724,6 +1729,9 @@ class NMLReader(_NML):
                     x, NMLReader.read_nml_str
                 ),
                 "wq_init_vals": lambda x: NMLReader.read_nml_array(
+                    x, NMLReader.read_nml_float
+                ),
+                "restart_variables": lambda x: NMLReader.read_nml_array(
                     x, NMLReader.read_nml_float
                 ),
             },

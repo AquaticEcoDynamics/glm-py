@@ -1179,6 +1179,8 @@ class InitProfilesBlock(_BaseBlock):
     wq_init_vals : Union[List[float], float, None]
         Array of water quality variable initial data 
         (rows = vars; cols = depths). Default is `None`.
+    restart_variables : Union[List[float], float, None]
+        Array of restart variables to restart model from a previous saved state. Default is `None`.
     
     Examples
     --------
@@ -1203,6 +1205,25 @@ class InitProfilesBlock(_BaseBlock):
     ...         4.1, 4.2, 4.3, 1.2, 1.3,
     ...         5.1, 5.2, 5.3, 1.2, 1.3,
     ...         6.1, 6.2, 6.3, 1.2, 1.3
+    ...     ],
+    ...     "restart_variables": [
+    ...         70.30026370304032,
+    ...         0.8994359224744514,
+    ...         0.03906299522902229,
+    ...         6.1835334329751606e-06,
+    ...         6833986.341232119,
+    ...         0.0,
+    ...         0.10319285945774581,
+    ...         25.0,
+    ...         25.0,
+    ...         25.0,
+    ...         0.0,
+    ...         70.30026370304032,
+    ...         0.0,
+    ...         0.0,
+    ...         0.0,
+    ...         0.0,
+    ...         0.0
     ...     ]
     ... }
     >>> init_profiles.set_attributes(init_profiles_attrs)
@@ -1217,6 +1238,7 @@ class InitProfilesBlock(_BaseBlock):
         num_wq_vars: Union[int, None] = None,
         wq_names: Union[List[str], str, None] = None,
         wq_init_vals: Union[List[float], float, None] = None,
+        restart_variables: Union[List[float], float, None] = None,
     ):
         self.lake_depth = lake_depth
         self.num_depths = num_depths
@@ -1226,7 +1248,8 @@ class InitProfilesBlock(_BaseBlock):
         self.num_wq_vars = num_wq_vars
         self.wq_names = wq_names
         self.wq_init_vals = wq_init_vals
-
+        self.restart_variables = restart_variables
+        
     def get_params(
         self, 
         check_params: bool = False
@@ -1255,6 +1278,7 @@ class InitProfilesBlock(_BaseBlock):
         self.the_depths = self._single_value_to_list(self.the_depths)
         self.wq_names = self._single_value_to_list(self.wq_names)
         self.wq_init_vals = self._single_value_to_list(self.wq_init_vals)
+        self.restart_variables = self._single_value_to_list(self.restart_variables)
         if check_params:
             warnings.warn(
                 "As of glm-py 0.2.0, error checking with check_params is not"
@@ -1270,7 +1294,8 @@ class InitProfilesBlock(_BaseBlock):
             "the_sals": self.the_sals,
             "num_wq_vars": self.num_wq_vars,
             "wq_names": self.wq_names,
-            "wq_init_vals": self.wq_init_vals
+            "wq_init_vals": self.wq_init_vals,
+            "restart_variables": self.restart_variables
         }
         return init_profiles_dict
     
@@ -2070,6 +2095,9 @@ class InflowBlock(_BaseBlock):
     subm_flag : Union[List[bool], bool, None]
         Switch indicating if the inflow is entering as a submerged input. A 
         list if `num_inflows > 1`. Default is `None`.
+    subm_elev : Union[List[float], float, None]
+        Elevation of the submerged inflow. A list if `num_inflows > 1`. Default
+        is `None`.
     strm_hf_angle : Union[List[float], float, None]
         Angle describing the width of an inflow river channel ("half angle"). A 
         list if `num_inflows > 1`. Default is `None`.
@@ -2131,6 +2159,7 @@ class InflowBlock(_BaseBlock):
         num_inflows: Union[int, None] = None,
         names_of_strms: Union[List[str], str, None] = None,
         subm_flag: Union[List[bool], bool, None] = None,
+        subm_elev: Union[List[float], float, None] = None,
         strm_hf_angle: Union[List[float], float, None] = None,
         strmbd_slope: Union[List[float], float, None] = None,
         strmbd_drag: Union[List[float], float, None] = None,
@@ -2144,6 +2173,7 @@ class InflowBlock(_BaseBlock):
         self.num_inflows = num_inflows        
         self.names_of_strms = names_of_strms
         self.subm_flag = subm_flag
+        self.subm_elev = subm_elev
         self.strm_hf_angle = strm_hf_angle
         self.strmbd_slope = strmbd_slope
         self.strmbd_drag = strmbd_drag
@@ -2181,6 +2211,7 @@ class InflowBlock(_BaseBlock):
         """
         self.names_of_strms = self._single_value_to_list(self.names_of_strms)
         self.subm_flag = self._single_value_to_list(self.subm_flag)
+        self.subm_elev = self._single_value_to_list(self.subm_elev)
         self.strm_hf_angle = self._single_value_to_list(self.strm_hf_angle)
         self.strmbd_slope = self._single_value_to_list(self.strmbd_slope)
         self.strmbd_drag = self._single_value_to_list(self.strmbd_drag)
@@ -2201,6 +2232,7 @@ class InflowBlock(_BaseBlock):
             "num_inflows": self.num_inflows,
             "names_of_strms": self.names_of_strms,
             "subm_flag": self.subm_flag,
+            "subm_elev": self.subm_elev,
             "strm_hf_angle": self.strm_hf_angle,
             "strmbd_slope": self.strmbd_slope,
             "strmbd_drag": self.strmbd_drag,
@@ -2410,7 +2442,7 @@ class OutflowBlock(_BaseBlock):
         self,
         check_params: bool = False
     ) -> dict[str, Union[
-                float, int, str, bool, List[float], List[int], List[bool], None
+                float, int, str, bool, List[float], List[int], List[str], List[bool], None
             ]
         ]:
         """Returns a dictionary of model parameters.
@@ -2487,9 +2519,10 @@ class OutflowBlock(_BaseBlock):
         check_errors: bool = False
     ) -> dict[
         str, 
-        Union[float, int, str, bool, List[float], List[int], List[bool], None]
+        Union[float, int, str, bool, List[float], List[int], List[str], List[bool], None]
         ]:
         return self.get_params(check_params=check_errors)
+    
 
 class NMLOutflow(OutflowBlock):
     def __init__(self, *args, **kwargs):
