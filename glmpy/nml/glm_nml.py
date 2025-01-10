@@ -1180,7 +1180,8 @@ class InitProfilesBlock(_BaseBlock):
         Array of water quality variable initial data 
         (rows = vars; cols = depths). Default is `None`.
     restart_variables : Union[List[float], float, None]
-        Array of restart variables to restart model from a previous saved state. Default is `None`.
+        Array of restart variables to restart model from a previous saved 
+        state. Default is `None`.
     
     Examples
     --------
