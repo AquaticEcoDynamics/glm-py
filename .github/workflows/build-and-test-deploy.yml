@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-source-dist:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Check out code
@@ -38,7 +38,7 @@ jobs:
 
   build-wheels-manylinux-aarch64:
     name: Build wheels on manylinux for aarch64
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     
     steps:
       - name: Check out code
@@ -85,7 +85,7 @@ jobs:
 
   build-wheels-manylinux-x86_64:
     name: Build wheels on manylinux for x86_64
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Check out code
@@ -242,7 +242,7 @@ jobs:
   publish-to-testpypi:
     name: Publish distributions to TestPyPI
     needs: [build-source-dist, build-wheels-manylinux-aarch64, build-wheels-manylinux-x86_64, build-wheels-macos-x86_64, build-wheels-macos-ARM64, build-wheel-windows-amd64]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         distribution:
@@ -279,7 +279,7 @@ jobs:
   wait-for-testpypi-to-update:
     name: Wait for TestPyPI to update
     needs: publish-to-testpypi
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Sleep for 30 seconds
         run: sleep 30s
@@ -291,7 +291,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.9", "3.10", "3.11", "3.12"]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Setup Python
@@ -404,7 +404,7 @@ jobs:
   publish-to-pypi:
     name: Publish distributions to PyPI
     needs: [test-windows-wheels-amd64, test-macos-wheels-arm64, test-macos-wheels-x86_64, test-linux-wheels-x86_64]
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         distribution:
