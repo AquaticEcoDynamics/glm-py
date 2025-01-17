@@ -33,6 +33,7 @@ The following table lists the GLM version that is bundled with the built distrib
 
 | glm-py version | GLM version     |
 | -------------- | -----------     |
+| `0.4.*`        | `3.3.1a12 `     |
 | `0.3.*`        | `3.3.1a12 `     |
 | `0.2.*`        | `3.3.1a12 `     |
 | `0.1.*`        | `3.3.1a12 `     |
