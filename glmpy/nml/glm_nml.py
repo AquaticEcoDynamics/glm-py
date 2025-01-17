@@ -191,7 +191,11 @@ class GLMNML:
                 stacklevel=2
             )
 
-    def write_nml(self, nml_file_path: str = "glm3.nml"):
+    def write_nml(
+            self, 
+            nml_file_path: str = "glm3.nml",
+            list_len: Union[int, None] = None
+        ):
         """Write the `.nml` file.
 
         Write the `.nml` of model parameters.
@@ -200,6 +204,10 @@ class GLMNML:
         ----------
         nml_file_path : str, optional
             File path to save .nml file, by default `glm3.nml`.
+        list_len : Union[int, None]
+            The number of items in a comma-separated list to write before 
+            adding a line break. When set to `None`, no line breaks are added. 
+            Default is `None`.
 
         Examples
         --------
@@ -221,7 +229,9 @@ class GLMNML:
             if block_dicts[i] is not None:
                 nml_dict[block_names[i]] = block_dicts[i]
         
-        out_nml = NMLWriter(nml_dict=nml_dict, detect_types=False)
+        out_nml = NMLWriter(
+            nml_dict=nml_dict, detect_types=False, list_len=list_len
+        )
         out_nml.write_nml(nml_file_path)
     
     @staticmethod
@@ -260,24 +270,6 @@ class GLMNML:
         )
         return NMLWriter.write_nml_list(
             python_list=python_list,
-            converter_func=syntax_func
-        )
-    
-    @staticmethod
-    def nml_array(
-            python_array: List[List[Any]], 
-            row_indent: int = 18,
-            syntax_func: Union[Callable, None] = None,
-        ) -> str:
-        warnings.warn(
-            _deprecated_static_method_warning(
-                "nml_array", "write_nml_array", "NMLWriter", "nml"
-            ),
-            DeprecationWarning,
-            stacklevel=2
-        )
-        return NMLWriter.write_nml_array(
-            python_array=python_array,
             converter_func=syntax_func
         )
 
@@ -1177,10 +1169,9 @@ class InitProfilesBlock(_BaseBlock):
         Names of non-GLM (i.e., FABM or AED2) variables to be initialised.
         Default is `None`.
     wq_init_vals : Union[List[float], float, None]
-        Array of water quality variable initial data 
-        (rows = vars; cols = depths). Default is `None`.
+        List of water quality variable initial data. Default is `None`.
     restart_variables : Union[List[float], float, None]
-        Array of restart variables to restart model from a previous saved 
+        Restart variables to restart model from a previous saved 
         state. Default is `None`.
     
     Examples

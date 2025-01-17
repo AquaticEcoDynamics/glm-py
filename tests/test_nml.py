@@ -12,27 +12,50 @@ def test_write_nml_str():
     python_str = 'temp'
     assert nml.NMLWriter.write_nml_str(python_str) == f"'{python_str}'"
 
-@pytest.mark.parametrize("python_syntax, nml_syntax, converter_func", [
-    ([True], ".true.", nml.NMLWriter.write_nml_bool),
-    (
-        [True, False, True], ".true.,.false.,.true.", 
-        nml.NMLWriter.write_nml_bool
-    ),
-    (['temp'], f"'{'temp'}'", nml.NMLWriter.write_nml_str),
-    (
-        ['temp', 'salt', 'oxy'], 
-        f"'{'temp'}','{'salt'}','{'oxy'}'", 
-        nml.NMLWriter.write_nml_str
-    ),
-    ([12.3], "12.3", None),
-    ([12.3, 32.4, 64.2], "12.3,32.4,64.2", None)
-])
+@pytest.mark.parametrize(
+    "python_syntax, nml_syntax, converter_func, list_len", 
+    [
+        ([True], ".true.", nml.NMLWriter.write_nml_bool, None),
+        (
+            [True, False, True], ".true.,.false.,.true.", 
+            nml.NMLWriter.write_nml_bool,  None
+        ),
+        (['temp'], f"'{'temp'}'", nml.NMLWriter.write_nml_str, None),
+        (
+            ['temp', 'salt', 'oxy'], 
+            f"'{'temp'}','{'salt'}','{'oxy'}'", 
+            nml.NMLWriter.write_nml_str,
+            None
+        ),
+        ([12.3], "12.3", None, None),
+        ([12.3, 32.4, 64.2], "12.3,32.4,64.2", None, None),
+        ([1, 2, 3, 4, 5], "1,2,3,4,5", None, 6 ),
+        ([1, 2, 3, 4, 5], "1,2,3,4,5", None, 5 ),
+        ([1, 2, 3, 4, 5], "1,2,3,4,\n5", None, 4 ),
+        ([1, 2, 3, 4, 5], "1,2,3,\n4,5", None, 3 ),
+        ([1, 2, 3, 4, 5], "1,2,\n3,4,\n5", None, 2 ),
+        ([1, 2, 3, 4, 5], "1,\n2,\n3,\n4,\n5", None, 1 ),
+    ]
+)
 
-def test_write_nml_list(python_syntax, nml_syntax, converter_func):
+def test_write_nml_list(python_syntax, nml_syntax, converter_func, list_len):
     assert nml.NMLWriter.write_nml_list(
         python_list=python_syntax,
-        converter_func=converter_func
+        converter_func=converter_func,
+        list_len=list_len
     ) == nml_syntax
+
+def test_invalid_write_nml_list_list_len():
+    with pytest.raises(ValueError) as error:
+        nml.NMLWriter.write_nml_list([1, 2, 3, 4, 5], None, -1)
+    assert str(error.value) == (
+        "list_len must be None or an integer value greater than 1."
+    )
+    with pytest.raises(ValueError) as error:
+        nml.NMLWriter.write_nml_list([1, 2, 3, 4, 5], None, 1.5)
+    assert str(error.value) == (
+        "list_len must be None or an integer value greater than 1."
+    )
 
 @pytest.fixture
 def example_python_params():
@@ -44,15 +67,7 @@ def example_python_params():
         "param5": [1, 2, 3],
         "param6": [1.1, 2.1, 3.1],
         "param7": ["foo", "bar", "baz"],
-        "param8": [True, False, True],
-        "param9": [[1, 2, 3], [1, 2, 3], [1, 2, 3]],
-        "param10": [[1.1, 2.1, 3.1], [1.1, 2.1, 3.1], [1.1, 2.1, 3.1]],
-        "param11": [
-            ["foo", "bar", "baz"], ["foo", "bar", "baz"], ["foo", "bar", "baz"]
-        ],
-        "param12": [
-            [True, False, True], [True, False, True], [True, False, True]
-        ]
+        "param8": [True, False, True]
     }
 
 def test_write_nml_param(example_python_params):
@@ -100,46 +115,6 @@ def test_write_nml_param(example_python_params):
             x, nml.NMLWriter.write_nml_bool
         )
     ) == "   param8 = .true.,.false.,.true.\n"
-    assert nml.NMLWriter.write_nml_param(
-        param_name="param9",
-        param_value=example_python_params["param9"],
-        converter_func=nml.NMLWriter.write_nml_array
-    ) == (
-        "   param9 = 1,2,3,\n"+
-        "            1,2,3,\n"+
-        "            1,2,3\n"
-    )
-    assert nml.NMLWriter.write_nml_param(
-        param_name="param10",
-        param_value=example_python_params["param10"],
-        converter_func=nml.NMLWriter.write_nml_array
-    ) == (
-        "   param10 = 1.1,2.1,3.1,\n"+
-        "             1.1,2.1,3.1,\n"+
-        "             1.1,2.1,3.1\n"
-    )
-    assert nml.NMLWriter.write_nml_param(
-        param_name="param11",
-        param_value=example_python_params["param11"],
-        converter_func=lambda x: nml.NMLWriter.write_nml_array(
-            x, nml.NMLWriter.write_nml_str
-        )
-    ) == (
-        "   param11 = 'foo','bar','baz',\n"+
-        "             'foo','bar','baz',\n"+
-        "             'foo','bar','baz'\n"
-    )
-    assert nml.NMLWriter.write_nml_param(
-        param_name="param12",
-        param_value=example_python_params["param12"],
-        converter_func=lambda x: nml.NMLWriter.write_nml_array(
-            x, nml.NMLWriter.write_nml_bool
-        )
-    ) == (
-        "   param12 = .true.,.false.,.true.,\n"+
-        "             .true.,.false.,.true.,\n"+
-        "             .true.,.false.,.true.\n"
-    )
 
 @pytest.fixture
 def example_glm_setup_parameters():
@@ -257,12 +232,12 @@ def example_init_profiles_parameters():
             'OGM_don','OGM_pon','OGM_dop','OGM_pop','OGM_doc','OGM_poc'
         ],
         "wq_init_vals": [
-            [1.1, 1.2, 1.3, 1.2, 1.3],
-            [2.1, 2.2, 2.3, 1.2, 1.3],
-            [3.1, 3.2, 3.3, 1.2, 1.3],
-            [4.1, 4.2, 4.3, 1.2, 1.3],
-            [5.1, 5.2, 5.3, 1.2, 1.3],
-            [6.1, 6.2, 6.3, 1.2, 1.3]
+            1.1, 1.2, 1.3, 1.2, 1.3,
+            2.1, 2.2, 2.3, 1.2, 1.3,
+            3.1, 3.2, 3.3, 1.2, 1.3,
+            4.1, 4.2, 4.3, 1.2, 1.3,
+            5.1, 5.2, 5.3, 1.2, 1.3,
+            6.1, 6.2, 6.3, 1.2, 1.3
         ]
     }
 
@@ -525,12 +500,12 @@ def test_write_nml(
         "   num_wq_vars = 6\n" +
         "   wq_names = 'OGM_don','OGM_pon','OGM_dop','OGM_pop','OGM_doc'," +
         "'OGM_poc'\n" +
-        "   wq_init_vals = 1.1,1.2,1.3,1.2,1.3,\n" +
-        "                  2.1,2.2,2.3,1.2,1.3,\n" +
-        "                  3.1,3.2,3.3,1.2,1.3,\n" +
-        "                  4.1,4.2,4.3,1.2,1.3,\n" +
-        "                  5.1,5.2,5.3,1.2,1.3,\n" +
-        "                  6.1,6.2,6.3,1.2,1.3\n" +
+        "   wq_init_vals = 1.1,1.2,1.3,1.2,1.3," +
+        "2.1,2.2,2.3,1.2,1.3," +
+        "3.1,3.2,3.3,1.2,1.3," +
+        "4.1,4.2,4.3,1.2,1.3," +
+        "5.1,5.2,5.3,1.2,1.3," +
+        "6.1,6.2,6.3,1.2,1.3\n" +
         "/" +
         "\n" +
         "&meteorology\n" +
@@ -648,11 +623,7 @@ def example_nml_parameters():
         "nml_list_1": "'foo', 'bar', 'baz'",
         "nml_list_2": "1, 2, 3",
         "nml_list_3": "1.1, 2.1, 3.1",
-        "nml_list_4": ".true., .false., .TRUE., .FALSE.",
-        "nml_array_1": ["1, 2, 3", "4, 5, 6"],
-        "nml_array_2": ["1.1, 2.1, 3.1", "1.2, 2.2, 3.2"],
-        "nml_array_3": ["'foo', 'bar', 'baz'", '"foo", "bar", "baz"'],
-        "nml_array_4": [".true., .FALSE.", ".TRUE., .false."]
+        "nml_list_4": ".true., .false., .TRUE., .FALSE."
     }
 
 def test_read_nml_methods(example_nml_parameters):
@@ -696,22 +667,6 @@ def test_read_nml_methods(example_nml_parameters):
         nml_list=example_nml_parameters["nml_list_4"],
         converter_func=nml.NMLReader.read_nml_bool
     ) == [True, False, True, False]
-    assert nml.NMLReader.read_nml_array(
-        nml_array=example_nml_parameters["nml_array_1"],
-        converter_func=nml.NMLReader.read_nml_int
-    ) == [[1, 2, 3], [4, 5, 6]]
-    assert nml.NMLReader.read_nml_array(
-        nml_array=example_nml_parameters["nml_array_2"],
-        converter_func=nml.NMLReader.read_nml_float
-    ) == [[1.1, 2.1, 3.1], [1.2, 2.2, 3.2]] 
-    assert nml.NMLReader.read_nml_array(
-        nml_array=example_nml_parameters["nml_array_3"],
-        converter_func=nml.NMLReader.read_nml_str
-    ) == [['foo', 'bar', 'baz'], ["foo", "bar", "baz"]]
-    assert nml.NMLReader.read_nml_array(
-        nml_array=example_nml_parameters["nml_array_4"],
-        converter_func=nml.NMLReader.read_nml_bool
-    ) == [[True, False], [True, False]]
 
 def test_read_nml_int_exceptions():
     with pytest.raises(TypeError) as error:
@@ -788,29 +743,6 @@ def test_read_nml_list_exceptions():
         f"type: {type(input[1])}"
     )
 
-def test_read_nml_array_exceptions():
-    with pytest.raises(TypeError) as error:
-        input = 123
-        nml.NMLReader.read_nml_array(input, nml.NMLReader.read_nml_int)
-    assert str(error.value) == (
-        f"Expected a list but got type: {type(input)}."
-    )
-    with pytest.raises(TypeError) as error:
-        input = ["1.1, 1.2, 1.3", "2.1, 2.2, 2.3"]
-        converter_func = "foo"
-        nml.NMLReader.read_nml_array(input, converter_func)
-    assert str(error.value) == (
-        f"Expected a Callable but got type: {type(converter_func)}."
-    )
-    with pytest.raises(TypeError) as error:
-        input = ["1.1, 1.2, 1.3", 123]
-        converter_func = nml.NMLReader.read_nml_float
-        nml.NMLReader.read_nml_array(input, converter_func)
-    assert str(error.value) == (
-        f"Expected a string for item {1} of nml_array but got "
-        f"type: {type(input[1])}"
-    )
-
 def test_NMLReader_get_block_valid(ellenbrook_nml):
     my_nml = nml.NMLReader(nml_file=ellenbrook_nml)
     expected_glm_setup = {
@@ -880,12 +812,12 @@ def test_NMLReader_converters_param(ellenbrook_nml):
             "OGM_don", "OGM_pon", "OGM_dop", "OGM_pop", "OGM_doc", "OGM_poc"
             ],
         "wq_init_vals": [
-            [1.1, 1.2, 1.3, 1.2, 1.3],
-            [2.1, 2.2, 2.3, 1.2, 1.3],
-            [3.1, 3.2, 3.3, 1.2, 1.3],
-            [4.1, 4.2, 4.3, 1.2, 1.3],
-            [5.1, 5.2, 5.3, 1.2, 1.3],
-            [6.1, 6.2, 6.3, 1.2, 1.3]
+            1.1, 1.2, 1.3, 1.2, 1.3,
+            2.1, 2.2, 2.3, 1.2, 1.3,
+            3.1, 3.2, 3.3, 1.2, 1.3,
+            4.1, 4.2, 4.3, 1.2, 1.3,
+            5.1, 5.2, 5.3, 1.2, 1.3,
+            6.1, 6.2, 6.3, 1.2, 1.3
         ]
     }
     init_profiles = my_nml.get_block("init_profiles")

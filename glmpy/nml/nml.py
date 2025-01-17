@@ -10,7 +10,6 @@ class _BaseBlock(ABC):
     """
     Base class for all configuration block classes.
     """
-
     def set_attrs(self, attrs_dict: dict):
         """Set attributes for an instance of a configuration block class.
         
@@ -212,8 +211,6 @@ class _NML:
         Returns a dictionary of the syntax conversion methods used in the 
         instance of `NMLReader`or `NMLWriter`. 
         """    
-
-
         if not (isinstance(block, str) or block is None):
             raise TypeError(
                 "Expected type string or None for block but got type "
@@ -251,9 +248,7 @@ class NMLWriter(_NML):
 
     - `write_nml_list`: Python list to NML list (comma-separated values).
 
-    - `write_nml_array`: Nested Python list to NML array. 
-
-    Attributes
+    Parameters
     ----------
     nml_dict : Dict[str, Dict[str, Any]]
         A dictionary where the keys are the block names and the values are 
@@ -264,7 +259,11 @@ class NMLWriter(_NML):
         relies on an internal dictionary that stores the syntax conversion
         methods for each parameter. This dictionary can be updated/expanded
         with the `set_converters()` method.
-    
+    list_len : Union[int, None]
+        The number of items in a comma-separated list to write before adding 
+        a line break. When set to `None`, no line breaks are added. Default is 
+        `None`.
+
     Examples
     --------
     >>> from glmpy.nml import nml
@@ -303,10 +302,31 @@ class NMLWriter(_NML):
     def __init__(
         self, 
         nml_dict: Dict[str, Dict[str, Any]],
-        detect_types: bool = True
+        detect_types: bool = True,
+        list_len: Union[int, None] = None
     ):
         self._nml_dict = nml_dict
         self._detect_types = detect_types
+        self._converter_funcs = {
+            str: NMLWriter.write_nml_str,
+            bool: NMLWriter.write_nml_bool,
+            int: None,
+            float: None,
+            list: {
+                str: lambda x: NMLWriter.write_nml_list(
+                    x, NMLWriter.write_nml_str, list_len
+                ),
+                bool: lambda x: NMLWriter.write_nml_list(
+                    x, NMLWriter.write_nml_bool, list_len
+                ),
+                int: lambda x: NMLWriter.write_nml_list(
+                    x, None, list_len
+                ),
+                float: lambda x: NMLWriter.write_nml_list(
+                    x, None, list_len
+                )
+            }
+        }
         if self._detect_types:
             self._converters = self._auto_converters()
         else:
@@ -358,123 +378,70 @@ class NMLWriter(_NML):
 
     @staticmethod
     def write_nml_list(
-            python_list: List[Any], 
-            converter_func: Union[Callable, None] = None
-        ) -> str:
+        python_list: List[Any],
+        converter_func: Union[Callable, None] = None,
+        list_len: Union[int, None] = None
+    ):
         """Python list to NML comma-separated list.
 
         Convert a Python list to a comma-separated list. A function can be 
-        optionally passed to the `converter_func` parameter to format the syntax 
-        of each list item, e.g., `write_nml_str()` and `write_nml_bool()`.
+        optionally passed to the `converter_func` parameter to format the 
+        syntax of each list item, e.g., `write_nml_str()` and 
+        `write_nml_bool()`.
 
         Parameters
         ----------
         python_list : List[Any]
             A Python list
-        converter_func: Union[Callable, None], optional
+        converter_func : Union[Callable, None], optional
             A function used to format each list item. Default is `None`.
+        list_len : Union[int, None]
+            The number of list items to write before adding a line break. When
+            set to `None`, no line breaks are added. Default is `None`.
         
         Examples
         --------
         >>> from glmpy.nml import nml
-        >>> list = nml.NMLWriter.write_nml_list([1, 2, 3])
-        >>> print(list)
+        >>> nml_list = nml.NMLWriter.write_nml_list([1, 2, 3])
+        >>> print(nml_list)
         1,2,3
-        >>> list = nml.NMLWriter.write_nml_list(
+        >>> nml_list = nml.NMLWriter.write_nml_list(
         ...     [True, False, True], 
         ...     converter_func=nml.NMLWriter.write_nml_bool
         ... )
-        >>> print(list)
+        >>> print(nml_list)
         .true.,.false.,.true.
-        """
-        if len(python_list) == 1:
-            if converter_func is not None:
-                return converter_func(python_list[0])
-            else:
-                return str(python_list[0])
-        else:
-            if converter_func is not None:
-                return ','.join(converter_func(val) for val in python_list)
-            else:
-                return ','.join(str(val) for val in python_list)
-    
-    @staticmethod
-    def write_nml_array(
-            python_array: List[List[Any]], 
-            converter_func: Union[Callable, None] = None
-        ) -> str:
-        """Python array to NML array
-
-        Convert a 2D Python array to NML syntax. The Python array is 
-        constructed as a nested list - similarly to 2D arrays in the numpy 
-        package. The number of inner lists equals the array rows and the length 
-        of each list equals the array columns. A function can be 
-        optionally passed to the `converter_func` parameter to format the syntax 
-        of each array element, e.g., `write_nml_str()` and `write_nml_bool()`.
-
-        Parameters
-        ----------
-        python_array : List[List[Any]]
-            A list of lists. The number of inner lists equals the array rows 
-            and the length of each list equals the array columns.
-        converter_func : Union[Callable, None]
-            A function used to format each list item. Default is `None`.
-        row_indent : int
-            The number of spaces to indent consecutive array rows by. Default
-            is `18`.
-        
-        Examples
-        --------
-        >>> from glmpy.nml import nml
-        >>> wq_init_vals = [
-        ...     [1.1, 1.2, 1.3, 1.2, 1.3],
-        ...     [2.1, 2.2, 2.3, 1.2, 1.3],
-        ...     [3.1, 3.2, 3.3, 1.2, 1.3],
-        ...     [4.1, 4.2, 4.3, 1.2, 1.3],
-        ...     [5.1, 5.2, 5.3, 1.2, 1.3],
-        ...     [6.1, 6.2, 6.3, 1.2, 1.3]
-        ... ]
-        >>> wq_init_vals = nml.NMLWriter.write_nml_array(
-        ...     python_array=wq_init_vals
+        >>> nml_list = nml.NMLWriter.write_nml_list(
+        ...     [1, 2, 3, 4, 5, 6, 7, 8 ,9],
+        ...     None,
+        ...     3
         ... )
-        >>> print(wq_init_vals)
-        1.1,1.2,1.3,1.2,1.3,
-        2.1,2.2,2.3,1.2,1.3,
-        3.1,3.2,3.3,1.2,1.3,
-        4.1,4.2,4.3,1.2,1.3,
-        5.1,5.2,5.3,1.2,1.3,
-        6.1,6.2,6.3,1.2,1.3
-
-        >>> bool_array = [
-        ...     [True, True, True, True, True],
-        ...     [False, False, False, False, False],
-        ...     [False, True, False, True, False]
-        ... ]
-        >>> bool_array = nml.NMLWriter.write_nml_array(
-        ...     python_array=bool_array, 
-        ...     converter_func=nml.NMLWriter.write_nml_bool
-        ... )
-        >>> print(bool_array)
-        .true.,.true.,.true.,.true.,.true.,
-        .false.,.false.,.false.,.false.,.false.,
-        .false.,.true.,.false.,.true.,.false.
+        >>> print(nml_list)
+        1,2,3,
+        4,5,6,
+        7,8,9
         """
+        if list_len is not None:
+            if not isinstance(list_len, int) or list_len < 1:
+                raise ValueError(
+                    "list_len must be None or an integer value greater than 1."
+                )
         if converter_func is None:
             converter_func = str
-        nrows = len(python_array)
-        array_str = ''
-        array_str += ','.join(converter_func(val) for val in python_array[0])
-        if nrows > 1:
-            array_str += ','
-            for i in range(1, nrows):
-                array_str += '\n'
-                array_str += ','.join(
-                    converter_func(val) for val in python_array[i]
-                )
-                if i != nrows - 1:
-                    array_str += ','
-        return array_str
-    
+        if len(python_list) == 1:
+            return converter_func(python_list[0])
+        else:
+            list_str = ''
+            for i in range(0, len(python_list)):
+                if list_len is not None:
+                    if i + 1 > list_len and (i) % list_len == 0:
+                        list_str += '\n'
+                if i == len(python_list) - 1:
+                    list_str += converter_func(python_list[i])
+                else:
+                    list_str += converter_func(python_list[i]) + ','
+            return list_str
+   
     @staticmethod
     def write_nml_param(
         param_name: str, 
@@ -515,20 +482,15 @@ class NMLWriter(_NML):
             if converter_func is not None:
                 if not isinstance(val, list):
                     return converter_func(val)
-                if not isinstance(val[0], list):
-                    return converter_func(val)
-                
                 lines = converter_func(val).split("\n")
                 if len(lines) == 1:
                     return lines[0]
-                
                 indent = " " * (len(param_name) + 6)
                 return lines[0] + "\n" + "\n".join(
                     indent + line for line in lines[1:]
                 )
             else:
                 return val
-
         value_str = format_value(param_value) 
         return f"   {param_name} = {value_str}\n"
     
@@ -550,7 +512,6 @@ class NMLWriter(_NML):
                     continue
             param_types = self._converters[block_name]
             block_header = f"&{block_name}\n"
-
             nml_string += block_header
             block_string = ""
             for param_name, param_value in param_dict.items():
@@ -610,39 +571,12 @@ class NMLWriter(_NML):
         return uniform_types
 
     def _auto_converters(self) -> dict:
-        auto_type_map = {
-            str: NMLWriter.write_nml_str,
-            bool: NMLWriter.write_nml_bool,
-            int: None,
-            float: None,
-            type(None): None,
-            list: {
-                str: lambda x: NMLWriter.write_nml_list(
-                    x, NMLWriter.write_nml_str
-                ),
-                bool: lambda x: NMLWriter.write_nml_list(
-                    x, NMLWriter.write_nml_bool
-                ),
-                int: NMLWriter.write_nml_list,
-                float: NMLWriter.write_nml_list,
-                list: {
-                    str: lambda x: NMLWriter.write_nml_array(
-                        x, NMLWriter.write_nml_str
-                    ),
-                    bool: lambda x: NMLWriter.write_nml_array(
-                        x, NMLWriter.write_nml_bool
-                    ),
-                    int: NMLWriter.write_nml_array,
-                    float: NMLWriter.write_nml_array
-                }
-            }
-        }
         converters = {}
         for block_name, param_dict in self._nml_dict.items():
             block_dict = {}
             for param_name, param_value in param_dict.items():
                 param_type = type(param_value)
-                if param_type not in auto_type_map:
+                if param_type not in self._converter_funcs:
                     raise TypeError(
                         f"Unsupported parameter type for {param_name} in "
                         f"the {block_name} block. Found type {param_type}."
@@ -651,10 +585,10 @@ class NMLWriter(_NML):
                         "mappings with the set_converters method."
                     )
                 if param_type != list:
-                    method = auto_type_map[param_type]
+                    method = self._converter_funcs[param_type]
                 else: 
                     list_type = type(param_value[0])
-                    if list_type not in auto_type_map[list]:
+                    if list_type not in self._converter_funcs[list]:
                         raise TypeError(
                             f"Unsupported parameter type for {param_name} in "
                             f"the {block_name} block. Found type {list_type} "
@@ -670,28 +604,7 @@ class NMLWriter(_NML):
                             "more elements does not match the first element "
                             f"type of {list_type}."
                         )
-                    if list_type != list:
-                        method = auto_type_map[list][list_type]
-                    else:
-                        array_type = type(param_value[0][0])
-                        if array_type not in auto_type_map[list][list]:
-                            raise TypeError(
-                                f"Unsupported parameter type for {param_name} "
-                                f"in the {block_name} block. Found type "
-                                f"{array_type} within the list. If this was "
-                                "intentional, consider setting detect_types "
-                                "to False and provide your own conversion "
-                                "methods with the set_converters method."
-                            )
-                        for i in param_value:
-                            if not self._uniform_list_types(i, array_type):
-                                raise TypeError(
-                                    "Inconsistent array element types for "
-                                    f"{param_name} in the {block_name} block. "
-                                    "One or more elements does not match the "
-                                    f"first element type of {array_type}."
-                                )
-                        method = auto_type_map[list][list][array_type]
+                    method = self._converter_funcs[list][list_type]
                 block_dict[param_name] = method
             converters[block_name] = block_dict
         return converters
@@ -699,13 +612,13 @@ class NMLWriter(_NML):
     def _default_converters(self) -> dict:
         default_converters = {
             "glm_setup": {
-                "sim_name": NMLWriter.write_nml_str,
+                "sim_name": self._converter_funcs[str],
                 "max_layers": None,
                 "min_layer_vol": None,
                 "min_layer_thick": None,
                 "max_layer_thick": None,
                 "density_model": None,
-                "non_avg": NMLWriter.write_nml_bool,
+                "non_avg": self._converter_funcs[bool],
             },
             "mixing": {
                 "surface_mixing": None,
@@ -719,16 +632,16 @@ class NMLWriter(_NML):
                 "diff": None,
             },
             "wq_setup": {
-                "wq_lib": NMLWriter.write_nml_str,
-                "wq_nml_file": NMLWriter.write_nml_str,
-                "bioshade_feedback": NMLWriter.write_nml_bool,
-                "mobility_off": NMLWriter.write_nml_bool,
+                "wq_lib": self._converter_funcs[str],
+                "wq_nml_file": self._converter_funcs[str],
+                "bioshade_feedback": self._converter_funcs[bool],
+                "mobility_off": self._converter_funcs[bool],
                 "ode_method": None,
                 "split_factor": None,
-                "repair_state": NMLWriter.write_nml_bool,
+                "repair_state": self._converter_funcs[bool],
             },
             "morphometry": {
-                "lake_name": NMLWriter.write_nml_str,
+                "lake_name": self._converter_funcs[str],
                 "latitude": None,
                 "longitude": None,
                 "base_elev": None,
@@ -736,58 +649,52 @@ class NMLWriter(_NML):
                 "bsn_len": None,
                 "bsn_wid": None,
                 "bsn_vals": None,
-                "H": NMLWriter.write_nml_list,
-                "A": NMLWriter.write_nml_list,
+                "H": self._converter_funcs[list][float],
+                "A": self._converter_funcs[list][float],
             },
             "time": {
                 "timefmt": None,
-                "start": NMLWriter.write_nml_str,
-                "stop": NMLWriter.write_nml_str,
+                "start": self._converter_funcs[str],
+                "stop": self._converter_funcs[str],
                 "dt": None,
                 "num_days": None,
                 "timezone": None,
             },
             "output": {
-                "out_dir": NMLWriter.write_nml_str,
-                "out_fn": NMLWriter.write_nml_str,
+                "out_dir": self._converter_funcs[str],
+                "out_fn": self._converter_funcs[str],
                 "nsave": None,
-                "csv_lake_fname": NMLWriter.write_nml_str,
+                "csv_lake_fname": self._converter_funcs[str],
                 "csv_point_nlevs": None,
-                "csv_point_fname": NMLWriter.write_nml_str,
-                "csv_point_frombot": NMLWriter.write_nml_list,
-                "csv_point_at": NMLWriter.write_nml_list,
+                "csv_point_fname": self._converter_funcs[str],
+                "csv_point_frombot": self._converter_funcs[list][float],
+                "csv_point_at": self._converter_funcs[list][float],
                 "csv_point_nvars": None,
-                "csv_point_vars": lambda x: NMLWriter.write_nml_list(
-                    x, NMLWriter.write_nml_str
-                ),
-                "csv_outlet_allinone": NMLWriter.write_nml_bool,
-                "csv_outlet_fname": NMLWriter.write_nml_str,
+                "csv_point_vars": self._converter_funcs[list][str],
+                "csv_outlet_allinone": self._converter_funcs[bool],
+                "csv_outlet_fname": self._converter_funcs[str],
                 "csv_outlet_nvars": None,
-                "csv_outlet_vars": lambda x: NMLWriter.write_nml_list(
-                    x, NMLWriter.write_nml_str
-                ),
-                "csv_ovrflw_fname": NMLWriter.write_nml_str,
+                "csv_outlet_vars": self._converter_funcs[list][str],
+                "csv_ovrflw_fname": self._converter_funcs[str],
             },
             "init_profiles": {
                 "lake_depth": None,
                 "num_depths": None,
-                "the_depths": NMLWriter.write_nml_list,
-                "the_temps": NMLWriter.write_nml_list,
-                "the_sals": NMLWriter.write_nml_list,
+                "the_depths": self._converter_funcs[list][float],
+                "the_temps": self._converter_funcs[list][float],
+                "the_sals": self._converter_funcs[list][float],
                 "num_wq_vars": None,
-                "wq_names": lambda x: NMLWriter.write_nml_list(
-                    x, NMLWriter.write_nml_str
-                ),
-                "wq_init_vals": NMLWriter.write_nml_array,
-                "restart_variables": NMLWriter.write_nml_array,
+                "wq_names": self._converter_funcs[list][str],
+                "wq_init_vals": self._converter_funcs[list][float],
+                "restart_variables": self._converter_funcs[list][float],
             },
             "light": {
                 "light_mode": None,
                 "Kw": None,
-                "Kw_file": NMLWriter.write_nml_str,
+                "Kw_file": self._converter_funcs[str],
                 "n_bands": None,
-                "light_extc": NMLWriter.write_nml_list,
-                "energy_frac": NMLWriter.write_nml_list,
+                "light_extc": self._converter_funcs[list][float],
+                "energy_frac": self._converter_funcs[list][float],
                 "Benthic_Imin": None,
             },
             "bird_model": {
@@ -801,14 +708,14 @@ class NMLWriter(_NML):
             "sediment": {
                 "sed_heat_Ksoil": None,
                 "sed_temp_depth": None,
-                "sed_temp_mean": NMLWriter.write_nml_list,
-                "sed_temp_amplitude": NMLWriter.write_nml_list,
-                "sed_temp_peak_doy": NMLWriter.write_nml_list,
+                "sed_temp_mean": self._converter_funcs[list][float],
+                "sed_temp_amplitude": self._converter_funcs[list][float],
+                "sed_temp_peak_doy": self._converter_funcs[list][int],
                 "benthic_mode": None,
                 "n_zones": None,
-                "zone_heights": NMLWriter.write_nml_list,
-                "sed_reflectivity": NMLWriter.write_nml_list,
-                "sed_roughness": NMLWriter.write_nml_list,
+                "zone_heights": self._converter_funcs[list][float],
+                "sed_reflectivity": self._converter_funcs[list][float],
+                "sed_roughness": self._converter_funcs[list][float],
             },
             "snowice": {
                 "snow_albedo_factor": None,
@@ -816,14 +723,14 @@ class NMLWriter(_NML):
                 "snow_rho_max": None,
             },
             "meteorology": {
-                "met_sw": NMLWriter.write_nml_bool,
-                "meteo_fl": NMLWriter.write_nml_str,
-                "subdaily": NMLWriter.write_nml_bool,
-                "time_fmt": NMLWriter.write_nml_str,
+                "met_sw":self._converter_funcs[bool],
+                "meteo_fl": self._converter_funcs[str],
+                "subdaily": self._converter_funcs[bool],
+                "time_fmt": self._converter_funcs[str],
                 "rad_mode": None,
                 "albedo_mode": None,
                 "sw_factor": None,
-                "lw_type": NMLWriter.write_nml_str,
+                "lw_type": self._converter_funcs[str],
                 "cloud_mode": None,
                 "lw_factor": None,
                 "atm_stab": None,
@@ -831,9 +738,9 @@ class NMLWriter(_NML):
                 "at_factor": None,
                 "ce": None,
                 "ch": None,
-                "rain_sw": NMLWriter.write_nml_bool,
+                "rain_sw": self._converter_funcs[bool],
                 "rain_factor": None,
-                "catchrain": NMLWriter.write_nml_bool,
+                "catchrain": self._converter_funcs[bool],
                 "rain_threshold": None,
                 "runoff_coef": None,
                 "cd": None,
@@ -847,58 +754,45 @@ class NMLWriter(_NML):
             },
             "inflow": {
                 "num_inflows": None,
-                "names_of_strms": lambda x: NMLWriter.write_nml_list(
-                    x, NMLWriter.write_nml_str,
-                ),
-                "subm_flag": lambda x: NMLWriter.write_nml_list(
-                    x, NMLWriter.write_nml_bool
-                ),
-                "strm_hf_angle": NMLWriter.write_nml_list,
-                "strmbd_slope": NMLWriter.write_nml_list,
-                "strmbd_drag": NMLWriter.write_nml_list,
-                "coef_inf_entrain": NMLWriter.write_nml_list,
-                "inflow_factor": NMLWriter.write_nml_list,
-                "inflow_fl": lambda x: NMLWriter.write_nml_list(
-                    x, NMLWriter.write_nml_str,
-                ),
+                "names_of_strms": self._converter_funcs[list][str],
+                "subm_flag": self._converter_funcs[list][bool],
+                "subm_elev": self._converter_funcs[list][float],
+                "strm_hf_angle": self._converter_funcs[list][float],
+                "strmbd_slope": self._converter_funcs[list][float],
+                "strmbd_drag": self._converter_funcs[list][float],
+                "coef_inf_entrain": self._converter_funcs[list][float],
+                "inflow_factor": self._converter_funcs[list][float],
+                "inflow_fl": self._converter_funcs[list][str],
                 "inflow_varnum": None,
-                "inflow_vars": lambda x: NMLWriter.write_nml_list(
-                    x, NMLWriter.write_nml_str,
-                ),
-                "time_fmt": NMLWriter.write_nml_str,
+                "inflow_vars": self._converter_funcs[list][str],
+                "time_fmt": self._converter_funcs[str],
             },
             "outflow": {
                 "num_outlet": None,
-                "outflow_fl": lambda x: NMLWriter.write_nml_list(
-                    x, NMLWriter.write_nml_str,
-                ),
-                "time_fmt": NMLWriter.write_nml_str,
-                "outflow_factor": NMLWriter.write_nml_list,
-                "outflow_thick_limit": NMLWriter.write_nml_list,
-                "single_layer_draw": lambda x: NMLWriter.write_nml_list(
-                    x, NMLWriter.write_nml_bool
-                ),
-                "flt_off_sw": lambda x: NMLWriter.write_nml_list(
-                    x, NMLWriter.write_nml_bool
-                ),
-                "outlet_type": NMLWriter.write_nml_list,
-                "outl_elvs": NMLWriter.write_nml_list,
-                "bsn_len_outl": NMLWriter.write_nml_list,
-                "bsn_wid_outl": NMLWriter.write_nml_list,
+                "outflow_fl": self._converter_funcs[list][str],
+                "time_fmt": self._converter_funcs[str],
+                "outflow_factor": self._converter_funcs[list][float],
+                "outflow_thick_limit": self._converter_funcs[list][float],
+                "single_layer_draw": self._converter_funcs[list][bool],
+                "flt_off_sw": self._converter_funcs[list][bool],
+                "outlet_type": self._converter_funcs[list][int],
+                "outl_elvs": self._converter_funcs[list][float],
+                "bsn_len_outl": self._converter_funcs[list][float],
+                "bsn_wid_outl": self._converter_funcs[list][float],
                 "crit_O2": None,
                 "crit_O2_dep": None,
                 "crit_O2_days": None,
                 "outlet_crit": None,
-                "O2name": NMLWriter.write_nml_str,
-                "O2idx": NMLWriter.write_nml_str,
+                "O2name": self._converter_funcs[str],
+                "O2idx": self._converter_funcs[str],
                 "target_temp": None,
                 "min_lake_temp": None,
                 "fac_range_upper": None,
                 "fac_range_lower": None,
-                "mix_withdraw": NMLWriter.write_nml_bool,
-                "coupl_oxy_sw": NMLWriter.write_nml_bool,
-                "withdrTemp_fl": NMLWriter.write_nml_str,
-                "seepage": NMLWriter.write_nml_bool,
+                "mix_withdraw": self._converter_funcs[bool],
+                "coupl_oxy_sw": self._converter_funcs[bool],
+                "withdrTemp_fl": self._converter_funcs[str],
+                "seepage": self._converter_funcs[bool],
                 "seepage_rate": None,
                 "crest_width": None,
                 "crest_factor": None,
@@ -940,12 +834,15 @@ class NMLReader(_NML):
 
     - `read_nml_list`: NML list (comma-separated values) to Python list.
 
-    - `read_nml_array`: NML array to Python array.
-
-    Attributes
+    Parameters
     ----------
     nml_file : Union[str, os.PathLike]
         Path to the NML file.
+
+    Attributes
+    ----------
+    nml_str : str
+        The NML file as a string.
     
     Examples
     --------
@@ -994,7 +891,27 @@ class NMLReader(_NML):
             )
         with open(nml_file) as file:
             nml = file.read()
-        self.nml_file = nml
+        self.nml_str = nml
+        self._converter_funcs = {
+            str: NMLReader.read_nml_str,
+            bool: NMLReader.read_nml_bool,
+            int: NMLReader.read_nml_int,
+            float: NMLReader.read_nml_float,
+            list: {
+                str: lambda x: NMLReader.read_nml_list(
+                    x, NMLReader.read_nml_str
+                ),
+                bool: lambda x: NMLReader.read_nml_list(
+                    x, NMLReader.read_nml_bool
+                ),
+                int: lambda x: NMLReader.read_nml_list(
+                    x, NMLReader.read_nml_int,
+                ),
+                float: lambda x: NMLReader.read_nml_list(
+                    x, NMLReader.read_nml_float
+                )
+            }
+        }
         self._converted_nml = None
         self._converters = self._default_converters()
 
@@ -1023,9 +940,7 @@ class NMLReader(_NML):
             raise TypeError(
                 f"Expected a string but got type: {type(nml_int)}."
             )
-        
         nml_int = nml_int.strip()
-
         try:
             python_int = int(nml_int)
         except ValueError: 
@@ -1058,9 +973,7 @@ class NMLReader(_NML):
             raise TypeError(
                 f"Expected a string but got type: {type(nml_float)}."
             )
-
         nml_float = nml_float.strip()
-
         try:
             python_float = float(nml_float)
         except ValueError:
@@ -1094,9 +1007,7 @@ class NMLReader(_NML):
             raise TypeError(
                 f"Expected a string but got type: {type(nml_bool)}."
             )
-
         nml_bool = nml_bool.strip()
-
         if nml_bool == ".true." or nml_bool == ".TRUE.":
             python_bool = True
         elif nml_bool == ".false." or nml_bool == ".FALSE.":
@@ -1107,7 +1018,6 @@ class NMLReader(_NML):
                 "Valid NML boolean strings are '.true.', '.TRUE.', '.false.', "
                 "or '.FALSE.'."
             )
-
         return python_bool
 
     @staticmethod
@@ -1136,12 +1046,10 @@ class NMLReader(_NML):
             raise TypeError(
                 f"Expected a string but got type: {type(nml_str)}."
             )
-
         nml_str = nml_str.strip()
         nml_str = nml_str.replace('"', '')
         nml_str = nml_str.replace("'", '')
         python_str = nml_str
-
         return python_str
 
     @staticmethod
@@ -1195,12 +1103,10 @@ class NMLReader(_NML):
             raise TypeError(
                 f"Expected a string or a list but got type: {type(nml_list)}."
             )
-        
         if not isinstance(converter_func, Callable):
             raise TypeError(
                 f"Expected a Callable but got type: {type(converter_func)}."
             )
-        
         if isinstance(nml_list, list):
             for i in range(0, len(nml_list)):
                 if not isinstance(nml_list[i], str):
@@ -1208,10 +1114,8 @@ class NMLReader(_NML):
                         f"Expected a string for item {i} of nml_list but got "
                         f"type: {type(nml_list[i])}"
                     )
-        
         if not isinstance(nml_list, list):
             nml_list = [nml_list]
-
         python_list = []
         for i in nml_list:
             i = i.strip()
@@ -1220,83 +1124,7 @@ class NMLReader(_NML):
                 if j == '': continue
                 j = converter_func(j)
                 python_list.append(j)
-        
         return python_list
-        
-    @staticmethod
-    def read_nml_array(
-        nml_array: List[str], 
-        converter_func: Callable
-    ) -> List[List[Any]]:
-        """NML array to Python nested list.
-
-        Converts a NML array of comma-separated values to a nested Python list. 
-        Applies a defined syntax function to each element of the array. Returns
-        a nested Python list where each row of the array is a list.
-
-        Parameters
-        ----------
-        nml_array: List[str]
-            A Python list of strings of comma-separated values.
-        converter_func: The conversion function to apply to each element of the
-        array, e.g., `NMLReader.read_nml_str`, `NMLReader.read_nml_bool`,
-        `NMLReader.read_nml_float`, `NMLReader.read_nml_int`.
-
-        Examples
-        --------
-        Converting an array of floats of size 1x3:
-        >>> from glmpy.nml import nml
-        >>> my_nml_array = ["1.1, 1.2, 1.3"]
-        >>> python_arary = nml.NMLReader.read_nml_array(
-        ...     my_nml_array, 
-        ...     converter_func=nml.NMLReader.read_nml_float
-        ... )
-        >>> print(python_arary)
-        >>> print(type(python_arary))
-
-        Converting an array of floats of size 2x3:
-        >>> my_nml_array = [
-        ...     "1.1, 1.2, 1.3", "2.1, 2.2, 2.3"
-        ... ]
-        >>> python_array = nml.NMLReader.read_nml_array(
-        ...     my_nml_array, 
-        ...     converter_func=nml.NMLReader.read_nml_float
-        ... )
-        >>> print(python_array)
-        [[1.1, 1.2, 1.3], [2.1, 2.2, 2.3]]
-        >>> print(type(python_array))
-        <class 'list'>
-        """
-        if not isinstance(nml_array, list):
-            raise TypeError(
-                f"Expected a list but got type: {type(nml_array)}."
-            )
-        
-        if not isinstance(converter_func, Callable):
-            raise TypeError(
-                f"Expected a Callable but got type: {type(converter_func)}."
-            )
-        
-        for i in range(0, len(nml_array)):
-            if not isinstance(nml_array[i], str):
-                raise TypeError(
-                    f"Expected a string for item {i} of nml_array but got "
-                    f"type: {type(nml_array[i])}"
-                )
-        
-        python_array = []
-        for i in nml_array:
-            i = i.strip()
-            i = i.split(",")
-            row = []
-            for j in i:
-                if j == '': continue
-                j = converter_func(j)
-                row.append(j)
-            if row == []: continue
-            python_array.append(row)
-        
-        return python_array
 
     def _strip_comments(self, in_nml):
         """Strip comments from a NML string.
@@ -1330,7 +1158,6 @@ class NMLReader(_NML):
             repl='', 
             string=nml
         )
-
         return out_nml
 
     def _strip_empty_lines(self, in_nml):
@@ -1351,7 +1178,6 @@ class NMLReader(_NML):
             string=in_nml, 
             flags=re.MULTILINE
         )
-
         return out_nml
     
     def _strip_trailing_whitespaces(self, in_nml):
@@ -1372,7 +1198,6 @@ class NMLReader(_NML):
             repl='', 
             string=in_nml
         )
-
         return out_nml
 
     def _strip_leading_whitespaces(self, nml_str):
@@ -1391,7 +1216,6 @@ class NMLReader(_NML):
             repl='', 
             string=nml_str
         )
-
         return out_str
         
     def _split_blocks(self, in_nml):
@@ -1410,7 +1234,6 @@ class NMLReader(_NML):
         """
         split_blocks = r'&(\w+)\s*(.*?)\s+\/'
         out_nml = re.findall(split_blocks, in_nml, flags=re.DOTALL)
-
         return out_nml
     
     def _extract_parameters(self, nml_block):
@@ -1451,19 +1274,15 @@ class NMLReader(_NML):
             pattern=multi_line, 
             string=nml_block[1]
         )
-
         for param, value in single_line_params:
             params[param] = value
-
         for param, value in multi_line_params:
             value = self._strip_leading_whitespaces(value)
             value = value.split("\n")
             params[param] = value
-
         block = {
             nml_block[0]: params
         }
-
         return block
 
     def _convert_parameters(self, block_dicts: List[dict]) -> dict:
@@ -1506,10 +1325,8 @@ class NMLReader(_NML):
                     continue
                 conversion_func = param_types[param_name]
                 converted_val = conversion_func(param_val)
-                converted_params[param_name] = converted_val
-                    
+                converted_params[param_name] = converted_val 
             converted_nml[block_name] = converted_params
-
         return converted_nml
 
     def _parse_nml(self, in_nml: str) -> dict:
@@ -1522,14 +1339,11 @@ class NMLReader(_NML):
         nml_str = self._strip_empty_lines(in_nml=nml_str)
         nml_str = self._strip_trailing_whitespaces(in_nml=nml_str)
         nml_str = self._split_blocks(in_nml=nml_str)
-
         block_dicts = []
         for i in nml_str:
             block = self._extract_parameters(i)
             block_dicts.append(block)
-        
         nml_dict = self._convert_parameters(block_dicts)
-
         return nml_dict
 
     def get_nml(self) -> dict:
@@ -1545,7 +1359,7 @@ class NMLReader(_NML):
         >>> nml_dict = my_nml.get_nml()
         """
         if self._converted_nml is None:
-            self._converted_nml = self._parse_nml(in_nml=self.nml_file)
+            self._converted_nml = self._parse_nml(in_nml=self.nml_str)
         return self._converted_nml
     
     def get_block(self, block: str) -> dict:
@@ -1578,10 +1392,8 @@ class NMLReader(_NML):
             raise TypeError(
                 f"Expected a string but got type: {type(block)}."
             )
-
         if self._converted_nml is None:
-            self._converted_nml = self._parse_nml(in_nml=self.nml_file)
-        
+            self._converted_nml = self._parse_nml(in_nml=self.nml_str)
         if block not in self._converted_nml: 
             converted_blocks = self._converted_nml.keys()
             converted_blocks = ', '.join(
@@ -1614,10 +1426,8 @@ class NMLReader(_NML):
             raise TypeError(
                 f"Expected type str or os.PathLike but got {type(json_file)}."
             )
-
         if self._converted_nml is None:
-            self._converted_nml = self._parse_nml(in_nml=self.nml_file)
-
+            self._converted_nml = self._parse_nml(in_nml=self.nml_str)
         with open(json_file, 'w') as f:
             json.dump(self._converted_nml, f, indent=1)
     
@@ -1631,265 +1441,190 @@ class NMLReader(_NML):
         """
         default_converters = {
             "glm_setup": {
-                "sim_name": NMLReader.read_nml_str,
-                "max_layers": NMLReader.read_nml_int,
-                "min_layer_vol": NMLReader.read_nml_float,
-                "min_layer_thick": NMLReader.read_nml_float,
-                "max_layer_thick": NMLReader.read_nml_float,
-                "density_model": NMLReader.read_nml_int,
-                "non_avg": NMLReader.read_nml_bool
+                "sim_name": self._converter_funcs[str], 
+                "max_layers": self._converter_funcs[int],
+                "min_layer_vol": self._converter_funcs[float],
+                "min_layer_thick": self._converter_funcs[float],
+                "max_layer_thick": self._converter_funcs[float], 
+                "density_model": self._converter_funcs[int],
+                "non_avg": self._converter_funcs[bool],
             },
             "mixing": {
-                "surface_mixing": NMLReader.read_nml_int,
-                "coef_mix_conv": NMLReader.read_nml_float,
-                "coef_wind_stir": NMLReader.read_nml_float,
-                "coef_mix_shear": NMLReader.read_nml_float,
-                "coef_mix_turb": NMLReader.read_nml_float,
-                "coef_mix_KH": NMLReader.read_nml_float,
-                "deep_mixing": NMLReader.read_nml_int,
-                "coef_mix_hyp": NMLReader.read_nml_float,
-                "diff": NMLReader.read_nml_float        
+                "surface_mixing": self._converter_funcs[int],
+                "coef_mix_conv": self._converter_funcs[float],
+                "coef_wind_stir": self._converter_funcs[float],
+                "coef_mix_shear": self._converter_funcs[float],
+                "coef_mix_turb": self._converter_funcs[float],
+                "coef_mix_KH": self._converter_funcs[float],
+                "deep_mixing": self._converter_funcs[int],
+                "coef_mix_hyp": self._converter_funcs[float],
+                "diff": self._converter_funcs[float],
             },
             "wq_setup": {
-                "wq_lib": NMLReader.read_nml_str,
-                "wq_nml_file": NMLReader.read_nml_str,
-                "bioshade_feedback": NMLReader.read_nml_bool,
-                "mobility_off": NMLReader.read_nml_bool,
-                "ode_method": NMLReader.read_nml_int,
-                "split_factor": NMLReader.read_nml_float,
-                "repair_state": NMLReader.read_nml_bool
+                "wq_lib": self._converter_funcs[str],
+                "wq_nml_file": self._converter_funcs[str],
+                "bioshade_feedback": self._converter_funcs[bool],
+                "mobility_off": self._converter_funcs[bool],
+                "ode_method": self._converter_funcs[int],
+                "split_factor": self._converter_funcs[float],
+                "repair_state": self._converter_funcs[bool],
             },
             "morphometry": {
-                "lake_name": NMLReader.read_nml_str,
-                "latitude": NMLReader.read_nml_float,
-                "longitude": NMLReader.read_nml_float,
-                "base_elev": NMLReader.read_nml_float,
-                "crest_elev": NMLReader.read_nml_float,
-                "bsn_len": NMLReader.read_nml_float,
-                "bsn_wid": NMLReader.read_nml_float,
-                "bsn_vals": NMLReader.read_nml_int,
-                "H": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "A": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                )
+                "lake_name": self._converter_funcs[str],
+                "latitude": self._converter_funcs[float],
+                "longitude": self._converter_funcs[float],
+                "base_elev": self._converter_funcs[float],
+                "crest_elev": self._converter_funcs[float],
+                "bsn_len": self._converter_funcs[float],
+                "bsn_wid": self._converter_funcs[float],
+                "bsn_vals": self._converter_funcs[int],
+                "H": self._converter_funcs[list][float],
+                "A": self._converter_funcs[list][float],
             },
             "time": {
-                "timefmt": NMLReader.read_nml_int,
-                "start": NMLReader.read_nml_str,
-                "stop": NMLReader.read_nml_str,
-                "dt": NMLReader.read_nml_float,
-                "num_days": NMLReader.read_nml_int,
-                "timezone": NMLReader.read_nml_float,
+                "timefmt": self._converter_funcs[int],
+                "start": self._converter_funcs[str],
+                "stop": self._converter_funcs[str],
+                "dt": self._converter_funcs[float],
+                "num_days": self._converter_funcs[int],
+                "timezone": self._converter_funcs[float],
             },
             "output": {
-                "out_dir": NMLReader.read_nml_str,
-                "out_fn": NMLReader.read_nml_str,
-                "nsave": NMLReader.read_nml_int,
-                "csv_lake_fname": NMLReader.read_nml_str,
-                "csv_point_nlevs": NMLReader.read_nml_float,
-                "csv_point_fname": NMLReader.read_nml_str,
-                "csv_point_frombot": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "csv_point_at": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "csv_point_nvars": NMLReader.read_nml_int,
-                "csv_point_vars": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_str
-                ),
-                "csv_outlet_allinone": NMLReader.read_nml_bool,
-                "csv_outlet_fname": NMLReader.read_nml_str,
-                "csv_outlet_nvars": NMLReader.read_nml_int,
-                "csv_outlet_vars": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_str
-                ),
-                "csv_ovrflw_fname": NMLReader.read_nml_str
+                "out_dir": self._converter_funcs[str],
+                "out_fn": self._converter_funcs[str],
+                "nsave": self._converter_funcs[int],
+                "csv_lake_fname": self._converter_funcs[str],
+                "csv_point_nlevs": self._converter_funcs[float],
+                "csv_point_fname": self._converter_funcs[str],
+                "csv_point_frombot": self._converter_funcs[list][float],
+                "csv_point_at": self._converter_funcs[list][float],
+                "csv_point_nvars": self._converter_funcs[int],
+                "csv_point_vars": self._converter_funcs[list][str],
+                "csv_outlet_allinone": self._converter_funcs[bool],
+                "csv_outlet_fname": self._converter_funcs[str],
+                "csv_outlet_nvars": self._converter_funcs[int],
+                "csv_outlet_vars": self._converter_funcs[list][str],
+                "csv_ovrflw_fname": self._converter_funcs[str]
             },
             "init_profiles": {
-                "lake_depth": NMLReader.read_nml_float, 
-                "num_depths": NMLReader.read_nml_int,
-                "the_depths": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "the_temps": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "the_sals": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "num_wq_vars": NMLReader.read_nml_int,
-                "wq_names": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_str
-                ),
-                "wq_init_vals": lambda x: NMLReader.read_nml_array(
-                    x, NMLReader.read_nml_float
-                ),
-                "restart_variables": lambda x: NMLReader.read_nml_array(
-                    x, NMLReader.read_nml_float
-                ),
+                "lake_depth": self._converter_funcs[float],
+                "num_depths": self._converter_funcs[int],
+                "the_depths": self._converter_funcs[list][float],
+                "the_temps": self._converter_funcs[list][float],
+                "the_sals": self._converter_funcs[list][float],
+                "num_wq_vars": self._converter_funcs[int],
+                "wq_names": self._converter_funcs[list][str],
+                "wq_init_vals": self._converter_funcs[list][float],
+                "restart_variables": self._converter_funcs[list][float],
             },
             "light": {
-                "light_mode": NMLReader.read_nml_int,
-                "Kw": NMLReader.read_nml_float,
-                "Kw_file": NMLReader.read_nml_str,
-                "n_bands": NMLReader.read_nml_int,
-                "light_extc": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "energy_frac": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "Benthic_Imin": NMLReader.read_nml_float
+                "light_mode": self._converter_funcs[int],
+                "Kw": self._converter_funcs[float],
+                "Kw_file": self._converter_funcs[str],
+                "n_bands": self._converter_funcs[int],
+                "light_extc": self._converter_funcs[list][float],
+                "energy_frac": self._converter_funcs[list][float],
+                "Benthic_Imin": self._converter_funcs[float],
             },
             "bird_model": {
-                "AP": NMLReader.read_nml_float,
-                "Oz": NMLReader.read_nml_float,
-                "WatVap": NMLReader.read_nml_float,
-                "AOD500": NMLReader.read_nml_float,
-                "AOD380": NMLReader.read_nml_float,
-                "Albedo": NMLReader.read_nml_float
+                "AP": self._converter_funcs[float],
+                "Oz": self._converter_funcs[float],
+                "WatVap": self._converter_funcs[float],
+                "AOD500": self._converter_funcs[float],
+                "AOD380": self._converter_funcs[float],
+                "Albedo": self._converter_funcs[float],
             },
             "sediment": {
-                "sed_heat_Ksoil": NMLReader.read_nml_float,
-                "sed_temp_depth": NMLReader.read_nml_float,
-                "sed_temp_mean": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "sed_temp_amplitude": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "sed_temp_peak_doy": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_int
-                ),
-                "benthic_mode": NMLReader.read_nml_int,
-                "n_zones": NMLReader.read_nml_int,
-                "zone_heights": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "sed_reflectivity": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "sed_roughness": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
+                "sed_heat_Ksoil": self._converter_funcs[float],
+                "sed_temp_depth": self._converter_funcs[float],
+                "sed_temp_mean": self._converter_funcs[list][float],
+                "sed_temp_amplitude": self._converter_funcs[list][float],
+                "sed_temp_peak_doy": self._converter_funcs[list][int],
+                "benthic_mode": self._converter_funcs[int],
+                "n_zones": self._converter_funcs[int],
+                "zone_heights": self._converter_funcs[list][float],
+                "sed_reflectivity": self._converter_funcs[list][float],
+                "sed_roughness": self._converter_funcs[list][float],
             },
             "snowice": {
-                "snow_albedo_factor": NMLReader.read_nml_float,
-                "snow_rho_min": NMLReader.read_nml_float,
-                "snow_rho_max": NMLReader.read_nml_float
+                "snow_albedo_factor": self._converter_funcs[float],
+                "snow_rho_min": self._converter_funcs[float],
+                "snow_rho_max": self._converter_funcs[float]
             },
             "meteorology": {
-                "met_sw": NMLReader.read_nml_bool,
-                "meteo_fl": NMLReader.read_nml_str,
-                "subdaily": NMLReader.read_nml_bool,
-                "time_fmt": NMLReader.read_nml_str,
-                "rad_mode": NMLReader.read_nml_int,
-                "albedo_mode": NMLReader.read_nml_int,
-                "sw_factor": NMLReader.read_nml_float,
-                "lw_type": NMLReader.read_nml_str,
-                "cloud_mode": NMLReader.read_nml_int,
-                "lw_factor": NMLReader.read_nml_float,
-                "atm_stab": NMLReader.read_nml_int,
-                "rh_factor": NMLReader.read_nml_float,
-                "at_factor": NMLReader.read_nml_float,
-                "ce": NMLReader.read_nml_float,
-                "ch": NMLReader.read_nml_float,
-                "rain_sw": NMLReader.read_nml_bool,
-                "rain_factor": NMLReader.read_nml_float,
-                "catchrain": NMLReader.read_nml_bool,
-                "rain_threshold": NMLReader.read_nml_float,
-                "runoff_coef": NMLReader.read_nml_float,
-                "cd": NMLReader.read_nml_float,
-                "wind_factor": NMLReader.read_nml_float,
-                "fetch_mode": NMLReader.read_nml_int,
-                "Aws": NMLReader.read_nml_float,
-                "Xws": NMLReader.read_nml_float,
-                "num_dir": NMLReader.read_nml_int,
-                "wind_dir": NMLReader.read_nml_float,
-                "fetch_scale": NMLReader.read_nml_float
+                "met_sw": self._converter_funcs[bool],
+                "meteo_fl": self._converter_funcs[str],
+                "subdaily": self._converter_funcs[bool],
+                "time_fmt": self._converter_funcs[str],
+                "rad_mode": self._converter_funcs[int],
+                "albedo_mode": self._converter_funcs[int],
+                "sw_factor": self._converter_funcs[float],
+                "lw_type": self._converter_funcs[str],
+                "cloud_mode": self._converter_funcs[int],
+                "lw_factor": self._converter_funcs[float],
+                "atm_stab": self._converter_funcs[int],
+                "rh_factor": self._converter_funcs[float],
+                "at_factor": self._converter_funcs[float],
+                "ce": self._converter_funcs[float],
+                "ch": self._converter_funcs[float],
+                "rain_sw": self._converter_funcs[bool],
+                "rain_factor": self._converter_funcs[float],
+                "catchrain": self._converter_funcs[bool],
+                "rain_threshold": self._converter_funcs[float],
+                "runoff_coef": self._converter_funcs[float],
+                "cd": self._converter_funcs[float],
+                "wind_factor": self._converter_funcs[float],
+                "fetch_mode": self._converter_funcs[int],
+                "Aws": self._converter_funcs[float],
+                "Xws": self._converter_funcs[float],
+                "num_dir": self._converter_funcs[int],
+                "wind_dir": self._converter_funcs[float],
+                "fetch_scale": self._converter_funcs[float]
             },
             "inflow": {
-                "num_inflows": NMLReader.read_nml_int,
-                "names_of_strms": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_str
-                ),
-                "subm_flag": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_bool
-                ),
-                "strm_hf_angle": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "strmbd_slope": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "strmbd_drag": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "coef_inf_entrain": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "inflow_factor": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "inflow_fl": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_str
-                ),
-                "inflow_varnum": NMLReader.read_nml_int,
-                "inflow_vars": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_str
-                ),
-                "time_fmt": NMLReader.read_nml_str
+                "num_inflows": self._converter_funcs[int],
+                "names_of_strms": self._converter_funcs[list][str],
+                "subm_flag": self._converter_funcs[list][bool],
+                "subm_elev": self._converter_funcs[list][float],
+                "strm_hf_angle": self._converter_funcs[list][float],
+                "strmbd_slope": self._converter_funcs[list][float],
+                "strmbd_drag": self._converter_funcs[list][float],
+                "coef_inf_entrain": self._converter_funcs[list][float],
+                "inflow_factor": self._converter_funcs[list][float],
+                "inflow_fl": self._converter_funcs[list][str],
+                "inflow_varnum": self._converter_funcs[int],
+                "inflow_vars": self._converter_funcs[list][str],
+                "time_fmt": self._converter_funcs[str],
             },
             "outflow": {
-                "num_outlet": NMLReader.read_nml_int,
-                "outflow_fl": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_str
-                ),
-                "time_fmt": NMLReader.read_nml_str,
-                "outflow_factor": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "outflow_thick_limit": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "single_layer_draw": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_bool
-                ),
-                "flt_off_sw": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_bool
-                ),
-                "outlet_type": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_int
-                ),
-                "outl_elvs": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "bsn_len_outl": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "bsn_wid_outl": lambda x: NMLReader.read_nml_list(
-                    x, NMLReader.read_nml_float
-                ),
-                "crit_O2": NMLReader.read_nml_int,
-                "crit_O2_dep": NMLReader.read_nml_int,
-                "crit_O2_days": NMLReader.read_nml_int,
-                "outlet_crit": NMLReader.read_nml_int,
-                "O2name": NMLReader.read_nml_str,
-                "O2idx": NMLReader.read_nml_str,
-                "target_temp": NMLReader.read_nml_float,
-                "min_lake_temp": NMLReader.read_nml_float,
-                "fac_range_upper": NMLReader.read_nml_float,
-                "fac_range_lower": NMLReader.read_nml_float,
-                "mix_withdraw": NMLReader.read_nml_bool,
-                "coupl_oxy_sw": NMLReader.read_nml_bool,
-                "withdrTemp_fl": NMLReader.read_nml_str,
-                "seepage": NMLReader.read_nml_bool,
-                "seepage_rate": NMLReader.read_nml_float,
-                "crest_width": NMLReader.read_nml_float,
-                "crest_factor": NMLReader.read_nml_float,
+                "num_outlet": self._converter_funcs[int],
+                "outflow_fl": self._converter_funcs[list][str],
+                "time_fmt": self._converter_funcs[str],
+                "outflow_factor": self._converter_funcs[list][float],
+                "outflow_thick_limit": self._converter_funcs[list][float],
+                "single_layer_draw": self._converter_funcs[list][bool],
+                "flt_off_sw": self._converter_funcs[list][bool],
+                "outlet_type": self._converter_funcs[list][int],
+                "outl_elvs": self._converter_funcs[list][float],
+                "bsn_len_outl": self._converter_funcs[list][float],
+                "bsn_wid_outl": self._converter_funcs[list][float],
+                "crit_O2": self._converter_funcs[int],
+                "crit_O2_dep": self._converter_funcs[int],
+                "crit_O2_days": self._converter_funcs[int],
+                "outlet_crit": self._converter_funcs[int],
+                "O2name": self._converter_funcs[str],
+                "O2idx": self._converter_funcs[str],
+                "target_temp": self._converter_funcs[float],
+                "min_lake_temp": self._converter_funcs[float],
+                "fac_range_upper": self._converter_funcs[float],
+                "fac_range_lower": self._converter_funcs[float],
+                "mix_withdraw": self._converter_funcs[bool],
+                "coupl_oxy_sw": self._converter_funcs[bool],
+                "withdrTemp_fl": self._converter_funcs[str],
+                "seepage": self._converter_funcs[bool],
+                "seepage_rate": self._converter_funcs[float],
+                "crest_width": self._converter_funcs[float],
+                "crest_factor": self._converter_funcs[float], 
             }
         }
         return default_converters

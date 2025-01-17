@@ -186,11 +186,7 @@ custom_nml = {
     "custom_block2": {
         "param1": [1, 2, 3],
         "param2": ["foo", "bar", "baz"],
-        "param3": [
-            [True, False, True], 
-            [True, False, True], 
-            [True, False, True]
-        ]
+        "param3": [True, False, True]
     }
 }
 ```
@@ -198,12 +194,11 @@ custom_nml = {
 This is your NML file in Python syntax. Be mindful of the Python data types you
 use for your parameter values. They map to the respective syntax of data types
 in a NML file. Python integers will be converted to NML integers, floats to 
-floats, etc. Notice too the use of Python lists for NML comma-separated lists
-and nested Python lists for NML arrays. 
+floats, etc. Notice too the use of Python lists for NML comma-separated lists.
 
 !!! note
 
-    For lists and arrays, don't mix and match your Python data types - 
+    For lists, don't mix and match your Python data types - 
     especially integers and floats. 
 
 
@@ -242,11 +237,7 @@ custom_nml = {
     "custom_block2": {
         "param1": [1, 2, 3],
         "param2": ["foo", "bar", "baz"],
-        "param3": [
-            [True, False, True], 
-            [True, False, True], 
-            [True, False, True]
-        ]
+        "param3": [True, False, True]
     }
 }
 ```
@@ -268,15 +259,15 @@ methods:
         "param2": lambda x: nml.NMLWriter.write_nml_list(
             x, nml.NMLWriter.write_nml_str
         ),
-        "param3": lambda x: nml.NMLWriter.write_nml_array(
+        "param3": lambda x: nml.NMLWriter.write_nml_list(
             x, nml.NMLWriter.write_nml_bool
         )
     }
 }
 ```
-What are `write_nml_str`, `write_nml_bool`, `write_nml_list`, and
-`write_nml_array`? These are static methods that you can call independently 
-of initialising `NMLWriter` to convert Python syntax to NML syntax:
+What are `write_nml_str`, `write_nml_bool`, and `write_nml_list`? These are 
+static methods that you can call independently of initialising `NMLWriter` to 
+convert Python syntax to NML syntax:
 
 ```python
 nml_string = nml.NMLWriter.write_nml_str("GLM")
@@ -299,31 +290,11 @@ print(nml_list)
 ```
 1,2,3
 ```
-```python
-nml_array = nml.NMLWriter.write_nml_array(
-    [
-        [1.1, 1.2, 1.3, 1.2, 1.3],
-        [2.1, 2.2, 2.3, 1.2, 1.3],
-        [3.1, 3.2, 3.3, 1.2, 1.3],
-        [4.1, 4.2, 4.3, 1.2, 1.3],
-        [5.1, 5.2, 5.3, 1.2, 1.3],
-        [6.1, 6.2, 6.3, 1.2, 1.3]
-    ]
-)
-print(nml_array)
-```
-```
-1.1,1.2,1.3,1.2,1.3,
-2.1,2.2,2.3,1.2,1.3,
-3.1,3.2,3.3,1.2,1.3,
-4.1,4.2,4.3,1.2,1.3,
-5.1,5.2,5.3,1.2,1.3,
-6.1,6.2,6.3,1.2,1.3
-```
+
 !!! note
     No static methods are required for converting integers and floats. 
     
-    When writing lists/arrays with string or boolean elements, lambda functions 
+    When writing lists with string or boolean elements, lambda functions 
     can used create new combinations of these methods.
 
 By creating a nested dictionary in the same fashion as shown above, you can 
@@ -383,7 +354,6 @@ my_nml = nml.NMLWriter(nml_dict=custom_nml, detect_types=False)
 my_nml.set_converters(custom_converters)
 my_nml.write_nml(nml_file="custom_nml.nml")
 ```
-
 
 ### Reading a NML file with `NMLReader`
 
@@ -583,20 +553,6 @@ print(type(python_list))
 ```
 ```
 [1, 2, 3]
-<class 'list'>
-```
-
-```python
-nml_array = ['1.1,1.2,1.3', '2.1,2.2,2.3', '2.1,2.2,2.3']
-python_array = nml.NMLReader.read_nml_array(
-    nml_array,
-    nml.NMLReader.read_nml_float
-)
-print(python_array)
-print(type(python_array))
-```
-```
-[[1.1, 1.2, 1.3], [2.1, 2.2, 2.3], [2.1, 2.2, 2.3]]
 <class 'list'>
 ```
 

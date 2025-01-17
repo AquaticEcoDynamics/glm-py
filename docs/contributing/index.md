@@ -43,5 +43,5 @@ actively developed.
 - An `aed_nml` sub-module for the `nml` module that mirrors the functionality
 of the `glm_nml` sub-module. 
 - Parameter documentation for the `glm_nml` sub-module.
-- Additional simple morphometries the `dimensions` module.
+- Additional simple morphometries in the `dimensions` module.
 
