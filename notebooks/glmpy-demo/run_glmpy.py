@@ -1,10 +1,10 @@
-from glmpy import simulation
+from glmpy import simulation_depr
 
 files = {
    "glm3.nml": "glm3.nml",
    "nldas_driver.csv": "bcs/nldas_driver.csv"
 }
-glm_sim = simulation.GLMSim(
+glm_sim = simulation_depr.GLMSim(
     input_files=files, 
     api=False,
     inputs_dir="inputs"

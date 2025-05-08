@@ -10,7 +10,7 @@ Do not test using pytest.
 import os
 import shutil
 
-from glmpy import simulation as sim
+from glmpy import simulation_depr as sim
 
 files = {
     "glm3.nml": os.path.join(os.getcwd(), "test-data", "glm3.nml"),

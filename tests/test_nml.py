@@ -2,7 +2,7 @@ import json
 import pytest
 
 from glmpy.nml import nml
-from glmpy.nml import glm_nml
+from glmpy.nml import glm_nml_depr
 
 def test_write_nml_bool():
     assert nml.NMLWriter.write_nml_bool(True) == ".true."
@@ -362,20 +362,20 @@ def test_write_nml(
         example_snow_ice_parameters,
         example_wq_setup_parameters
 ):
-    glm_setup = glm_nml.SetupBlock()
-    morphometry = glm_nml.MorphometryBlock()
-    time = glm_nml.TimeBlock()
-    init_profiles = glm_nml.InitProfilesBlock()
-    mixing = glm_nml.MixingBlock()
-    output = glm_nml.OutputBlock()
-    meteorology = glm_nml.MeteorologyBlock()
-    light = glm_nml.LightBlock()
-    bird_model = glm_nml.BirdModelBlock()
-    inflow = glm_nml.InflowBlock()
-    outflow = glm_nml.OutflowBlock()
-    sediment = glm_nml.SedimentBlock()
-    snow_ice = glm_nml.SnowIceBlock()
-    wq_setup = glm_nml.WQSetupBlock()
+    glm_setup = glm_nml_depr.SetupBlock()
+    morphometry = glm_nml_depr.MorphometryBlock()
+    time = glm_nml_depr.TimeBlock()
+    init_profiles = glm_nml_depr.InitProfilesBlock()
+    mixing = glm_nml_depr.MixingBlock()
+    output = glm_nml_depr.OutputBlock()
+    meteorology = glm_nml_depr.MeteorologyBlock()
+    light = glm_nml_depr.LightBlock()
+    bird_model = glm_nml_depr.BirdModelBlock()
+    inflow = glm_nml_depr.InflowBlock()
+    outflow = glm_nml_depr.OutflowBlock()
+    sediment = glm_nml_depr.SedimentBlock()
+    snow_ice = glm_nml_depr.SnowIceBlock()
+    wq_setup = glm_nml_depr.WQSetupBlock()
 
     glm_setup.set_attrs(example_glm_setup_parameters)
     morphometry.set_attrs(example_morphometry_parameters)
@@ -392,7 +392,7 @@ def test_write_nml(
     snow_ice.set_attrs(example_snow_ice_parameters)
     wq_setup.set_attrs(example_wq_setup_parameters)
 
-    nml_file = glm_nml.GLMNML(
+    nml_file = glm_nml_depr.GLMNML(
         glm_setup=glm_setup.get_params(),
         morphometry=morphometry.get_params(),
         time=time.get_params(),

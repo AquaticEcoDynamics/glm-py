@@ -1,7 +1,7 @@
 import pytest
 import pandas as pd
 
-from glmpy.example_sims import sparkling
+from glmpy.example_sims_depr import sparkling
 
 
 def test_sparkling_load_nml():
