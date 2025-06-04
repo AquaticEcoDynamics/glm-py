@@ -1,7 +1,7 @@
 import pandas as pd
 
 from typing import Union, List, Any
-from glmpy.sim import GLMSim, MultiSim
+from glmpy.simulation import GLMSim, MultiSim
 
 
 class LocalSensitivity:

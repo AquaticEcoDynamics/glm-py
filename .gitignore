@@ -1,5 +1,8 @@
 examples
 dev
+dev.py
+dev.ipynb
+notes.md
 *.DS_Store
 
 */__pycache__

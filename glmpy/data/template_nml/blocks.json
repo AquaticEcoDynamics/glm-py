@@ -1,0 +1,33 @@
+{
+    "glm": {
+        "glm_setup": {
+            "recommended": {
+                "sim_name": "lake",
+                "max_layers": 500,
+                "min_layer_thick": 0.15,
+                "max_layer_thick": 1.50,
+                "min_layer_vol": 0.025,
+                "density_model": 1,
+                "non_avg": true
+            },
+            "small_lake": {}
+        },
+        "time": {},
+        "morphometry": {},
+        "init_profiles": {},
+        "mixing": {},
+        "wq_setup": {},
+        "output": {},
+        "light": {},
+        "bird_model": {},
+        "sediment": {},
+        "snowice": {},
+        "meteorology": {},
+        "inflow": {},
+        "outflow": {}
+    },
+    "aed": {
+    }
+}
+
+

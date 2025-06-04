@@ -1,7 +1,7 @@
 import random
 import pandas as pd
 import pytest
-from glmpy import inflows
+from glmpy import flows
 
 @pytest.fixture
 def hourly_met_data():
@@ -53,7 +53,7 @@ def fourty_eight_hour_met_data():
 
 def test_met_data_type():
     with pytest.raises(ValueError) as error:
-        inflows.CatchmentRunoffInflows(
+        flows.CatchmentRunoffInflows(
             met_data=None,
             catchment_area=1000,
             runoff_coef = 0.5,
@@ -67,7 +67,7 @@ def test_met_data_type():
 
 def test_catchment_area_type(hourly_met_data):
     with pytest.raises(ValueError) as error:
-        inflows.CatchmentRunoffInflows(
+        flows.CatchmentRunoffInflows(
             met_data=hourly_met_data,
             catchment_area="foo",
             runoff_coef=0.5,
@@ -81,7 +81,7 @@ def test_catchment_area_type(hourly_met_data):
 
 def test_runoff_coef_type(hourly_met_data):
     with pytest.raises(ValueError) as error:
-        inflows.CatchmentRunoffInflows(
+        flows.CatchmentRunoffInflows(
             met_data=hourly_met_data,
             catchment_area=1000,
             runoff_coef='0.5',
@@ -95,7 +95,7 @@ def test_runoff_coef_type(hourly_met_data):
 
 def test_runoff_threshold_type(hourly_met_data):
     with pytest.raises(ValueError) as error:
-        inflows.CatchmentRunoffInflows(
+        flows.CatchmentRunoffInflows(
             met_data=hourly_met_data,
             catchment_area=1000,
             runoff_threshold='10',
@@ -109,7 +109,7 @@ def test_runoff_threshold_type(hourly_met_data):
 
 def test_precip_col_type(hourly_met_data):
     with pytest.raises(ValueError) as error:
-        inflows.CatchmentRunoffInflows(
+        flows.CatchmentRunoffInflows(
             met_data=hourly_met_data,
             catchment_area=1000,
             runoff_threshold=10,
@@ -123,7 +123,7 @@ def test_precip_col_type(hourly_met_data):
 
 def test_precip_col_vals_type(erroneous_rain_hourly_met_data):
     with pytest.raises(ValueError) as error:
-        inflows.CatchmentRunoffInflows(
+        flows.CatchmentRunoffInflows(
             met_data=erroneous_rain_hourly_met_data,
             catchment_area=1000,
             runoff_threshold=10,
@@ -138,7 +138,7 @@ def test_precip_col_vals_type(erroneous_rain_hourly_met_data):
 
 def test_date_time_col_type(hourly_met_data):
     with pytest.raises(ValueError) as error:
-        inflows.CatchmentRunoffInflows(
+        flows.CatchmentRunoffInflows(
             met_data=hourly_met_data,
             catchment_area=1000,
             runoff_threshold=10,
@@ -152,7 +152,7 @@ def test_date_time_col_type(hourly_met_data):
 
 def test_negative_catchment_area(hourly_met_data):
     with pytest.raises(ValueError) as error:
-        inflows.CatchmentRunoffInflows(
+        flows.CatchmentRunoffInflows(
             met_data=hourly_met_data,
             catchment_area=-1000.0,
             runoff_coef=0.5,
@@ -163,7 +163,7 @@ def test_negative_catchment_area(hourly_met_data):
 
 def test_invalid_precip_col(hourly_met_data):
     with pytest.raises(ValueError) as error:
-        inflows.CatchmentRunoffInflows(
+        flows.CatchmentRunoffInflows(
             met_data=hourly_met_data,
             catchment_area=1000,
             runoff_coef=0.5,
@@ -177,7 +177,7 @@ def test_invalid_precip_col(hourly_met_data):
 
 def test_invalid_date_time_col(hourly_met_data):
     with pytest.raises(ValueError) as error:
-        inflows.CatchmentRunoffInflows(
+        flows.CatchmentRunoffInflows(
             met_data=hourly_met_data,
             catchment_area=1000,
             runoff_coef=0.5,
@@ -191,7 +191,7 @@ def test_invalid_date_time_col(hourly_met_data):
 
 def test_missing_runoff_parameters(hourly_met_data):
     with pytest.raises(ValueError) as error:
-        inflows.CatchmentRunoffInflows(
+        flows.CatchmentRunoffInflows(
             met_data=hourly_met_data,
             catchment_area=1000,
             precip_col="Rain",
@@ -204,7 +204,7 @@ def test_missing_runoff_parameters(hourly_met_data):
 
 def test_too_many_runoff_parameters(hourly_met_data):
     with pytest.raises(ValueError) as error:
-        inflows.CatchmentRunoffInflows(
+        flows.CatchmentRunoffInflows(
             met_data=hourly_met_data,
             runoff_coef=0.5,
             runoff_threshold=10.0,
@@ -219,7 +219,7 @@ def test_too_many_runoff_parameters(hourly_met_data):
 
 def test_invalid_datetime(erroneous_date_hourly_met_data):
     with pytest.raises(ValueError) as error:
-        inflows.CatchmentRunoffInflows(
+        flows.CatchmentRunoffInflows(
             met_data=erroneous_date_hourly_met_data,
             runoff_coef=0.5,
             catchment_area=1000,
@@ -233,7 +233,7 @@ def test_invalid_datetime(erroneous_date_hourly_met_data):
 
 def test_invalid_time_delta(fourty_eight_hour_met_data):
     with pytest.raises(ValueError) as error:
-        inflows.CatchmentRunoffInflows(
+        flows.CatchmentRunoffInflows(
             met_data=fourty_eight_hour_met_data,
             runoff_coef=0.5,
             catchment_area=1000,
