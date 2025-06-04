@@ -19,7 +19,7 @@ glm-py is an object-oriented API for preparing GLM inputs, running simulations, 
 
 Its goal is to make working with GLM as easy as possible while providing sufficient depth to meet more complex use cases. At its most basic, running a GLM simulation is as simple as calling:
 
-```{python}
+```python
 from glmpy.simulation import GLMSim
 
 GLMSim.from_example_sims("sparkling_lake").run()
