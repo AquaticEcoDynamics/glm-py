@@ -1,4 +1,4 @@
-# glm-py <img src="docs/img/glmpy-square-blue.png" align="right" height="138" />
+# glm-py <img src="docs/img/glmpy-square-blue.png" align="right" height="128" />
 
 Python API for the General Lake Model (GLM).
 
