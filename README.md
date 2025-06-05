@@ -17,13 +17,24 @@ The <a href="https://github.com/AquaticEcoDynamics/glm-aed/tree/main/binaries" t
 
 glm-py is an object-oriented API for preparing GLM inputs, running simulations, and processing outputs. 
 
-Its goal is to make working with GLM as easy as possible while providing sufficient depth to meet more complex use cases. At its most basic, running a GLM simulation is as simple as calling:
+Its goal is to make working with GLM as easy as possible while providing sufficient depth to meet more complex use cases. At its most basic, a GLM simulation can be run and visualised in just a few lines of code:
 
 ```python
+import matplotlib.pyplot as plt
+
+from glmpy.plots import NCPlotter
 from glmpy.simulation import GLMSim
 
-GLMSim.from_example_sims("sparkling_lake").run()
+
+outputs = GLMSim.from_example_sim("sparkling_lake").run()
+
+nc = NCPlotter(outputs.get_netcdf_path())
+
+fig, ax = plt.subplots(figsize=(10, 5))
+profile = nc.plot_var_profile(ax=ax, var="temp")
+fig.colorbar(profile).set_label("Temperature (°C)")
 ```
+<img src="docs/img/readme_profile.png" align="center" height="325" />
 
 The API is designed to be interoperable with existing GLM workflows and easily extendable by users. glm-py can be used for running GLM simulations within local Python environments, running batches of GLM simulations on HPCs, or for interfacing with web applications/cloud services that use GLM.
 

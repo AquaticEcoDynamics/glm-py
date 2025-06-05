@@ -5,6 +5,7 @@ import time
 import json
 import shutil
 import zipfile
+import netCDF4
 import warnings
 import datetime
 import pandas as pd
@@ -17,7 +18,76 @@ from glmpy import __version__ as GLMPY_VERSION
 from typing import Any, Union, Dict, List, Callable
 from glmpy.nml.nml import NML, NMLDict, NMLBlock, NMLParamValue
 
+
 GLM_VERSION = "3.3.3"
+
+def glmpy_glm_path() -> Union[str, None]:
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    if os.name == "nt":
+        exe_name = "glm.exe"
+    else:
+        exe_name = "glm"
+    exe_path = os.path.join(base_path, "bin", exe_name)
+    if os.path.isfile(exe_path):
+        return exe_path
+    else:
+        return None
+
+def run_glm(
+    glm_nml_path: str,
+    sim_name: str = "simulation",
+    write_log: bool = False,
+    quiet: bool = False,
+    time_sim: bool = False,
+    glm_path: Union[str, None] = None,
+) -> None:
+    if glm_path is None:
+        glm_path = glmpy_glm_path()
+        if glm_path is None:
+            expected_path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), "bin"
+            )
+            raise Exception(
+                "The GLM binary was not found in the expected path: "
+                f"{expected_path}"
+                "\n If you have installed the source distribution of glmpy"
+                ", a GLM binary is not included. Provide the path to an "
+                "external GLM binary using the glm_path parameter."
+            )
+    run_command = f'{glm_path} --nml "{glm_nml_path}"'
+    target = None
+    if quiet:
+        target = open(os.devnull, "w")
+    if write_log:
+        log_file = os.path.join(os.path.dirname(glm_nml_path), "glm.log")
+        target = open(log_file, "w")
+    if time_sim:
+        print(f"Starting {sim_name}")
+    try:
+        if target:
+            save = os.dup(1), os.dup(2)
+            os.dup2(target.fileno(), 1)
+            os.dup2(target.fileno(), 2)
+        if time_sim:
+            start_time = time.perf_counter()
+            os.system(run_command)
+            end_time = time.perf_counter()
+            total_duration = end_time - start_time
+            total_duration = datetime.timedelta(
+                seconds=round(total_duration)
+            )
+        else:
+            os.system(run_command)
+    finally:
+        if target:
+            os.dup2(save[0], 1)
+            os.dup2(save[1], 2)
+            os.close(save[0])
+            os.close(save[1])
+            target.close()
+    if time_sim:
+        print(f"Finished {sim_name} in {str(total_duration)}")
+
 
 class BcsDict(dict):
     def __init__(self, *args, **kwargs):
@@ -25,15 +95,15 @@ class BcsDict(dict):
 
     def get_deepcopy(self):
         return copy.deepcopy(self)
-    
+
 
 class GLMSim():
     def __init__(
         self,
         sim_name: Union[str, None] = None,
-        glm_nml: Union[GLMNML, None] = None,
-        aed_nml: Union[AEDNML, None] = None,
-        bcs: Union[Dict[str, pd.DataFrame], None] = None,
+        glm_nml: Union[GLMNML, None] = None,  # GLMNML() ?
+        aed_nml: Union[AEDNML, None] = None,  # AEDNML() ?
+        bcs: Union[Dict[str, pd.DataFrame], None] = None,  # {} ?
         outputs_dir: str = ".",
     ):
         self.nml = NMLDict()
@@ -58,11 +128,11 @@ class GLMSim():
         if isinstance(value, str):
             self.set_param_value("glm", "glm_setup", "sim_name", value)
             self._sim_name = value
-        else: 
+        else:
             raise TypeError(
                 f"sim_name must be type str. Got type {type(value)}"
             )
-    
+
     def _init_sim_name(self, sim_name: Union[str, None]):
         if sim_name is None:
             nml_sim_name = self.get_param_value("glm", "glm_setup", "sim_name")
@@ -74,26 +144,26 @@ class GLMSim():
             self.sim_name = sim_name
 
     def set_param_value(
-        self, 
-        nml_name: str, 
-        block_name: str, 
-        param_name: str, 
+        self,
+        nml_name: str,
+        block_name: str,
+        param_name: str,
         value: NMLParamValue
     ):
         self.nml[nml_name].set_param_value(block_name, param_name, value)
-    
+
     def get_param_value(
-            self, nml_name: str, block_name: str, param_name: str
-        ) -> NMLParamValue:
+        self, nml_name: str, block_name: str, param_name: str
+    ) -> NMLParamValue:
         value = self.nml[nml_name].get_param_value(block_name, param_name)
         return value
-    
+
     def get_param_units(
         self, nml_name: str, block_name: str, param_name: str
     ) -> Union[str, None]:
         return self.nml[nml_name].get_param_units(block_name, param_name)
-    
-    def set_block(self, nml_name: str, block_name: str, block:NMLBlock):
+
+    def set_block(self, nml_name: str, block_name: str, block: NMLBlock):
         self.nml[nml_name].set_block(block_name, block)
 
     def get_block(self, nml_name: str, block_name: str) -> NMLBlock:
@@ -101,31 +171,31 @@ class GLMSim():
 
     def set_nml(self, nml: NML):
         self.nml[nml.nml_name] = nml
-    
+
     def get_nml(self, nml_name: str) -> NML:
         return self.nml[nml_name]
-    
+
     def get_param_names(self, nml_name: str, block_name: str) -> List[str]:
         return self.nml[nml_name].get_param_names(block_name)
 
     def get_block_names(self, nml_name: str) -> List[str]:
         return self.nml[nml_name].get_block_names()
-    
+
     def get_nml_names(self) -> List[str]:
         return list(self.nml.keys())
 
     def get_bc_names(self) -> List[str]:
         return list(self.bcs.keys())
-    
+
     def get_bc_pd(self, bc_name: str) -> pd.DataFrame:
         return self.bcs[bc_name]
-    
+
     def set_bc(self, bc_name: str, bc_pd: pd.DataFrame):
         self.bcs[bc_name] = bc_pd
 
     def validate(self):
         self.nml.validate()
-    
+
     def get_deepcopy(self) -> "GLMSim":
         return copy.deepcopy(self)
 
@@ -165,7 +235,7 @@ class GLMSim():
                 for param in block.params.values():
                     if param.value is not None and param.is_bcs_fl is True:
                         self._write_aux_fl(param, "bcs")
-    
+
     def prepare_inputs(self):
         if os.path.isdir(os.path.join(self.outputs_dir, self.sim_name)):
             shutil.rmtree(os.path.join(self.outputs_dir, self.sim_name))
@@ -185,7 +255,7 @@ class GLMSim():
                             self.outputs_dir, self.sim_name, f"{nml_name}.nml"
                         )
                     )
-    
+
     @classmethod
     def from_example_sim(cls, example_sim_name: str) -> "GLMSim":
         with resources.path(
@@ -198,15 +268,14 @@ class GLMSim():
             sim = cls.from_file(str(sim_file))
             return sim
 
-
     @staticmethod
     def get_example_sim_names() -> List[str]:
         example_sims = []
         for file in resources.files("glmpy.data.example_sims").iterdir():
             if file.is_file() and file.name.endswith(".glmpy"):
-                    example_sims.append(file.name.split(".")[0])
+                example_sims.append(file.name.split(".")[0])
         return example_sims
-    
+
     def to_file(self, path: str):
         _, file_extension = os.path.splitext(path)
         if not file_extension == ".glmpy":
@@ -284,19 +353,33 @@ class GLMSim():
         self.validate()
         self.prepare_inputs()
         self.prepare_bcs()
-        nml_file = os.path.join(self.outputs_dir, self.sim_name, "glm3.nml")
-        GLMRunner.run(
-            glm_nml_path=nml_file,
+        run_glm(
+            glm_nml_path=os.path.join(
+                self.outputs_dir, self.sim_name, "glm3.nml"
+            ),
             sim_name=self.sim_name,
             write_log=write_log,
             quiet=quiet,
             time_sim=time_sim,
             glm_path=glm_path,
         )
+        outputs = GLMOutputs(
+            sim_dir=self.get_sim_dir(),
+            out_dir=self.get_param_value("glm", "output", "out_dir"),
+            out_fn=self.get_param_value("glm", "output", "out_fn"),
+            csv_lake_fname=self.get_param_value(
+                "glm", "output", "csv_lake_fname"
+            ),
+            csv_point_fname=self.get_param_value(
+                "glm", "output", "csv_point_fname"
+            )
+        )
+        return outputs
 
 
 def no_op_callback(x):
     return None
+
 
 class MultiSim:
     def __init__(self, glm_sims: List[GLMSim]):
@@ -304,16 +387,16 @@ class MultiSim:
 
     def cpu_count(self) -> Union[int, None]:
         return os.cpu_count()
- 
+
     def run_single_sim(
-            self, 
-            glm_sim: GLMSim,
-            on_sim_end: Callable[[GLMSim], Any],
-            rm_sim_dir: bool = False,
-            write_log: bool = True,
-            time_sim: bool = True,
-            glm_path: Union[str, None] = "./glm",
-        ):
+        self,
+        glm_sim: GLMSim,
+        on_sim_end: Callable[[GLMSim], Any],
+        rm_sim_dir: bool = False,
+        write_log: bool = True,
+        time_sim: bool = True,
+        glm_path: Union[str, None] = "./glm",
+    ):
         glm_sim.run(
             write_log=write_log,
             quiet=True,
@@ -325,6 +408,7 @@ class MultiSim:
             glm_sim.rm_sim_dir()
         return rv
 
+    # run_rm for on_sim_end
     def run(
         self,
         on_sim_end: Union[Callable, None] = None,
@@ -376,78 +460,87 @@ class MultiSim:
                 f"{str(total_duration)}"
             )
         return rvs
+
+
+class GLMOutputs:
+    def __init__(
+        self,
+        sim_dir: str,
+        out_dir: NMLParamValue,
+        out_fn: NMLParamValue,
+        csv_lake_fname: NMLParamValue,
+        csv_point_fname: NMLParamValue
+    ):
+        self.sim_dir = sim_dir
+        if not isinstance(out_dir, str):
+            self.out_dir = "output"
+        else:
+            self.out_dir = out_dir
+        if not isinstance(out_fn, str):
+            self.out_fn = "output"
+        else:
+            self.out_fn = out_fn
+        if not isinstance(csv_lake_fname, str):
+            self.csv_lake_fname = "lake"
+        else:
+            self.csv_lake_fname = csv_lake_fname
+        if not isinstance(csv_point_fname, str):
+            self.csv_point_fname = "WQ_"
+        else:
+            self.csv_point_fname = csv_point_fname
+    
+    def get_lake_csv_path(self) -> str:
+        lake_path = os.path.join(
+            self.sim_dir, self.out_dir, self.csv_lake_fname
+        )
+        if not lake_path.endswith(".csv"):
+            lake_path = lake_path + ".csv"
+        if os.path.isfile(lake_path):
+            return lake_path
+        else:
+            raise FileNotFoundError(
+                f"The file path {lake_path} was not found."
+            )
+    
+    def get_lake_pd(self) -> pd.DataFrame:
+        lake_pd = pd.read_csv(self.get_lake_csv_path())
+        return lake_pd
+    
+    def get_point_csv_paths(self) -> List[str]:
+        files = os.listdir(os.path.join(self.sim_dir, self.out_dir))
+        csv_files = [
+            f for f in files if f.startswith(self.csv_point_fname) and f.endswith(".csv")
+        ]
+        return [os.path.join(self.sim_dir, self.out_dir, f) for f in csv_files]
+    
+    def get_point_pds(self) -> Dict[str, pd.DataFrame]:
+        paths = self.get_point_csv_paths()
+        pd_dict = {}
+        for path in paths:
+            basename = os.path.basename(path)
+            pd_dict[basename] = pd.read_csv(path)
+        return pd_dict
+    
+    def get_netcdf_path(self) -> str:
+        output_path = os.path.join(
+            self.sim_dir, self.out_dir, self.out_fn
+        )
+        if not output_path.endswith(".nc"):
+            output_path = output_path + ".nc"
+        if os.path.isfile(output_path):
+            return output_path
+        else:
+            raise FileNotFoundError(
+                f"The file path {output_path} was not found."
+            )
+
+    def get_netcdf(self) -> netCDF4.Dataset:
+        output_nc = netCDF4.Dataset(
+            self.get_netcdf_path(), "r", format="NETCDF4"
+        )
+        return output_nc
+
     
 
-class GLMRunner:
-    @staticmethod
-    def glm_version() -> str:
-        return GLM_VERSION
 
-    @staticmethod
-    def glmpy_glm_path() -> Union[str, None]:
-        base_path = os.path.dirname(os.path.abspath(__file__))
-        if os.name == "nt":
-            exe_name = "glm.exe"
-        else:
-            exe_name = "glm"
-        exe_path = os.path.join(base_path, "bin", exe_name)
-        if os.path.isfile(exe_path):
-            return exe_path
-        else:
-            return None
 
-    @staticmethod
-    def run(
-        glm_nml_path: str,
-        sim_name: str = "simulation",
-        write_log: bool = False,
-        quiet: bool = False,
-        time_sim: bool = False,
-        glm_path: Union[str, None] = None,
-    ) -> None:
-        if glm_path is None:
-            glm_path = GLMRunner.glmpy_glm_path()
-            if glm_path is None:
-                expected_path = os.path.join(
-                    os.path.dirname(os.path.abspath(__file__)), "bin"
-                )
-                raise Exception(
-                    "The GLM binary was not found in the expected path: "
-                    f"{expected_path}"
-                    "\n If you have installed the source distribution of glmpy"
-                    ", a GLM binary is not included. Provide the path to an "
-                    "external GLM binary using the glm_path parameter."
-                )
-        run_command = f'{glm_path} --nml "{glm_nml_path}"'
-        target = None
-        if quiet:
-            target = open(os.devnull, "w")
-        if write_log:
-            log_file = os.path.join(os.path.dirname(glm_nml_path), "glm.log")
-            target = open(log_file, "w")
-        if time_sim:
-            print(f"Starting {sim_name}")
-        try:
-            if target:
-                save = os.dup(1), os.dup(2)
-                os.dup2(target.fileno(), 1)
-                os.dup2(target.fileno(), 2)
-            if time_sim:
-                start_time = time.perf_counter()
-                os.system(run_command)
-                end_time = time.perf_counter()
-                total_duration = end_time - start_time
-                total_duration = datetime.timedelta(
-                    seconds=round(total_duration)
-                )
-            else:
-                os.system(run_command)
-        finally:
-            if target:
-                os.dup2(save[0], 1)
-                os.dup2(save[1], 2)
-                os.close(save[0])
-                os.close(save[1])
-                target.close()
-        if time_sim:
-            print(f"Finished {sim_name} in {str(total_duration)}")
