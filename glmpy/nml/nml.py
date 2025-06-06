@@ -22,7 +22,7 @@ class NMLParam:
         self,
         name: str,
         type: Any,
-        value: NMLParamValue = None,
+        value: Any = None,
         units: Union[None, str] = None,
         is_list: bool = False,
         is_bcs_fl: bool = False,
@@ -266,7 +266,7 @@ class NMLBlock(ABC):
                 return False
         return True
 
-    def to_dict(self, none_params: bool = True) -> dict[str, NMLParamValue]:         
+    def to_dict(self, none_params: bool = True) -> dict[str, Any]:         
         param_dict = {}
         for key, nml_param in self.params.items():
             if isinstance(nml_param, NMLParam):
@@ -280,7 +280,7 @@ class NMLBlock(ABC):
     def set_param_value(self, param_name: str, value: Any):
         self.params[param_name].value = value
     
-    def get_param_value(self, param_name: str) -> NMLParamValue:
+    def get_param_value(self, param_name: str) -> Any:
         return self.params[param_name].value
     
     def get_param_units(self, param_name: str) -> Union[str, None]:
@@ -483,7 +483,7 @@ class NML(ABC):
     
     def to_dict(
         self, none_blocks: bool = True, none_params: bool = True
-    ) -> dict[str, NMLParamValue]:
+    ) -> dict[str, Any]:
         nml_dict = {}
         for block_name, nml_block in self.blocks.items():
             if isinstance(nml_block, NMLBlock):
@@ -499,13 +499,13 @@ class NML(ABC):
         return nml_dict
     
     def set_param_value(
-            self, block_name: str, param_name: str, value: NMLParamValue
+            self, block_name: str, param_name: str, value: Any
         ):
         self.blocks[block_name].set_param_value(param_name, value)
     
     def get_param_value(
             self, block_name: str, param_name: str
-        ) -> NMLParamValue:
+        ) -> Any:
         return self.blocks[block_name].get_param_value(param_name)
     
     def get_param_units(

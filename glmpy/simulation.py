@@ -12,7 +12,7 @@ import pandas as pd
 import multiprocessing
 
 from importlib import resources
-from glmpy.nml.glm_nml import GLMNML
+from glmpy.nml.glm_nml import GLMNML, OutputBlock
 from glmpy.nml.aed_nml import AEDNML
 from glmpy import __version__ as GLMPY_VERSION
 from typing import Any, Union, Dict, List, Callable
@@ -148,13 +148,13 @@ class GLMSim():
         nml_name: str,
         block_name: str,
         param_name: str,
-        value: NMLParamValue
+        value: Any
     ):
         self.nml[nml_name].set_param_value(block_name, param_name, value)
 
     def get_param_value(
         self, nml_name: str, block_name: str, param_name: str
-    ) -> NMLParamValue:
+    ) -> Any:
         value = self.nml[nml_name].get_param_value(block_name, param_name)
         return value
 
@@ -367,12 +367,7 @@ class GLMSim():
             sim_dir=self.get_sim_dir(),
             out_dir=self.get_param_value("glm", "output", "out_dir"),
             out_fn=self.get_param_value("glm", "output", "out_fn"),
-            csv_lake_fname=self.get_param_value(
-                "glm", "output", "csv_lake_fname"
-            ),
-            csv_point_fname=self.get_param_value(
-                "glm", "output", "csv_point_fname"
-            )
+            sim_name=self.sim_name
         )
         return outputs
 
@@ -466,81 +461,66 @@ class GLMOutputs:
     def __init__(
         self,
         sim_dir: str,
-        out_dir: NMLParamValue,
-        out_fn: NMLParamValue,
-        csv_lake_fname: NMLParamValue,
-        csv_point_fname: NMLParamValue
+        out_dir: Union[str, None],
+        out_fn: Union[str, None],
+        sim_name: str = "simulation",
     ):
-        self.sim_dir = sim_dir
-        if not isinstance(out_dir, str):
-            self.out_dir = "output"
+        out_dir = "output" if out_dir is None else out_dir
+        out_fn = "output" if out_fn is None else out_fn
+        self.sim_name = sim_name
+        self.outputs_path = os.path.join(sim_dir, out_dir)
+        files = os.listdir(self.outputs_path)
+
+        self.csv_files = {}
+        for file in files:
+            if file.endswith(".csv"):
+                self.csv_files[os.path.splitext(file)[0]] = os.path.join(
+                    self.outputs_path, file
+                )
+        if not out_fn.endswith(".nc"):
+            out_fn = out_fn + ".nc"
+        if out_fn in files:
+            self.nc_path = os.path.join(self.outputs_path, out_fn)
         else:
-            self.out_dir = out_dir
-        if not isinstance(out_fn, str):
-            self.out_fn = "output"
-        else:
-            self.out_fn = out_fn
-        if not isinstance(csv_lake_fname, str):
-            self.csv_lake_fname = "lake"
-        else:
-            self.csv_lake_fname = csv_lake_fname
-        if not isinstance(csv_point_fname, str):
-            self.csv_point_fname = "WQ_"
-        else:
-            self.csv_point_fname = csv_point_fname
+            self.nc_path = None
+
+    def get_csv_basenames(self) -> List[str]:
+        return sorted(list(self.csv_files.keys()))
+
+    def get_csv_path(self, basename: str) -> str:
+        return self.csv_files[basename]
     
-    def get_lake_csv_path(self) -> str:
-        lake_path = os.path.join(
-            self.sim_dir, self.out_dir, self.csv_lake_fname
-        )
-        if not lake_path.endswith(".csv"):
-            lake_path = lake_path + ".csv"
-        if os.path.isfile(lake_path):
-            return lake_path
-        else:
-            raise FileNotFoundError(
-                f"The file path {lake_path} was not found."
-            )
-    
-    def get_lake_pd(self) -> pd.DataFrame:
-        lake_pd = pd.read_csv(self.get_lake_csv_path())
-        return lake_pd
-    
-    def get_point_csv_paths(self) -> List[str]:
-        files = os.listdir(os.path.join(self.sim_dir, self.out_dir))
-        csv_files = [
-            f for f in files if f.startswith(self.csv_point_fname) and f.endswith(".csv")
-        ]
-        return [os.path.join(self.sim_dir, self.out_dir, f) for f in csv_files]
-    
-    def get_point_pds(self) -> Dict[str, pd.DataFrame]:
-        paths = self.get_point_csv_paths()
-        pd_dict = {}
-        for path in paths:
-            basename = os.path.basename(path)
-            pd_dict[basename] = pd.read_csv(path)
-        return pd_dict
+    def get_csv_pd(self, basename: str) -> pd.DataFrame:
+        return pd.read_csv(self.get_csv_path(basename))
     
     def get_netcdf_path(self) -> str:
-        output_path = os.path.join(
-            self.sim_dir, self.out_dir, self.out_fn
-        )
-        if not output_path.endswith(".nc"):
-            output_path = output_path + ".nc"
-        if os.path.isfile(output_path):
-            return output_path
-        else:
+        if self.nc_path is None:
             raise FileNotFoundError(
-                f"The file path {output_path} was not found."
+                f"No output netCDF file found in {self.outputs_path}"
             )
-
+        return self.nc_path
+    
     def get_netcdf(self) -> netCDF4.Dataset:
         output_nc = netCDF4.Dataset(
             self.get_netcdf_path(), "r", format="NETCDF4"
         )
         return output_nc
-
     
+    def zip_csv_outputs(self):
+        """Creates a zipfile of csv GLM outputs (csv outputs only).
 
+        Use this if you do not need a netcdf file of GLM outputs.
 
+        Returns
+        -------
+        str     Path to zipfile of GLM outputs.
+        """
+        zip_name = f"{self.sim_name}_csv_outputs.zip"
+        with zipfile.ZipFile(
+            os.path.join(self.outputs_path, zip_name), "w"
+        ) as z:
+            for csv_path in self.csv_files.values():
+                if os.path.exists(csv_path):
+                    z.write(csv_path)
 
+        return os.path.join(self.outputs_path, zip_name)
