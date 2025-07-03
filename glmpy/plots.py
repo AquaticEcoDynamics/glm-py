@@ -4,7 +4,7 @@ import pandas as pd
 import numpy.ma as ma
 import matplotlib.dates as mdates
 
-from typing import Union, List
+from typing import List
 from matplotlib.axes import Axes
 from matplotlib.lines import Line2D
 from matplotlib.image import AxesImage
@@ -20,30 +20,29 @@ class WQPlotter:
 
     Attributes
     ----------
-    wq_csv_path : Union[str, None]
-        Path to the WQ CSV file. Default is None.
+    wq_csv_path : str
+        Path to the WQ CSV file
     wq_pd : DataFrame
-        Pandas DataFrame of the WQ CSV. When wq_csv_path is None, wq_pd 
-        is an empty DataFrame.
+        Pandas DataFrame of the WQ CSV.
     """
 
-    def __init__(self, wq_csv_path: Union[str, None]=None):
+    def __init__(self, wq_csv_path: str):
         """
         Initialise WQPlotter with the WQ CSV file path.
 
         Parameters
         ----------
-        wq_csv_path : Union[str, None]
-            Path to the WQ CSV file. Default is None.
+        wq_csv_path : str
+            Path to the WQ CSV file. 
         """
         self.wq_csv_path = wq_csv_path
     
     @property
-    def wq_csv_path(self):
+    def wq_csv_path(self) -> str:
         return self._wq_csv_path
     
     @wq_csv_path.setter
-    def wq_csv_path(self, wq_csv_path: Union[str, None]):
+    def wq_csv_path(self, wq_csv_path: str):
         """
         Path to the WQ CSV file.
         
@@ -51,23 +50,12 @@ class WQPlotter:
         attribute.
         """
         self._wq_csv_path = wq_csv_path
-        if self._wq_csv_path is not None:
-            self.wq_pd = pd.read_csv(self._wq_csv_path)
-            time = list(self.wq_pd["time"])
-            time = [t.split(" ")[0] for t in time]
-            self.wq_pd["time"] = time
-        else:
-            self.wq_pd = pd.DataFrame()
+        self.wq_pd = pd.read_csv(self.wq_csv_path)
+        time = list(self.wq_pd["time"])
+        time = [t.split(" ")[0] for t in time]
+        self.wq_pd["time"] = time
     
-    def _validate_pd(self):
-        """Validates wq_pd"""
-        if self.wq_pd.empty:
-            raise ValueError(
-                "The wq_pd dataframe is empty. Have you set the "
-                "wq_csv_path attribute to None?"
-            )
-    
-    def get_vars(self) -> List[str]:
+    def get_var_names(self) -> List[str]:
         """
         Returns a list of plottable with `plot_var()`.
 
@@ -76,13 +64,12 @@ class WQPlotter:
         vars : List[str]
             List of variable names.
         """
-        self._validate_pd()
-        vars = list(self.wq_pd.columns.values)
-        if "time" in vars:
-            vars.remove("time")
-        return vars
+        var_names = list(self.wq_pd.columns.values)
+        if "time" in var_names:
+            var_names.remove("time")
+        return var_names
     
-    def plot_var(self, ax: Axes, var: str, param_dict: dict = {}):
+    def plot_var(self, ax: Axes, var_name: str, param_dict: dict = {}):
         """
         Line plot of a WQ CSV variable.
 
@@ -94,7 +81,7 @@ class WQPlotter:
         ----------
         ax : Axes
             The matplotlib Axes object to plot on.
-        var: str
+        var_name: str
             The name of the variable to plot.
         param_dict : dict
             Dictionary of keyword arguments to customise the `plot`
@@ -105,18 +92,18 @@ class WQPlotter:
         out : List[Line2D]
             A list of lines representing the plotted data.
         """
-        self._validate_pd()
-        if var not in self.get_vars():
+        if var_name not in self.get_var_names():
             raise ValueError(
-                f"{var} is not a valid variable. See `get_vars()`."
+                f"{var_name} is not a valid variable. See "
+                "`get_var_names()`."
             )
         out = ax.plot(
             mdates.date2num(self.wq_pd["time"]),
-            self.wq_pd[var],
+            self.wq_pd[var_name],
             **param_dict,
         )
         ax.xaxis.set_major_formatter(mdates.DateFormatter("%d/%m/%y"))
-        ax.set_ylabel(var)
+        ax.set_ylabel(var_name)
         ax.set_xlabel("Date")
 
         return out
@@ -131,55 +118,43 @@ class LakePlotter:
     
     Attributes
     ----------
-    lake_csv_path : Union[str, None]
-        Path to the lake CSV file. Default is None.
+    lake_csv_path : str
+        Path to the lake CSV file
     lake_pd : DataFrame
-        Pandas DataFrame of the lake CSV. When lake_csv_path is None,  
-        lake_pd is an empty DataFrame.
+        Pandas DataFrame of the lake CSV.
     """
 
-    def __init__(self, lake_csv_path: Union[str, None]=None):
+    def __init__(self, lake_csv_path: str):
         """Initialise LakePlotter with the lake CSV file path.
 
         Parameters
         ----------
-        lake_csv_path : Union[str, None]
-            Path to the lake CSV file. Default is None.
+        lake_csv_path : str
+            Path to the lake CSV file.
         """
         self.lake_csv_path = lake_csv_path
         self._date_formatter = mdates.DateFormatter("%d/%m/%y")
     
     @property
-    def lake_csv_path(self):
+    def lake_csv_path(self) -> str:
         return self._lake_csv_path
     
     @lake_csv_path.setter
-    def lake_csv_path(self, lake_csv_path: Union[str, None]):
+    def lake_csv_path(self, lake_csv_path: str):
         """
         Path to the lake CSV file.
         
-        Setting lake_csv_path will read the CSV and update the lake_pd
-        attribute.
+        Setting lake_csv_path will read the CSV and update the 
+        `lake_pd` attribute.
         """
         self._lake_csv_path = lake_csv_path
-        if self._lake_csv_path is not None:
-            self.lake_pd = pd.read_csv(self._lake_csv_path)
-            time = list(self.lake_pd["time"])
-            time = [
-                datetime.strptime(t.split(" ")[0], "%Y-%m-%d") 
-                + timedelta(days=1) for t in time
-            ]
-            self.lake_pd["time"] = time
-        else:
-            self.lake_pd = pd.DataFrame()
-
-    def _validate_pd(self):
-        """Validates lake_pd"""
-        if self.lake_pd.empty:
-            raise ValueError(
-                "The lake_pd dataframe is empty. Have you set the "
-                "lake_csv_path attribute to None?"
-            )
+        self.lake_pd = pd.read_csv(self.lake_csv_path)
+        time = list(self.lake_pd["time"])
+        time = [
+            datetime.strptime(t.split(" ")[0], "%Y-%m-%d") 
+            + timedelta(days=1) for t in time
+        ]
+        self.lake_pd["time"] = time
     
     def _set_param_dict_defaults(
         self, param_dict: dict, defaults_dict: dict
@@ -211,7 +186,6 @@ class LakePlotter:
         out : List[Line2D]
             A list of lines representing the plotted data.
         """
-        self._validate_pd()
         self._set_param_dict_defaults(param_dict, {"color": "#1f77b4"})
         out = ax.plot(
             mdates.date2num(self.lake_pd["time"]),
@@ -246,7 +220,6 @@ class LakePlotter:
         out : List[Line2D]
             A list of lines representing the plotted data.
         """
-        self._validate_pd()
         self._set_param_dict_defaults(param_dict, {"color": "#1f77b4"})
         out = ax.plot(
             mdates.date2num(self.lake_pd["time"]),
@@ -280,7 +253,6 @@ class LakePlotter:
         out : List[Line2D]
             A list of lines representing the plotted data.
         """
-        self._validate_pd()
         self._set_param_dict_defaults(param_dict, {"color": "#1f77b4"})
         out = ax.plot(
             mdates.date2num(self.lake_pd["time"]),
@@ -314,7 +286,6 @@ class LakePlotter:
         out : List[Line2D]
             A list of lines representing the plotted data.
         """
-        self._validate_pd()
         self._set_param_dict_defaults(param_dict, {"color": "#1f77b4"})
         self.lake_pd["water_balance"] = (
             self.lake_pd["Rain"]
@@ -386,7 +357,6 @@ class LakePlotter:
         out : List[Line2D]
             A list of lines representing the plotted data.
         """
-        self._validate_pd()
         param_dicts = [
             inflow_param_dict,
             outflow_param_dict,
@@ -475,7 +445,6 @@ class LakePlotter:
         list of Line2D
             A list of lines representing the plotted data.
         """
-        self._validate_pd()
         param_dicts = [
             longwave_param_dict,
             shortwave_param_dict,
@@ -531,7 +500,6 @@ class LakePlotter:
         out : List[Line2D]
             A list of lines representing the plotted data.
         """
-        self._validate_pd()
         self._set_param_dict_defaults(param_dict, {"color": "#1f77b4"})
         out = ax.plot(
             mdates.date2num(self.lake_pd["time"]),
@@ -571,7 +539,6 @@ class LakePlotter:
         out : List[Line2D]
             A list of lines representing the plotted data.
         """
-        self._validate_pd()
         self._set_param_dict_defaults(
             min_temp_param_dict, {"color": "#1f77b4", "label": "Minimum"}
         )
@@ -603,56 +570,45 @@ class NCPlotter:
         self,
         glm_nc_path: str,
         resolution: float = 0.1,
-        remove_ice: bool = False,
-        remove_white_ice: bool = False,
-        remove_snow: bool = False,
+        ice_height: bool = False,
+        white_ice_height: bool = False,
+        snow_height: bool = False,
     ):
         self.resolution = resolution
-        self.remove_ice = remove_ice
-        self.remove_white_ice = remove_white_ice
-        self.remove_snow = remove_snow
-        self.glm_nc = glm_nc_path
+        self.ice_height = ice_height
+        self.white_ice_height = white_ice_height
+        self.snow_height = snow_height
+        self.glm_nc_path = glm_nc_path
 
     @property
-    def glm_nc(self):
-        return self._glm_nc
+    def glm_nc_path(self):
+        return self._glm_nc_path
     
-    @glm_nc.setter
-    def glm_nc(self, glm_nc_path):
-        self._glm_nc = glm_nc_path
-        if self._glm_nc is not None:
-            nc = netCDF4.Dataset(self._glm_nc, "r", format="NETCDF4")
-            self._num_layers = nc.variables["NS"][:]
-            self._layer_heights = nc.variables["z"][:]
-            self._time = nc.variables["time"][:].data
-            self._start_datetime = nc.start_time
-            nc.close()
-            self._surface_height = self._get_surface_height()
-            if self.remove_ice or self.remove_white_ice or self.remove_snow:
-                sum = self._sum_ice_snow(
-                    ice=self.remove_ice, 
-                    white_ice=self.remove_white_ice, 
-                    snow=self.remove_snow
-                )
-                self._surface_height = self._surface_height - sum
-            self._max_depth = max(self._surface_height)
-            #self._depth_range = np.arange(0, self._max_depth, self.resolution)
-
-    def _glm_nc_checks(self):
-        if self.glm_nc is None:
-            raise ValueError(
-                "No NetCDF data. Have you set the glm_nc attribute to None?"
-            )
-
+    @glm_nc_path.setter
+    def glm_nc_path(self, glm_nc_path: str):
+        """
+        Path to the GLM NetCDF file.
+        """
+        self._glm_nc_path = glm_nc_path
+        nc = netCDF4.Dataset(self.glm_nc_path, "r", format="NETCDF4")
+        self._num_layers = nc.variables["NS"][:]
+        self._layer_heights = nc.variables["z"][:]
+        self._time = nc.variables["time"][:].data
+        self._start_datetime = nc.start_time
+        self._surface_height = self._get_surface_height()
+        self._max_depth = max(self._surface_height)
+        nc.close()
 
     def _set_default_plot_params(
         self, param_dict: dict, defaults_dict: dict
     ):
-        for key, value in defaults_dict.items():
-            if key not in param_dict:
-                param_dict[key] = value
+        """Sets default `param_dict` kwargs for plotting."""
+        for k, v in defaults_dict.items():
+            if k not in param_dict:
+                param_dict[k] = v
 
-    def _get_time(self):
+    def _get_plt_date_nums(self) -> np.ndarray:
+        """Returns an array of matplotlib dates"""
         start_datetime = datetime.strptime(
             self._start_datetime, "%Y-%m-%d %H:%M:%S"
         )
@@ -661,7 +617,7 @@ class NCPlotter:
 
         return x_dates
 
-    def _get_surface_height(self):
+    def _get_surface_height(self) -> ma.MaskedArray:
         """
         Returns a 1D array of the lake surface height at each timestep.
         """
@@ -672,27 +628,31 @@ class NCPlotter:
                 i, self._num_layers[i] - 1, 0, 0
             ]
 
-        return surface_height
-
-    def _sum_ice_snow(self, ice: bool, white_ice: bool, snow: bool):
-        nc = netCDF4.Dataset(self._glm_nc, "r", format="NETCDF4")
-        time = nc.variables["time"][:].data
-        sum = ma.zeros(shape=time.shape)
-        if ice:
+        sum = ma.zeros(shape=self._time.shape)
+        nc = netCDF4.Dataset(self._glm_nc_path, "r", format="NETCDF4")
+        if self.ice_height:
             ice_height = nc.variables["blue_ice_thickness"][:]
             sum += ice_height
-        if white_ice:
+
+        if self.white_ice_height:
             white_ice_height = nc.variables["white_ice_thickness"][:]
             sum += white_ice_height
-        if snow:
+        if self.snow_height:
             snow_height = nc.variables["snow_thickness"][:]
             sum += snow_height
         nc.close()
-        return sum
+        surface_height = surface_height - sum
+
+        return surface_height
 
     def _reproj_depth(
-        self, layer_heights, var, plot_depths, reference, surface_height
-    ):
+        self, 
+        var: ma.MaskedArray, 
+        reference: str, 
+        layer_heights: ma.MaskedArray, 
+        surface_height: ma.MaskedArray,
+        plot_depths: np.ndarray, 
+    ) -> np.ndarray:
         mid_layer_heights = ma.concatenate(
             [
                 [layer_heights[0] / 2],
@@ -727,15 +687,9 @@ class NCPlotter:
 
         return reproj_var
 
-    def _zone_var(self, var):
-        nc = netCDF4.Dataset(self._glm_nc, "r", format="NETCDF4")
-        var = nc.variables[var][:]
-        nc.close()
-        return var
-
-    def _get_reproj_var(self, var, reference):
-        nc = netCDF4.Dataset(self._glm_nc, "r", format="NETCDF4")
-        var = nc.variables[var][:]
+    def _get_reproj_var(self, var_name: str, reference: str) -> np.ndarray:
+        nc = netCDF4.Dataset(self._glm_nc_path, "r", format="NETCDF4")
+        var = nc.variables[var_name][:]
         nc.close()
 
         depth_range = np.arange(0, self._max_depth, self.resolution)
@@ -756,11 +710,11 @@ class NCPlotter:
                 plot_depth_range = self._surface_height[i] - depth_range
 
             reproj_var[i, :] = self._reproj_depth(
-                layer_heights=layer_heights[i, :, 0, 0],
                 var=var[i, :],
-                plot_depths=plot_depth_range,
                 reference=reference,
+                layer_heights=layer_heights[i, :, 0, 0],
                 surface_height=self._surface_height[i],
+                plot_depths=plot_depth_range,
             )
 
         if reference == "bottom":
@@ -771,36 +725,51 @@ class NCPlotter:
 
         return reproj_var
 
-    def plot_var_profile(
+    def plot_profile(
         self,
         ax: Axes,
-        var: str,
+        var_name: str,
         reference: str = "bottom",
         param_dict: dict = {},
     ) -> AxesImage:
-        """Plot the profile timeseries of a variable on a matplotlib Axes.
+        """
+        Raster plot of a variable profile.
+        
+        Plots a variable for all depths and timesteps to a matplotlib
+        Axes object.
 
         Parameters
         ----------
-        ax : matplotlib.axes.Axes
-            The Axes to plot on.
-        var : str
-            Name of the variable to plot. To list valid variables, see the
-            `get_profile_vars()` method.
+        ax : Axes
+            The matplotlib Axes object to plot on.
+        var_name : str
+            Name of the variable to plot. To list valid variables, see 
+            the `get_profile_var_names()` method.
         reference : str, optional
-            Reference frame for depth, either "bottom" or "surface". Default is
-            "bottom".
+            Reference frame for depth, either `'bottom'` or 
+            `'surface'`. Default is "bottom".
         param_dict : dict, optional
-            Parameters passed to matplotlib.axes.Axes.imshow. Default is {}.
+            Dictionary of keyword arguments to customise the `imshow`
+            method. Default is `{}`.
 
         Returns
         -------
-        matplotlib.image.AxesImage
-            The plotted image
+        out : AxesImage
+            The plotted image object.
         """
-        self._glm_nc_checks()
-        reproj_var = self._get_reproj_var(var=var, reference=reference)
-        x_dates = self._get_time()
+        if reference != "surface" and reference != "bottom":
+            raise ValueError(
+                "reference must be either 'surface' or 'bottom'. Got "
+                f"'{reference}'."
+            )
+        if var_name not in self.get_profile_var_names():
+            raise ValueError(
+                f"{var_name} is not a valid variable name. Valid variables "
+                "are those returned by get_profile_var_names()."
+            )
+
+        reproj_var = self._get_reproj_var(var_name, reference)
+        x_dates = self._get_plt_date_nums()
         self._set_default_plot_params(
             param_dict,
             {
@@ -821,45 +790,49 @@ class NCPlotter:
         param_dict.clear()
         return out
     
-    def plot_var_zone(self, ax, var: str, zone: int, param_dict: dict = {}):
-        """Line plot of a variable for a specified sediment zone.
+    def plot_zone(
+            self, ax, var_name: str, zone: int, param_dict: dict = {}
+        ):
+        """
+        Line plot of a variable for a specified sediment zone.
 
-        Variables compatiable with `plot_var_zone()` are those returned by 
-        `get_zone_vars()`. The number of valid zones equals `n_zones` in the
-        `sediment` block of the `glm` nml.
+        Variables compatiable with `plot_zone()` are those returned by 
+        `get_zone_var_names()`. The number of valid zones equals 
+        `n_zones` in the `sediment` block of the `glm` nml.
 
         Parameters
         ----------
         ax : matplotlib.axes.Axes
             The Axes to plot on.
-        var : str
-            Name of the variable to plot. To list valid variables, see the
-            `get_zone_vars()` method.
+        var_name : str
+            Name of the variable to plot. To list valid variables, see 
+            the `get_zone_var_names()` method.
         zone : int, optional
             Zone number. Must be 0 < zone <= n_zones.
         param_dict : dict, optional
-            Parameters passed to matplotlib.axes.Axes.plot. Default is {}.
+            Parameters passed to matplotlib.axes.Axes.plot. Default is 
+            `{}`.
 
         Returns
         -------
-        matplotlib.image.AxesImage
-            The plotted image
+        out : AxesImage
+            The plotted image object.
         """
-        self._glm_nc_checks()
-        if var not in self.get_zone_vars():
+
+        if var_name not in self.get_zone_var_names():
             raise ValueError(
-                f"{var} is not compatible for plotting with plot_var_zone. "
-                "Compatible variables are those returned by get_zone_vars()."
+                f"{var_name} is not a valid variable name. Valid variables "
+                "are those returned by get_zone_var_names()."
             )
-        nc = netCDF4.Dataset(self._glm_nc, "r", format="NETCDF4")
-        data = nc.variables[var][:]
+        nc = netCDF4.Dataset(self._glm_nc_path, "r", format="NETCDF4")
+        data = nc.variables[var_name][:]
         nc.close()
         n_zones = data.shape[1]
         if zone < 1 or zone > n_zones:
             raise ValueError(
                 f"Invalid zone number. Zone must be 0 < zone <= {n_zones}"
             )
-        x_dates = self._get_time()
+        x_dates = self._get_plt_date_nums()
         out = ax.plot(x_dates, data[:, zone - 1, 0, 0], **param_dict)
         locator = mdates.AutoDateLocator()
         date_formatter = mdates.DateFormatter("%d/%m/%y")
@@ -868,85 +841,92 @@ class NCPlotter:
         ax.xaxis.set_major_formatter(date_formatter)
         ax.set_xlabel("Date")
         ax.yaxis.set_label_text(
-            f"{self.get_long_name(var)} ({self.get_units(var)})"
+            f"{self.get_long_name(var_name)} ({self.get_units(var_name)})"
         )
         return out
 
-
-    def get_profile_vars(self) -> List[str]:
-        """Get all available variables that can be plotted with
-        `plot_var_profile()`.
+    def get_profile_var_names(self) -> List[str]:
+        """
+        Gets a list of variable names plottable with `plot_profile()`.
 
         Returns
         -------
-        list of str
-            Names of plottable variables in the NetCDF file
+        var_names : List[str]
+            Names of plottable variables.
         """
-        self._glm_nc_checks()
         var_shape = self._layer_heights.shape
-        nc = netCDF4.Dataset(self._glm_nc, "r", format="NETCDF4")
-        vars = []
-        for key, value in nc.variables.items():
+        nc = netCDF4.Dataset(self._glm_nc_path, "r", format="NETCDF4")
+        var_names = []
+        for key in nc.variables.keys():
             if nc.variables[key].shape == var_shape:
-                vars.append(key)
+                var_names.append(key)
         nc.close()
-        return vars
+        return var_names
     
-    def get_zone_vars(self) -> List[str]:
-        self._glm_nc_checks()
-        nc = netCDF4.Dataset(self.glm_nc, "r", format="NETCDF4")
-        vars = []
+    def get_zone_var_names(self) -> List[str]:
+        """
+        Gets a list of variable names plottable with `plot_zone()`.
+
+        Returns
+        -------
+        var_names : List[str]
+            Names of plottable variables.
+        """
+        nc = netCDF4.Dataset(self.glm_nc_path, "r", format="NETCDF4")
+        var_names = []
         for key in nc.variables.keys():
             if key.endswith("_Z"):
-                vars.append(key)
+                var_names.append(key)
         nc.close()
-        return vars
+        return var_names
 
-    def get_units(self, var: str) -> str:
-        """Get the units of a variable.
+    def get_units(self, var_name: str) -> str:
+        """
+        Get the units of a variable.
 
         Parameters
         ----------
-        var : str
+        var_name : str
             Name of the variable.
 
         Returns
         -------
-        str
+        unit : str
             Units of the variable.
         """
-        self._glm_nc_checks()
-        nc = netCDF4.Dataset(self._glm_nc, "r", format="NETCDF4")
-        units = nc.variables[var].units
+        nc = netCDF4.Dataset(self.glm_nc_path, "r", format="NETCDF4")
+        units = nc.variables[var_name].units
         nc.close()
         return units
 
-    def get_long_name(self, var: str) -> str:
-        """Get the long name description of a variable.
+    def get_long_name(self, var_name: str) -> str:
+        """
+        Get the long name description of a variable.
 
         Parameters
         ----------
-        var : str
+        var_name : str
             Name of the variable.
 
         Returns
         -------
-        str
+        long_name : str
             Long name description of the variable.
         """
-        self._glm_nc_checks()
-        nc = netCDF4.Dataset(self._glm_nc, "r", format="NETCDF4")
-        long_name = nc.variables[var].long_name
+        nc = netCDF4.Dataset(self.glm_nc_path, "r", format="NETCDF4")
+        long_name = nc.variables[var_name].long_name
         nc.close()
         return long_name
 
     def get_start_datetime(self) -> datetime:
-        """Get the simulation start time.
+        """
+        Get the simulation start time.
 
         Returns
         -------
-        datetime.datetime
+        start: datetime
             Start time of the GLM simulation.
         """
-        self._glm_nc_checks()
-        return datetime.strptime(self._start_datetime, "%Y-%m-%d %H:%M:%S")
+        start = datetime.strptime(self._start_datetime, "%Y-%m-%d %H:%M:%S")
+        return start
+    
