@@ -506,7 +506,7 @@ class GLMOutputs:
         )
         return output_nc
     
-    def zip_csv_outputs(self):
+    def zip_csv_outputs(self) -> str:
         """Creates a zipfile of csv GLM outputs (csv outputs only).
 
         Use this if you do not need a netcdf file of GLM outputs.

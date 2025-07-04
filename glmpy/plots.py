@@ -33,19 +33,19 @@ class WQPlotter:
         Parameters
         ----------
         wq_csv_path : str
-            Path to the WQ CSV file. 
+            Path to the WQ CSV file.
         """
         self.wq_csv_path = wq_csv_path
-    
+
     @property
     def wq_csv_path(self) -> str:
         return self._wq_csv_path
-    
+
     @wq_csv_path.setter
     def wq_csv_path(self, wq_csv_path: str):
         """
         Path to the WQ CSV file.
-        
+
         Setting wq_csv_path will read the CSV and update the wq_pd
         attribute.
         """
@@ -54,7 +54,7 @@ class WQPlotter:
         time = list(self.wq_pd["time"])
         time = [t.split(" ")[0] for t in time]
         self.wq_pd["time"] = time
-    
+
     def get_var_names(self) -> List[str]:
         """
         Returns a list of plottable with `plot_var()`.
@@ -68,13 +68,13 @@ class WQPlotter:
         if "time" in var_names:
             var_names.remove("time")
         return var_names
-    
+
     def plot_var(self, ax: Axes, var_name: str, param_dict: dict = {}):
         """
         Line plot of a WQ CSV variable.
 
         Plots a valid variable from `get_vars()` to a matplotlib Axes
-        object. An optional dictionary of keyword arguments can be 
+        object. An optional dictionary of keyword arguments can be
         provided to customise matplotlib's `plot()` method.
 
         Parameters
@@ -86,7 +86,7 @@ class WQPlotter:
         param_dict : dict
             Dictionary of keyword arguments to customise the `plot`
             method. Default is `{}`.
-        
+
         Returns
         -------
         out : List[Line2D]
@@ -107,15 +107,15 @@ class WQPlotter:
         ax.set_xlabel("Date")
 
         return out
-    
-    
+
+
 class LakePlotter:
     """
     Plot the lake CSV output.
 
     Class for reading the lake CSV file and creating common timseries
     plots on matplotlib Axes objects.
-    
+
     Attributes
     ----------
     lake_csv_path : str
@@ -134,39 +134,35 @@ class LakePlotter:
         """
         self.lake_csv_path = lake_csv_path
         self._date_formatter = mdates.DateFormatter("%d/%m/%y")
-    
+
     @property
     def lake_csv_path(self) -> str:
         return self._lake_csv_path
-    
+
     @lake_csv_path.setter
     def lake_csv_path(self, lake_csv_path: str):
         """
         Path to the lake CSV file.
-        
-        Setting lake_csv_path will read the CSV and update the 
+
+        Setting lake_csv_path will read the CSV and update the
         `lake_pd` attribute.
         """
         self._lake_csv_path = lake_csv_path
         self.lake_pd = pd.read_csv(self.lake_csv_path)
         time = list(self.lake_pd["time"])
         time = [
-            datetime.strptime(t.split(" ")[0], "%Y-%m-%d") 
-            + timedelta(days=1) for t in time
+            datetime.strptime(t.split(" ")[0], "%Y-%m-%d") + timedelta(days=1)
+            for t in time
         ]
         self.lake_pd["time"] = time
-    
-    def _set_param_dict_defaults(
-        self, param_dict: dict, defaults_dict: dict
-    ):
+
+    def _set_param_dict_defaults(self, param_dict: dict, defaults_dict: dict):
         """Sets default `param_dict` kwargs for plotting."""
         for k, v in defaults_dict.items():
             if k not in param_dict:
                 param_dict[k] = v
-    
-    def lake_volume(
-            self, ax: Axes, param_dict: dict = {}
-        ) -> List[Line2D]:
+
+    def plot_volume(self, ax: Axes, param_dict: dict = {}) -> List[Line2D]:
         """
         Line plot of lake volume.
 
@@ -198,7 +194,7 @@ class LakePlotter:
 
         return out
 
-    def lake_level(
+    def plot_surface_height(
             self, ax: Axes, param_dict: dict = {}
         ) -> List[Line2D]:
         """
@@ -232,12 +228,12 @@ class LakePlotter:
 
         return out
 
-    def lake_surface_area(
+    def plot_surface_area(
         self, ax: Axes, param_dict: dict = {}
     ) -> List[Line2D]:
         """Line plot of lake surface area.
 
-        Plots a timeseries of lake surface area (m^2) to a matplotlib 
+        Plots a timeseries of lake surface area (m^2) to a matplotlib
         Axes object.
 
         Parameters
@@ -265,10 +261,12 @@ class LakePlotter:
 
         return out
 
-    def water_balance(self, ax: Axes, param_dict: dict = {}) -> List[Line2D]:
+    def plot_water_balance(
+            self, ax: Axes, param_dict: dict = {}
+        ) -> List[Line2D]:
         """Line plot of lake water balance.
 
-        Plots a timeseries of the net water balance (m^3/day) to a 
+        Plots a timeseries of the net water balance (m^3/day) to a
         matplotlib Axes object. Calculated by:
         `Rain + Snowfall + Local Runoff + Tot Inflow Vol + Evaporation -
         Tot Outflow Vol`.
@@ -307,8 +305,8 @@ class LakePlotter:
         ax.set_xlabel("Date")
 
         return out
-
-    def water_balance_components(
+        
+    def plot_water_balance_comps(
         self,
         ax: Axes,
         inflow_param_dict: dict = {},
@@ -322,7 +320,7 @@ class LakePlotter:
         """
         Line plot of lake water balance components.
 
-        Plots a timeseries of the following water balance components 
+        Plots a timeseries of the following water balance components
         (m^3) to a matplotlib Axes object: total inflow, total outflow,
         overflow, evaporation, rain, local runoff, and snowfall.
 
@@ -336,19 +334,19 @@ class LakePlotter:
         outflow_param_dict : dict
             Dictionary of keyword arguments to customise the `plot`
             method for `Tot Outflow Vol`. Default is `{}`.
-        overflow_vol_params : dict
+        overflow_param_dict : dict
             Dictionary of keyword arguments to customise the `plot`
             method for `Overflow Vol`. Default is `{}`.
-        evaporation_params : dict
+        evaporation_param_dict : dict
             Dictionary of keyword arguments to customise the `plot`
             method for `Evaporation`. Default is `{}`.
-        rain_params : dict
+        rain_param_dict : dict
             Dictionary of keyword arguments to customise the `plot`
             method for `Rain`. Default is `{}`.
-        local_runoff_params : dict
+        runoff_param_dict : dict
             Dictionary of keyword arguments to customise the `plot`
             method for `Local Runoff`. Default is `{}`.
-        snowfall_params : dict
+        snowfall_param_dict : dict
             Dictionary of keyword arguments to customise the `plot`
             method for `Snowfall`. Default is `{}`.
 
@@ -376,9 +374,7 @@ class LakePlotter:
             {"color": "#7f7f7f", "label": "Snowfall"},
         ]
         for i in range(len(param_dicts)):
-            self._set_param_dict_defaults(
-                param_dicts[i], default_params[i]
-            )
+            self._set_param_dict_defaults(param_dicts[i], default_params[i])
         out = []
         components = [
             ("Tot Inflow Vol", inflow_param_dict),
@@ -408,7 +404,7 @@ class LakePlotter:
         ax.set_xlabel("Date")
         return out
 
-    def heat_balance_components(
+    def plot_heat_balance_comps(
         self,
         ax,
         longwave_param_dict: dict = {},
@@ -419,7 +415,7 @@ class LakePlotter:
         """
         Line plot of lake heat balance components.
 
-        Plots a timeseries of the following heat balance components 
+        Plots a timeseries of the following heat balance components
         (W/m^2)) to a matplotlib Axes object: mean longwave radiation,
         mean shortwave radiation, mean latent heat, mean sensible heat.
 
@@ -433,10 +429,10 @@ class LakePlotter:
         shortwave_param_dict : dict
             Dictionary of keyword arguments to customise the `plot`
             method for `Daily Qsw`. Default is `{}`.
-        latent_heat_param_dict : dict    
+        latent_heat_param_dict : dict
             Dictionary of keyword arguments to customise the `plot`
             method for `Daily Qe`. Default is `{}`.
-        sensible_heat_param_dict : dict    
+        sensible_heat_param_dict : dict
             Dictionary of keyword arguments to customise the `plot`
             method for `Daily Qh`. Default is `{}`.
 
@@ -449,7 +445,7 @@ class LakePlotter:
             longwave_param_dict,
             shortwave_param_dict,
             latent_heat_param_dict,
-            sensible_heat_param_dict
+            sensible_heat_param_dict,
         ]
         default_params = [
             {"color": "#ff7f0e", "label": "Mean longwave radiation"},
@@ -458,9 +454,7 @@ class LakePlotter:
             {"color": "#2ca02c", "label": "Mean sensible heat"},
         ]
         for i in range(len(param_dicts)):
-            self._set_param_dict_defaults(
-                param_dicts[i], default_params[i]
-            )
+            self._set_param_dict_defaults(param_dicts[i], default_params[i])
         out = []
         components = [
             ("Daily Qlw", longwave_param_dict),
@@ -480,11 +474,13 @@ class LakePlotter:
         ax.set_xlabel("Date")
         return out
 
-    def surface_temp(self, ax: Axes, param_dict: dict = {}) -> List[Line2D]:
+    def plot_surface_temp(
+            self, ax: Axes, param_dict: dict = {}
+        ) -> List[Line2D]:
         """
         Line plot of lake surface temperature.
 
-        Plots a timeseries of the lake surface temperature (celsius) to 
+        Plots a timeseries of the lake surface temperature (celsius) to
         a matplotlib Axes
 
         Parameters
@@ -511,7 +507,7 @@ class LakePlotter:
         ax.set_xlabel("Date")
         return out
 
-    def lake_temp(
+    def plot_temp(
         self,
         ax: Axes,
         min_temp_param_dict: dict = {},
@@ -520,7 +516,7 @@ class LakePlotter:
         """
         Line plot of minimum and maximum lake temperature.
 
-        Plots a timeseries of the minimum and maximum lake temperature 
+        Plots a timeseries of the minimum and maximum lake temperature
         (celsius) to a matplotlib Axes object.
 
         Parameters
@@ -565,7 +561,24 @@ class LakePlotter:
 
 
 class NCPlotter:
+    """
+    Plot NetCDF outputs.
 
+    Class for plotting the GLM output NetCDF file. 
+
+    Attributes
+    ----------
+    glm_nc_path : str
+        Path to the output NetCDF file.
+    resolution : float
+        Resolution of the depth range (m). 
+    ice_height : bool
+        Include ice when calculating surface height.
+    white_ice_height : bool
+        Include white ice when calculating surface height.
+    snow_height : bool
+        Include snow when calculating surface height.
+    """
     def __init__(
         self,
         glm_nc_path: str,
@@ -574,6 +587,22 @@ class NCPlotter:
         white_ice_height: bool = False,
         snow_height: bool = False,
     ):
+        """
+        Initialise NCPlotter with the output NetCDF file path.
+
+        Parameters
+        ----------
+        glm_nc_path : str
+            Path to the output NetCDF file.
+        resolution : float
+            Resolution of the depth range (m).
+        ice_height : bool
+            Include ice when calculating surface height. 
+        white_ice_height : bool
+            Include white ice when calculating surface height. 
+        snow_height : bool
+            Include snow when calculating surface height. 
+        """
         self.resolution = resolution
         self.ice_height = ice_height
         self.white_ice_height = white_ice_height
@@ -583,7 +612,7 @@ class NCPlotter:
     @property
     def glm_nc_path(self):
         return self._glm_nc_path
-    
+
     @glm_nc_path.setter
     def glm_nc_path(self, glm_nc_path: str):
         """
@@ -599,9 +628,7 @@ class NCPlotter:
         self._max_depth = max(self._surface_height)
         nc.close()
 
-    def _set_default_plot_params(
-        self, param_dict: dict, defaults_dict: dict
-    ):
+    def _set_default_plot_params(self, param_dict: dict, defaults_dict: dict):
         """Sets default `param_dict` kwargs for plotting."""
         for k, v in defaults_dict.items():
             if k not in param_dict:
@@ -646,12 +673,12 @@ class NCPlotter:
         return surface_height
 
     def _reproj_depth(
-        self, 
-        var: ma.MaskedArray, 
-        reference: str, 
-        layer_heights: ma.MaskedArray, 
+        self,
+        var: ma.MaskedArray,
+        reference: str,
+        layer_heights: ma.MaskedArray,
         surface_height: ma.MaskedArray,
-        plot_depths: np.ndarray, 
+        plot_depths: np.ndarray,
     ) -> np.ndarray:
         mid_layer_heights = ma.concatenate(
             [
@@ -734,7 +761,7 @@ class NCPlotter:
     ) -> AxesImage:
         """
         Raster plot of a variable profile.
-        
+
         Plots a variable for all depths and timesteps to a matplotlib
         Axes object.
 
@@ -743,10 +770,10 @@ class NCPlotter:
         ax : Axes
             The matplotlib Axes object to plot on.
         var_name : str
-            Name of the variable to plot. To list valid variables, see 
+            Name of the variable to plot. To list valid variables, see
             the `get_profile_var_names()` method.
         reference : str, optional
-            Reference frame for depth, either `'bottom'` or 
+            Reference frame for depth, either `'bottom'` or
             `'surface'`. Default is "bottom".
         param_dict : dict, optional
             Dictionary of keyword arguments to customise the `imshow`
@@ -789,15 +816,13 @@ class NCPlotter:
         ax.set_xlabel("Date")
         param_dict.clear()
         return out
-    
-    def plot_zone(
-            self, ax, var_name: str, zone: int, param_dict: dict = {}
-        ):
+
+    def plot_zone(self, ax, var_name: str, zone: int, param_dict: dict = {}):
         """
         Line plot of a variable for a specified sediment zone.
 
-        Variables compatiable with `plot_zone()` are those returned by 
-        `get_zone_var_names()`. The number of valid zones equals 
+        Variables compatiable with `plot_zone()` are those returned by
+        `get_zone_var_names()`. The number of valid zones equals
         `n_zones` in the `sediment` block of the `glm` nml.
 
         Parameters
@@ -805,12 +830,12 @@ class NCPlotter:
         ax : matplotlib.axes.Axes
             The Axes to plot on.
         var_name : str
-            Name of the variable to plot. To list valid variables, see 
+            Name of the variable to plot. To list valid variables, see
             the `get_zone_var_names()` method.
         zone : int, optional
             Zone number. Must be 0 < zone <= n_zones.
         param_dict : dict, optional
-            Parameters passed to matplotlib.axes.Axes.plot. Default is 
+            Parameters passed to matplotlib.axes.Axes.plot. Default is
             `{}`.
 
         Returns
@@ -862,7 +887,7 @@ class NCPlotter:
                 var_names.append(key)
         nc.close()
         return var_names
-    
+
     def get_zone_var_names(self) -> List[str]:
         """
         Gets a list of variable names plottable with `plot_zone()`.
@@ -929,4 +954,3 @@ class NCPlotter:
         """
         start = datetime.strptime(self._start_datetime, "%Y-%m-%d %H:%M:%S")
         return start
-    

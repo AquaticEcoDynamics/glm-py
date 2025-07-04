@@ -1,1 +1,0 @@
-::: glmpy.example_sims.sparkling

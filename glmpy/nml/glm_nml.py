@@ -679,7 +679,11 @@ class OutflowBlock(NMLBlock):
             ),
             NMLParam("flt_off_sw", bool, flt_off_sw, is_list=True),
             NMLParam(
-                "outlet_type", int, outlet_type, val_switch=[1, 2, 3, 4, 5]
+                "outlet_type", 
+                int, 
+                outlet_type, 
+                val_switch=[1, 2, 3, 4, 5], 
+                is_list=True
             ),
             NMLParam("outl_elvs", float, outl_elvs, "m", is_list=True),
             NMLParam(

@@ -13,7 +13,7 @@ class ModelsBlock(NMLBlock):
     ):
         """ """
         super().__init__()
-        self.params["models"] = NMLParam("models", str, models, is_list=True)
+        self.init_params(NMLParam("models", str, models, is_list=True))
         self.strict = True
 
     def validate(self):

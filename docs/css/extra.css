@@ -5,13 +5,15 @@
     --md-accent-fg-color: #007092;
 }
 
-/* .md-header__button.md-logo {
-    margin: 0;
-    padding: 0;
+.md-header__button.md-logo {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0.5;
+    padding-bottom: 0.5;
 }
 
 .md-header__button.md-logo img,
 .md-header__button.md-logo svg {
-    height: 2.4rem;
-    width: 2.4rem;
-} */
+    height: 70%;
+    width: 70%;
+}

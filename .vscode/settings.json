@@ -4,7 +4,7 @@
     "python.linting.pylintEnabled": false,
     "python.linting.enabled": true,
     "editor.rulers": [
-        79
+        72, 79
     ],
     "editor.formatOnSave": true,
     "python.formatting.provider": "black",
