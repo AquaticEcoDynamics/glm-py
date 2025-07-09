@@ -22,6 +22,12 @@ from glmpy.nml.nml import NML, NMLDict, NMLBlock, NMLParamValue
 GLM_VERSION = "3.3.3"
 
 def glmpy_glm_path() -> Union[str, None]:
+    """
+    glm-py GLM binary path.
+
+    Returns the path to the GLM binary included with the glm-py built
+    distribution. Returns `Non` if the binary was not found.
+    """
     base_path = os.path.dirname(os.path.abspath(__file__))
     if os.name == "nt":
         exe_name = "glm.exe"
@@ -41,6 +47,28 @@ def run_glm(
     time_sim: bool = False,
     glm_path: Union[str, None] = None,
 ) -> None:
+    """
+    Run GLM.
+
+    Runs the GLM binary by providing the path to the GLM NML file.
+
+    Parameters
+    ----------
+    glm_nml_path : str
+        Path to the GLM NML file.
+    sim_name : str
+        Name of the simulation.
+    write_log : bool
+        Write a log file as GLM runs.
+    quiet : bool
+        Suppress the GLM terminal output.
+    time_sim : bool
+        Prints `"Starting {sim_name}"` and 
+        `"Finished {sim_name} in {total_duration}"`
+    glm_path : Union[str, None]
+        Path to the GLM binary. If `None`, attempts to use the GLM 
+        binary included in glm-py's built distribution. 
+    """
     if glm_path is None:
         glm_path = glmpy_glm_path()
         if glm_path is None:

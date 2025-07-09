@@ -18,6 +18,32 @@ NMLParamValue: TypeAlias = Union[
 T_NML = TypeVar('T_NML', bound='NML')
          
 class NMLParam:
+    """
+    NML Parameter.
+
+    Class for representing an individual parameter in a NML file. 
+    Stores the parameter name, value, type, units, and value validation 
+    logic.
+
+    Attributes
+    ----------
+    name : str
+        The parameter name.
+    type : Any
+        Expected data type of the parameter value. For list parameters,
+        `type` is the type of the list elements.
+    value : Any
+        The parameter value.
+    units : Union[str, None]
+        The parameter units. If the parameter is unitless, `units` is 
+        `None`.
+    is_list : bool
+        Whether the parameter value is a list of elements.
+    is_bcs_fl : bool
+        Whether the parameter value represents a bcs file path.
+    is_dbase_fl : bool
+        Whether the parameter value represents a dbase file path.
+    """
     def __init__(
         self,
         name: str,
@@ -35,6 +61,49 @@ class NMLParam:
         val_datetime: Union[None, List[str]] = None,
         val_type: bool = True
     ):
+        """
+        Initialise a new NML parameter.
+
+        Parameters
+        ----------
+        name : str
+            The parameter name.
+        type : Any
+            Expected data type of the parameter value. For list 
+            parameters, `type` is the type of the list elements.
+        value : Any
+            The parameter value.
+        units : Union[str, None]
+            The parameter units. If the parameter is unitless, `units` 
+            is `None`.
+        is_list : bool
+            Whether the parameter value is a list of elements.
+        is_bcs_fl : bool
+            Whether the parameter value represents a bcs file path.
+        is_dbase_fl : bool
+            Whether the parameter value represents a dbase file path.
+        val_gt : Union[None, int, float]
+            `value` must be greater than `val_gt`. If `val_gt` is 
+            `None`, no validation occurs.
+        val_gte : Union[None, int, float]
+            `value` must be greater than or equal to `val_gte`. If 
+            `val_gte` is `None`, no validation occurs.
+        val_lt : Union[None, int, float]
+            `value` must be less than `val_lt`. If `val_lt` is 
+            `None`, no validation occurs.
+        val_lte : Union[None, int, float]
+            `value` must be less than or equal to `val_lte`. If 
+            `val_lte` is `None`, no validation occurs.
+        val_switch : Union[None, List[Any]] = None
+            `value` must be one of `val_switch`. If `val_switch` is 
+            `None`, no validation occurs.
+        val_datetime : Union[None, List[str]] = None
+            `value` must be one of `val_datetime`. If `val_datetime` is 
+            `None`, no validation occurs.
+        val_type : bool
+            If `True`, `value` must have type `type`. If `False`, no
+            type validation occurs.
+        """
         self.name = name
         self.units = units
         self.type = type
@@ -66,6 +135,7 @@ class NMLParam:
         self.value = value
 
     def _val_type(self, value):
+        """Validate parameter type."""
         if not isinstance(value, self.type):
             raise ValueError(
                 f"{self.name} must be of type {self.type}. "
@@ -73,6 +143,7 @@ class NMLParam:
             )
     
     def _val_gt(self, value):
+        """Validate value is greater than."""
         if value <= self._val_gt_value:
             raise ValueError(
                 f"{self.name} must be greater than {self._val_gt_value}. Got "
@@ -80,6 +151,7 @@ class NMLParam:
             )
     
     def _val_gte(self, value):
+        """Validate value is greater than or equal to."""
         if value < self._val_gte_value:
             raise ValueError(
                 f"{self.name} must be greater than or equal to "
@@ -87,6 +159,7 @@ class NMLParam:
             )
     
     def _val_lt(self, value):
+        """Validate value is less than."""
         if value >= self._val_lt_value:
             raise ValueError(
                 f"{self.name} must be less than {self._val_lt_value}. Got "
@@ -94,6 +167,7 @@ class NMLParam:
             )
     
     def _val_lte(self, value):
+        """Validate value is less than or equal to."""
         if value > self._val_lte_value:
             raise ValueError(
                 f"{self.name} must be less than or equal to "
@@ -101,6 +175,7 @@ class NMLParam:
             )
 
     def _val_switch(self, value):
+        """Validate value is one of."""
         if value not in self._val_switch_values:
             raise ValueError(
                 f"{self.name} must be one of {self._val_switch_values}. "
@@ -108,6 +183,7 @@ class NMLParam:
             )
 
     def _val_datetime(self, value):
+        """Validate value is one of datetime format string."""
         assert self._val_datetime_formats is not None
         for format_str in self._val_datetime_formats:
             try:
@@ -121,6 +197,12 @@ class NMLParam:
         )
     
     def validate(self):
+        """
+        Validate parameter value.
+
+        Runs parameter value validation logic. If `strict` is `False`, 
+        no validation occurs.
+        """
         if self.strict:
             if self.value is not None:
                 if self.is_list:

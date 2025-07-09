@@ -55,30 +55,6 @@ class TestNMLParam:
         assert param.is_list is False
         assert param.value == 5
 
-    def test_required_parameter(self):
-        """Test the required parameter validation."""
-        # Required parameter with value should validate
-        param = nml.NMLParam(
-            name="req_param", type=int, value=5, val_required=True
-        )
-        param.validate()  # Should not raise an error
-        assert param.required is True
-
-        # Required parameter without value should raise error
-        with pytest.raises(ValueError) as excinfo:
-            param = nml.NMLParam(
-                name="req_param", type=int, value=None, val_required=True
-            )
-            param.validate()
-        assert "req_param is a required parameter" in str(excinfo.value)
-
-        # Non-required parameter without value should not raise error
-        param = nml.NMLParam(
-            name="optional_param", type=int, value=None, val_required=False
-        )
-        param.validate()  # Should not raise an error
-        assert param.required is False
-
     def test_val_type_validation(self):
         """Test type validation."""
         # Correct type should validate
