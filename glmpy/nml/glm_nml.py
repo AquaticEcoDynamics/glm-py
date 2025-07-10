@@ -27,7 +27,6 @@ class GLMSetupBlock(NMLBlock):
         density_model: Union[int, None] = None,
         non_avg: Union[bool, None] = None,
     ):
-        """ """
         super().__init__()
         self.init_params(
             NMLParam("sim_name", str, sim_name),
