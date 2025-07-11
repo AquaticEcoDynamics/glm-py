@@ -432,22 +432,6 @@ class NMLBlock(ABC):
         """
         return list(self.params.keys())
 
-    @classmethod
-    def from_dict(cls, nml_dict: dict) -> "NMLBlock":
-        """
-        Initialise class instance from a dictionary.
-
-        Returns an instance of the class that has been initialised with
-        a dictionary of NML parameters.
-
-        Parameters
-        ----------
-        nml_dict : dict
-            A dictionary of parameter names (keys) and parameter values
-            (values).
-        """
-        return cls(**nml_dict)
-
     # @classmethod
     # def from_template(cls, template: str) -> "NMLBlock":
     #     """
@@ -968,28 +952,28 @@ class NMLRegistry:
         self.cls_map = {}
 
     def _do_register_block(
-            self, nml_name: str, block_name: str, obj: NMLBlock
+            self, nml_name: str, block_name: str, block_cls: Any
         ):
         if nml_name not in self.cls_map:
             self.cls_map[nml_name] = {"blocks": {}, "nml": None}
         assert block_name not in self.cls_map[nml_name]["blocks"], (
-            f"An object named '{block_name}' was already registered "
-            f"in '{self._name} {block_name}' registry!"
+            f"A class with block_name '{block_name}' was already registered "
+            f"in the '{self._name}' registry."
         )
-        self.cls_map[nml_name]["blocks"][block_name] = obj
+        self.cls_map[nml_name]["blocks"][block_name] = block_cls
 
-    def _do_register_nml(self, nml_name: str, obj: NML):
+    def _do_register_nml(self, nml_name: str, nml_cls: Any):
         if nml_name not in self.cls_map:
             self.cls_map[nml_name] = {"blocks": {}, "nml": None}
         assert self.cls_map[nml_name]["nml"] is None, (
-            f"An object named '{nml_name}' was already registered "
-            f"in '{self._name} {nml_name}' registry!"
+            f"A class with nml_name '{nml_name}' was already registered "
+            f"in '{self._name}' registry."
         )
-        self.cls_map[nml_name]["nml"] = obj
+        self.cls_map[nml_name]["nml"] = nml_cls
 
     def register_block(self) -> Callable:
         """
-        Register the given class under the the name `cls.block_name`.
+        Register a `NMLBlock` subclass under the name `cls.block_name`. 
         Used as a decorator.
         """
 
@@ -1002,6 +986,10 @@ class NMLRegistry:
         return deco
 
     def register_nml(self) -> Callable:
+        """
+        Register a `NML` subclass under the name `cls.nml_name`. 
+        Used as a decorator.
+        """
         def deco(nml_cls: NML):
             nml_name = nml_cls.nml_name
             self._do_register_nml(nml_name, nml_cls)
@@ -1010,20 +998,38 @@ class NMLRegistry:
         return deco
 
     def get_block_cls(self, nml_name: str, block_name: str) -> Type[NMLBlock]:
+        """
+        Return a registered `NMLBlock` subclass type.
+
+        Parameters
+        ----------
+        nml_name : str
+            Name of the NML.
+        block_name : str
+            Name of the NML block.
+        """
         ret = self.cls_map[nml_name]["blocks"][block_name]
         if ret is None:
             raise KeyError(
-                f"No object with nml_name attribute '{nml_name}' found in "
-                f"'{self._name}' registry"
+                "No `NMLBlock` subclass with block_name "
+                f"'{nml_name}' found in the '{self._name}' registry."
             )
         return ret
 
     def get_nml_cls(self, nml_name: str) -> Type[NML]:
+        """
+        Return a registered `NML` subclass type.
+
+        Parameters
+        ----------
+        nml_name : str
+            Name of the NML.
+        """
         ret = self.cls_map[nml_name]["nml"]
         if ret is None:
             raise KeyError(
-                f"No object with nml_name attribute '{nml_name}' found in "
-                f"'{self._name}' registry"
+                f"No `NML` subclass with nml_name '{nml_name}' found in the "
+                f"'{self._name}' registry."
             )
         return ret
 

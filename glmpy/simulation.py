@@ -1,5 +1,6 @@
 import os
 import io
+import csv
 import copy
 import time
 import json
@@ -115,6 +116,64 @@ def run_glm(
             target.close()
     if time_sim:
         print(f"Finished {sim_name} in {str(total_duration)}")
+
+
+def read_aed_dbase(dbase_path: str) -> pd.DataFrame:
+    """
+    Read an AED database CSV
+
+    
+    Returns a Pandas `DataFrame` of the database that has been 
+    transposed to ensure consistent column data types.
+
+    Parameters
+    ----------
+    dbase_path : str
+        Path to the AED database CSV
+    """
+
+    with open(dbase_path, 'r') as file:
+        reader = csv.reader(file)
+        data = list(reader)
+
+    transposed = {}
+    for i in range(0, len(data)):
+        header = data[i][0]
+        col = []
+        for j in range(0, len(data[i][1:])):
+            val = data[i][1 + j].strip(" ")
+            col.append(val)
+        transposed[header] = col
+    df = pd.DataFrame(transposed)
+    for col in df.columns:
+        try:
+            df[col] = pd.to_numeric(df[col], errors='raise')
+        except ValueError:
+            pass
+
+    return df
+
+def write_aed_dbase(dbase_pd: pd.DataFrame, dbase_path: str) -> None:
+    """
+    Write an AED database CSV.
+
+    Writes an AED database CSV that has been read by 
+    `read_aed_dbase()`. Transposes the data back to the original format.
+
+    Parameters
+    ----------
+    dbase_pd : pd.DataFrame
+        Pandas `DataFrame` of the database.
+    dbase_path : str
+        Path of the database CSV to write.
+    """
+    dbase_dict = dbase_pd.to_dict('list')
+    with open(dbase_path, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        for k, v in dbase_dict.items():
+            row = [k]
+            row.extend(v)
+            writer.writerow(row)
 
 
 class BcsDict(dict):

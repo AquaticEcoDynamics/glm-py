@@ -4,14 +4,13 @@ from glmpy.nml.nml import NML_REGISTER, NMLParam, NMLBlock, NML
 
 @NML_REGISTER.register_block()
 class GLMSetupBlock(NMLBlock):
-    """Set the GLM NML `glm_setup` parameters.
-
-    The `glm_setup` parameters define the vertical series of layers that GLM
-    resolves when modelling a water body.
+    """
+    `glm_setup` parameters.
 
     Attributes
     ----------
     params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
     """
 
     nml_name = "glm"
@@ -27,6 +26,27 @@ class GLMSetupBlock(NMLBlock):
         density_model: Union[int, None] = None,
         non_avg: Union[bool, None] = None,
     ):
+        """
+        Parameters
+        ----------
+        sim_name : Union[str, None]
+            Title of simulation.
+        max_layers : Union[int, None]
+            Maximum number of layers.
+        min_layer_vol : Union[float, None]
+            Minimum layer volume (m^3).
+        min_layer_thick : Union[float, None]
+            Minimum thickness of a layer (m).
+        max_layer_thick : Union[float, None]
+            Maximum thickness of a layer (m).
+        density_model : Union[int, None]
+            Switch to set the density equation. Options are `1` for 
+            TEOS-10, `2` for UNESCO(1981), and `3` for a custom 
+            implementation. 
+        non_avg : Union[bool, None]
+            Switch to configure flow boundary condition temporal 
+            interpolation.
+        """
         super().__init__()
         self.init_params(
             NMLParam("sim_name", str, sim_name),
@@ -42,11 +62,20 @@ class GLMSetupBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
+        """Validate block parameters."""
         self.params.validate()
 
 
 @NML_REGISTER.register_block()
 class TimeBlock(NMLBlock):
+    """
+    `time` parameters.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    """
     nml_name = "glm"
     block_name = "time"
 
@@ -59,6 +88,25 @@ class TimeBlock(NMLBlock):
         num_days: Union[int, None] = None,
         timezone: Union[float, None] = None,
     ):
+        """
+        Parameters
+        ----------
+        timefmt : Union[int, None]
+            Time configuration switch. Options are `2` when using 
+            `start` and `stop` parameters or `3` when using `num_days`. 
+        start : Union[str, None]
+            Start time/date of simulation in format 
+            'yyyy-mm-dd hh:mm:ss'. 
+        stop : Union[str, None]
+            End time/date of simulation in format 
+            'yyyy-mm-dd hh:mm:ss'. Used when `timefmt=2`. 
+        dt : Union[float, None]
+            Time step (seconds).
+        num_days : Union[int, None]
+            Number of days to simulate. Used when `timefmt=3`. 
+        timezone : Union[float, None]
+            UTC time zone. 
+        """
         super().__init__()
         self.init_params(
             NMLParam("timefmt", int, timefmt, val_switch=[2, 3]),
@@ -81,6 +129,7 @@ class TimeBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
+        """Validate block parameters."""
         self.params.validate()
         self.val_incompat_param_values("timefmt", 2, "stop", None)
         self.val_incompat_param_values("timefmt", 3, "num_days", None)
@@ -88,6 +137,14 @@ class TimeBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class MorphometryBlock(NMLBlock):
+    """
+    `morphometry` parameters.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    """
     nml_name = "glm"
     block_name = "morphometry"
 
@@ -104,6 +161,33 @@ class MorphometryBlock(NMLBlock):
         h: Union[List[float], None] = None,
         a: Union[List[float], None] = None,
     ):
+        """
+        Parameters
+        ----------
+        lake_name : Union[str, None]
+            Site name.
+        latitude : Union[float, None]
+            Latitude, positive North (°N).
+        longitude : Union[float, None]
+            Longitude, positive East (°E).
+        base_elev: Union[float, None]
+            Elevation of the bottom-most point of the lake (m above 
+            datum).
+        crest_elev : Union[float, None]
+            Elevation of a weir crest, where overflow begins (m above 
+            datum). 
+        bsn_len : Union[float, None]
+            Length of the lake basin, at crest height (m).
+        bsn_wid : Union[float, None]
+            Width of the lake basin, at crest height (m).
+        bsn_vals : Union[int, None]
+            Number of points being provided to described the 
+            hyposgraphic details.
+        h : Union[List[float], None]
+            Comma-separated list of lake elevations (m above datum).
+        a : Union[List[float], None]
+            Comma-separated list of lake areas (m^2).
+        """
         super().__init__()
         self.init_params(
             NMLParam("lake_name", str, lake_name),
@@ -124,6 +208,7 @@ class MorphometryBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
+        """Validate block parameters."""
         self.params.validate()
         self.val_list_len_params("bsn_vals", "h")
         self.val_list_len_params("bsn_vals", "a")
@@ -131,6 +216,14 @@ class MorphometryBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class InitProfilesBlock(NMLBlock):
+    """
+    `init_profiles` parameters.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    """
     nml_name = "glm"
     block_name = "init_profiles"
 
@@ -146,6 +239,31 @@ class InitProfilesBlock(NMLBlock):
         wq_init_vals: Union[List[float], float, None] = None,
         restart_variables: Union[List[float], float, None] = None,
     ):
+        """
+        Parameters
+        ----------
+        lake_depth : Union[float, None]
+            Initial lake height/depth (m).
+        num_depths : Union[int, None]
+            Number of depths provided for initial profiles. 
+        the_depths : Union[List[float], float, None]
+            The depths of the initial profile points (m). 
+        the_temps : Union[List[float], float, None]
+            The temperature (°C) at each of the initial profile points. 
+        the_sals : Union[List[float], float, None]
+            The salinity (ppt) at each of the initial profile points. 
+        num_wq_vars : Union[int, None]
+            Number of non-GLM (i.e., FABM or AED2) variables to be 
+            initialised.
+        wq_names : Union[List[str], str, None]
+            Names of non-GLM (i.e., FABM or AED2) variables to be 
+            initialised.
+        wq_init_vals : Union[List[float], float, None]
+            List of water quality variable initial data.
+        restart_variables : Union[List[float], float, None]
+            Restart variables to restart model from a previous saved 
+            state. 
+        """
         super().__init__()
         self.init_params(
             NMLParam("lake_depth", float, lake_depth, "m"),
@@ -163,6 +281,7 @@ class InitProfilesBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
+        """Validate block parameters."""
         self.params.validate()
         self.val_list_len_params("num_depths", "the_depths")
         self.val_list_len_params("num_depths", "the_temps")
@@ -172,6 +291,14 @@ class InitProfilesBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class MixingBlock(NMLBlock):
+    """
+    `mixing` parameters.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    """
     nml_name = "glm"
     block_name = "mixing"
 
@@ -207,11 +334,20 @@ class MixingBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
+        """Validate block parameters."""
         self.params.validate()
 
 
 @NML_REGISTER.register_block()
 class WQSetupBlock(NMLBlock):
+    """
+    `wq_setup` parameters.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    """
     nml_name = "glm"
     block_name = "wq_setup"
 
@@ -240,11 +376,20 @@ class WQSetupBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
+        """Validate block parameters."""
         self.params.validate()
 
 
 @NML_REGISTER.register_block()
 class OutputBlock(NMLBlock):
+    """
+    `output` parameters.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    """
     nml_name = "glm"
     block_name = "output"
 
@@ -289,6 +434,7 @@ class OutputBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
+        """Validate block parameters."""
         self.params.validate()
         self.val_list_len_params("csv_point_nlevs", "csv_point_at")
         self.val_list_len_params("csv_point_nlevs", "csv_point_frombot")
@@ -298,6 +444,14 @@ class OutputBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class LightBlock(NMLBlock):
+    """
+    `light` parameters.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    """
     nml_name = "glm"
     block_name = "light"
 
@@ -324,6 +478,7 @@ class LightBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
+        """Validate block parameters."""
         self.params.validate()
         self.val_incompat_param_values("light_mode", 1, "n_bands", None)
         self.val_incompat_param_values("light_mode", 0, "kw", None)
@@ -334,6 +489,14 @@ class LightBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class BirdModelBlock(NMLBlock):
+    """
+    `bird_model` parameters.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    """
     nml_name = "glm"
     block_name = "bird_model"
 
@@ -358,11 +521,20 @@ class BirdModelBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
+        """Validate block parameters."""
         self.params.validate()
 
 
 @NML_REGISTER.register_block()
 class SedimentBlock(NMLBlock):
+    """
+    `sediment` parameters.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    """
     nml_name = "glm"
     block_name = "sediment"
 
@@ -411,6 +583,7 @@ class SedimentBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
+        """Validate block parameters."""
         self.params.validate()
         self.val_incompat_param_values(
             "benthic_mode",
@@ -440,6 +613,14 @@ class SedimentBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class SnowIceBlock(NMLBlock):
+    """
+    `snowice` parameters.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    """
     nml_name = "glm"
     block_name = "snowice"
 
@@ -458,11 +639,20 @@ class SnowIceBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
+        """Validate block parameters."""
         self.params.validate()
 
 
 @NML_REGISTER.register_block()
 class MeteorologyBlock(NMLBlock):
+    """
+    `meteorology` parameters.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    """
     nml_name = "glm"
     block_name = "meteorology"
 
@@ -543,6 +733,7 @@ class MeteorologyBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
+        """Validate block parameters."""
         self.params.validate()
         self.val_incompat_param_values("fetch_mode", 1, "aws", None)
         self.val_incompat_param_values("fetch_mode", 2, "xws", None)
@@ -561,6 +752,14 @@ class MeteorologyBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class InflowBlock(NMLBlock):
+    """
+    `inflow` parameters.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    """
     nml_name = "glm"
     block_name = "inflow"
 
@@ -608,6 +807,7 @@ class InflowBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
+        """Validate block parameters."""
         self.params.validate()
         self.val_list_len_params("num_inflows", "names_of_strms")
         self.val_list_len_params("num_inflows", "subm_flag")
@@ -623,6 +823,14 @@ class InflowBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class OutflowBlock(NMLBlock):
+    """
+    `outflow` parameters.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    """
     nml_name = "glm"
     block_name = "outflow"
 
@@ -712,6 +920,7 @@ class OutflowBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
+        """Validate block parameters."""
         self.params.validate()
         self.val_list_len_params("num_outlet", "outflow_fl")
         self.val_list_len_params("num_outlet", "outflow_factor")
@@ -726,8 +935,15 @@ class OutflowBlock(NMLBlock):
 
 @NML_REGISTER.register_nml()
 class GLMNML(NML):
-    nml_name = "glm"
+    """
+    `glm` blocks.
 
+    Attributes
+    ----------
+    blocks : Dict[str, NMLBlock]
+        Dictionary of subclassed `NMLBlock` objects.
+    """
+    nml_name = "glm"
     def __init__(
         self,
         glm_setup: GLMSetupBlock = GLMSetupBlock(),
@@ -765,6 +981,7 @@ class GLMNML(NML):
         self.strict = True
 
     def validate(self):
+        """Validate block parameters."""
         self.blocks.validate()
         self.val_required_block("glm_setup")
         self.val_required_block("time")
