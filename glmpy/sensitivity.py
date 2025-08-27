@@ -32,7 +32,9 @@ class LocalSensitivity:
         for i in range(0, num_sims):
             si_sim = self.glm_sim.get_deepcopy()
             si_sim.sim_name = f"{self.glm_sim.sim_name}_{i}"
-            si_sim.nml[x_nml].blocks[x_block].params[x_param].value = new_x_vals[i]
+            si_sim.nml[x_nml].blocks[x_block].params[
+                x_param
+            ].value = new_x_vals[i]
             si_sim.validate()
             self._si_sims.append(si_sim)
 
@@ -46,7 +48,10 @@ class LocalSensitivity:
 
     def calc_si_results(self, glm_sim: GLMSim) -> dict[str, Any]:
         new_x_val = (
-            glm_sim.nml[self._x_nml].blocks[self._x_block].params[self._x_param].value
+            glm_sim.nml[self._x_nml]
+            .blocks[self._x_block]
+            .params[self._x_param]
+            .value
         )
         new_y_val = self._y_func(glm_sim)
         delta_x_pct = (new_x_val - self._x_val) / self._x_val

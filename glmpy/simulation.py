@@ -13,11 +13,10 @@ import pandas as pd
 import multiprocessing
 
 from importlib import resources
-from glmpy.nml.glm_nml import GLMNML, OutputBlock
+from glmpy.nml.glm_nml import GLMNML
 from glmpy.nml.aed_nml import AEDNML
-from glmpy import __version__ as GLMPY_VERSION
+from glmpy.nml.nml import NML, NMLDict, NMLBlock, NMLParam
 from typing import Any, Union, Dict, List, Callable
-from glmpy.nml.nml import NML, NMLDict, NMLBlock, NMLParamValue
 
 
 GLM_VERSION = "3.3.3"
@@ -142,6 +141,7 @@ def read_aed_dbase(dbase_path: str) -> pd.DataFrame:
         col = []
         for j in range(0, len(data[i][1:])):
             val = data[i][1 + j].strip(" ")
+
             col.append(val)
         transposed[header] = col
     df = pd.DataFrame(transposed)
@@ -176,35 +176,25 @@ def write_aed_dbase(dbase_pd: pd.DataFrame, dbase_path: str) -> None:
             writer.writerow(row)
 
 
-class BcsDict(dict):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-    def get_deepcopy(self):
-        return copy.deepcopy(self)
-
-
 class GLMSim():
     def __init__(
         self,
-        sim_name: Union[str, None] = None,
-        glm_nml: Union[GLMNML, None] = None,  # GLMNML() ?
-        aed_nml: Union[AEDNML, None] = None,  # AEDNML() ?
-        bcs: Union[Dict[str, pd.DataFrame], None] = None,  # {} ?
-        outputs_dir: str = ".",
+        sim_name: str,
+        glm_nml: GLMNML = GLMNML(),
+        aed_nml: AEDNML = AEDNML(), 
+        bcs: Dict[str, pd.DataFrame] = {},
+        aed_dbase: Dict[str, pd.DataFrame] = {},  
+        sim_dir_path: str = ".",
     ):
-        self.nml = NMLDict()
-        self.bcs = BcsDict()
-        if glm_nml is None:
-            glm_nml = GLMNML()
-        if aed_nml is None:
-            aed_nml = AEDNML()
+        self.nml: NMLDict[str, NML] = NMLDict() 
         self.nml[glm_nml.nml_name] = glm_nml
-        self._init_sim_name(sim_name)
         self.nml[aed_nml.nml_name] = aed_nml
-        if bcs is not None:
-            self.bcs.update(bcs)
-        self.outputs_dir = outputs_dir
+
+        self.sim_name = sim_name
+        
+        self.bcs = bcs
+        self.aed_dbase = aed_dbase
+        self.sim_dir_path = sim_dir_path
 
     @property
     def sim_name(self):
@@ -212,23 +202,15 @@ class GLMSim():
 
     @sim_name.setter
     def sim_name(self, value: str):
-        if isinstance(value, str):
-            self.set_param_value("glm", "glm_setup", "sim_name", value)
-            self._sim_name = value
-        else:
-            raise TypeError(
-                f"sim_name must be type str. Got type {type(value)}"
-            )
-
-    def _init_sim_name(self, sim_name: Union[str, None]):
-        if sim_name is None:
-            nml_sim_name = self.get_param_value("glm", "glm_setup", "sim_name")
-            if isinstance(nml_sim_name, str):
-                self.sim_name = nml_sim_name
-            else:
-                self.sim_name = "unnamed_sim"
-        else:
-            self.sim_name = sim_name
+        self._sim_name = value
+        self.set_param_value(
+            "glm", "glm_setup", "sim_name", self.sim_name
+        )
+    
+    def iter_params(self):
+        """Iterate over all `NMLParam` objects."""
+        for nml in self.nml.values():
+            yield from nml.iter_params()
 
     def set_param_value(
         self,
@@ -237,111 +219,307 @@ class GLMSim():
         param_name: str,
         value: Any
     ):
+        """
+        Set a parameter value.
+
+        Sets the `value` attribute of a `NMLParam` instance.
+
+        Parameters
+        ----------
+        nml_name : str
+            The NML name.
+        block_name : str
+            The block name.
+        param_name : str
+            The parameter name.
+        value : Any
+            The parameter value to set.
+        """
         self.nml[nml_name].set_param_value(block_name, param_name, value)
 
     def get_param_value(
         self, nml_name: str, block_name: str, param_name: str
     ) -> Any:
+        """
+        Get a parameter value.
+
+        Returns the `value` attribute of a `NMLParam` instance.
+
+        Parameters
+        ----------
+        nml_name : str
+            The NML name.
+        block_name : str
+            The block name.
+        param_name : str
+            The name of the parameter to return the value for.
+        """
         value = self.nml[nml_name].get_param_value(block_name, param_name)
         return value
 
     def get_param_units(
         self, nml_name: str, block_name: str, param_name: str
     ) -> Union[str, None]:
+        """
+        Get a parameter's units.
+
+        Returns the `units` attribute of a `NMLParam` instance.
+
+        Parameters
+        ----------
+        nml_name : str
+            The NML name.
+        block_name : str
+            The block name.
+        param_name : str
+            The name of the parameter to return the value for.
+        """
         return self.nml[nml_name].get_param_units(block_name, param_name)
 
     def set_block(self, nml_name: str, block_name: str, block: NMLBlock):
+        """
+        Set a NML Block.
+
+        Overrides, or adds a new block, to a NML.
+
+        Parameters
+        ----------
+        nml_name : str
+            The NML name.
+        block_name : str
+            The block name.
+        block : NMLBlock
+            The block to set.
+        """
         self.nml[nml_name].set_block(block_name, block)
 
     def get_block(self, nml_name: str, block_name: str) -> NMLBlock:
+        """
+        Get a NML Block.
+
+        Returns an instance of a `NMLBlock` subclass from the NML.
+
+        Parameters
+        ----------
+        nml_name : str
+            The NML name.
+        block_name : str
+            The block name.
+        """
         return self.nml[nml_name].blocks[block_name]
 
-    def set_nml(self, nml: NML):
-        self.nml[nml.nml_name] = nml
+    def set_nml(self, nml_name: str, nml: NML):
+        """
+        Set NML.
+
+        Overrides or adds a new NML.
+
+        Parameters
+        ----------
+        nml_name : str
+            The NML name.
+        nml : NML
+            The NML to set.
+        """
+        self.nml[nml_name] = nml
 
     def get_nml(self, nml_name: str) -> NML:
+        """
+        Get a NML.
+
+        Returns an instance of a `NML` subclass.
+
+        Parameters
+        ----------
+        nml_name : str
+            The NML name.
+        """
         return self.nml[nml_name]
 
     def get_param_names(self, nml_name: str, block_name: str) -> List[str]:
+        """
+        List the parameter names in a block.
+
+        Returns a list of the `name` attribute for all `NMLParam`
+        instances.
+
+        Parameters
+        ----------
+        nml_name : str
+            The NML name.
+        block_name : str
+            The block name.
+        """
         return self.nml[nml_name].get_param_names(block_name)
 
     def get_block_names(self, nml_name: str) -> List[str]:
+        """
+        List the block names.
+
+        Returns a list of the `name` attribute for all `NMLBlock`
+        subclass instances.
+
+        Parameters
+        ----------
+        nml_name : str
+            The NML name.
+        """
         return self.nml[nml_name].get_block_names()
 
     def get_nml_names(self) -> List[str]:
+        """
+        List the NML names.
+
+        Returns a list of the `name` attribute for all `NML`
+        subclass instances.
+        """
         return list(self.nml.keys())
 
-    def get_bc_names(self) -> List[str]:
+    def get_bcs_names(self) -> List[str]:
+        """
+        List the bcs names.
+
+        Returns a list of the keys in the `bcs` dictionary,
+        """
         return list(self.bcs.keys())
 
-    def get_bc_pd(self, bc_name: str) -> pd.DataFrame:
-        return self.bcs[bc_name]
+    def get_bc_pd(self, bcs_name: str) -> pd.DataFrame:
+        """
+        Get a bcs dataframe.
 
-    def set_bc(self, bc_name: str, bc_pd: pd.DataFrame):
-        self.bcs[bc_name] = bc_pd
+        Returns a Pandas `DataFrame` of a specified boundary condition.
+
+        Parameters
+        ----------
+        bcs_name : str 
+            Name of the boundary condition.
+        
+        """
+        return self.bcs[bcs_name]
+
+    def set_bc(self, bcs_name: str, bcs_pd: pd.DataFrame):
+        """
+        Adds, or overrides, a boundary condition dataframe.
+        
+        Parameters
+        ----------
+        bcs_name : str
+            Boundary condition name.
+        bcs_pd : DataFrame
+            Pandas `DataFrame` of the boundary condition data.
+        """
+        self.bcs[bcs_name] = bcs_pd
 
     def validate(self):
+        """
+        Validate the simulation inputs.
+        """
         self.nml.validate()
 
     def get_deepcopy(self) -> "GLMSim":
+        """
+        Copy the `GLMSim` object.
+
+        Returns a deep copy of the `GLMSim`. 
+        """
+
         return copy.deepcopy(self)
 
     def rm_sim_dir(self):
+        """
+        Delete the simulation directory.
+        """
         shutil.rmtree(self.get_sim_dir())
 
     def get_sim_dir(self) -> str:
-        return os.path.join(self.outputs_dir, self.sim_name)
+        """
+        Return the simulation directory.
+        """
+        return os.path.join(self.sim_dir_path, self.sim_name)
 
-    def _write_aux_fl(self, nml_param, type):
+    def _write_aux_fl(self, nml_param: NMLParam):
         fl_paths = nml_param.value
         if not isinstance(fl_paths, list):
             fl_paths = [fl_paths]
         for fl_path in fl_paths:
             fl = os.path.basename(fl_path).split(".")[0]
-            if type == "bcs":
+            if nml_param.is_bcs_fl:
                 if fl not in self.bcs.keys():
                     raise KeyError(
                         f"The boundary condition file parameter "
                         f"{nml_param.name} is currently set to "
                         f"{nml_param.value}. {fl} was not found in the keys "
-                        "of the bcs attribute of the GLMSim object."
+                        "of the bcs dictionary attribute of the GLMSim object."
                     )
                 bc_pd = self.bcs[fl]
                 out_dir = os.path.join(
-                    self.outputs_dir, self.sim_name, os.path.dirname(fl_path)
+                    self.get_sim_dir(), os.path.dirname(fl_path)
                 )
                 os.makedirs(out_dir, exist_ok=True)
                 bc_pd.to_csv(
-                    os.path.join(self.outputs_dir, self.sim_name, fl_path),
+                    os.path.join(self.get_sim_dir(), fl_path),
                     index=False,
                 )
+            if nml_param.is_dbase_fl:
+                if fl not in self.aed_dbase.keys():
+                    raise KeyError(
+                        f"The AED dbase parameter {nml_param.name} is "
+                        f"currently set to {nml_param.value}. {fl} was not "
+                        "found in the keys of the aed_dbase dictionary "
+                        "attribute of the GLMSim object."
+                    )
+                dbase_pd = self.aed_dbase[fl]
+                out_dir = os.path.join(
+                    self.get_sim_dir(), os.path.dirname(fl_path)
+                )
+                os.makedirs(out_dir, exist_ok=True)
+                write_aed_dbase(
+                    dbase_pd, os.path.join(self.get_sim_dir(), fl_path)
+                )
 
-    def prepare_bcs(self):
-        for nml in self.nml.values():
-            for block in nml.blocks.values():
-                for param in block.params.values():
-                    if param.value is not None and param.is_bcs_fl is True:
-                        self._write_aux_fl(param, "bcs")
+    def prepare_bcs_and_dbase(self):
+        for nml_param in self.iter_params():
+            if nml_param.is_bcs_fl or nml_param.is_dbase_fl:
+                if nml_param.value is not None:
+                    self._write_aux_fl(nml_param)
 
-    def prepare_inputs(self):
-        if os.path.isdir(os.path.join(self.outputs_dir, self.sim_name)):
-            shutil.rmtree(os.path.join(self.outputs_dir, self.sim_name))
-        os.makedirs(os.path.join(self.outputs_dir, self.sim_name))
+    def _prepare_nml(self):
         for nml_obj in self.nml.values():
-            if not nml_obj.is_empty_nml():
+            if not nml_obj.is_none_nml():
                 nml_name = nml_obj.nml_name
                 if nml_name == "glm":
-                    self.nml["glm"].write_nml(
+                    self.nml[nml_name].to_nml(
                         os.path.join(
-                            self.outputs_dir, self.sim_name, "glm3.nml"
+                            self.get_sim_dir(), "glm3.nml"
                         )
                     )
+                elif nml_name == "aed":
+                    wq_nml_file = self.get_param_value(
+                        "glm", "wq_setup", "wq_nml_file"
+                    )
+                    if wq_nml_file is None:
+                        raise ValueError(
+                            f"" ## raise error
+                        )
+                    path = os.path.join(self.get_sim_dir(), wq_nml_file)
+                    os.makedirs(os.path.dirname(path), exist_ok=True)
+                    self.nml[nml_name].to_nml(path)
                 else:
-                    self.nml[nml_name].write_nml(
+                    self.nml[nml_name].to_nml(
                         os.path.join(
-                            self.outputs_dir, self.sim_name, f"{nml_name}.nml"
+                            self.get_sim_dir(), f"{nml_name}.nml"
                         )
                     )
+        
+
+    def prepare_inputs(self):
+        if os.path.isdir(self.get_sim_dir()):
+            shutil.rmtree(self.get_sim_dir())
+        os.makedirs(self.get_sim_dir())
+
+        # Prepare NML
+        self._prepare_nml()
+        self.prepare_bcs_and_dbase()
 
     @classmethod
     def from_example_sim(cls, example_sim_name: str) -> "GLMSim":
@@ -371,11 +549,12 @@ class GLMSim():
                 f"method. Got {file_extension}"
             )
         sim_json = {
-            "glmpy_version": str(GLMPY_VERSION),
+            #"glmpy_version": str(GLMPY_VERSION),
             "glm_version": GLM_VERSION,
             "sim_name": self.sim_name,
-            "outputs_dir": self.outputs_dir,
+            "sim_dir_path": self.sim_dir_path,
             "bcs": list(self.bcs.keys()),
+            "aed_dbase": list(self.aed_dbase.keys()),
             "nml": {
                 "glm": self.nml["glm"].to_dict(),
                 "aed": self.nml["aed"].to_dict()
@@ -387,6 +566,10 @@ class GLMSim():
                 with io.StringIO() as buffer:
                     bs_pd.to_csv(buffer, index=False)
                     zipf.writestr(f"{bc_name}.csv", buffer.getvalue())
+            for dbase_name, dbase_pd in self.aed_dbase.items():
+                with io.StringIO() as buffer:
+                    dbase_pd.to_csv(buffer, index=False)
+                    zipf.writestr(f"{dbase_name}.csv", buffer.getvalue())
 
     @classmethod
     def from_file(cls, sim_file: str) -> "GLMSim":
@@ -400,12 +583,17 @@ class GLMSim():
             for fname in sim_json["bcs"]:
                 bc_pd = pd.read_csv(zipf.open(fname + ".csv"))
                 bcs[fname] = bc_pd
+            aed_dbase = {}
+            for fname in sim_json["aed_dbase"]:
+                dbase_pd = pd.read_csv(zipf.open(fname + ".csv"))
+                aed_dbase[fname] = dbase_pd
             sim = cls(
                 sim_name=sim_json["sim_name"],
                 glm_nml=glm_nml,
                 aed_nml=aed_nml,
                 bcs=bcs,
-                outputs_dir=sim_json["outputs_dir"]
+                aed_dbase=aed_dbase,
+                sim_dir_path=sim_json["sim_dir_path"]
             )
             return sim
 
@@ -439,11 +627,8 @@ class GLMSim():
     ):
         self.validate()
         self.prepare_inputs()
-        self.prepare_bcs()
         run_glm(
-            glm_nml_path=os.path.join(
-                self.outputs_dir, self.sim_name, "glm3.nml"
-            ),
+            glm_nml_path=os.path.join(self.get_sim_dir(), "glm3.nml"),
             sim_name=self.sim_name,
             write_log=write_log,
             quiet=quiet,

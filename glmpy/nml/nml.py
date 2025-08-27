@@ -342,13 +342,18 @@ class NMLBlock(ABC):
     def strict(self, value: bool):
         self.params.strict = value
         self._strict = value
-
+    
     def init_params(self, *args: NMLParam):
         """
         Populate the `params` dictionary with instances of `NMLParam`.
         """
         for nml_param in args:
             self.params[nml_param.name] = nml_param
+    
+    def iter_params(self):
+        """Iterate over all `NMLParam` objects."""
+        for param in self.params.values():
+            yield param
 
     def is_none_block(self) -> bool:
         """
@@ -362,7 +367,7 @@ class NMLBlock(ABC):
                 return False
         return True
 
-    def to_dict(self, none_params: bool = True) -> dict[str, Any]:
+    def to_dict(self, none_params: bool = True) -> OrderedDict[str, Any]:
         """
         Dictionary of parameters.
 
@@ -373,7 +378,7 @@ class NMLBlock(ABC):
         none_params : bool
             Whether to include parameter values that are `None`.
         """
-        param_dict = {}
+        param_dict = OrderedDict()
         for key, nml_param in self.params.items():
             if none_params:
                 param_dict[key] = nml_param.value
@@ -622,6 +627,16 @@ class NML(ABC):
         for nml_block in args:
             self.blocks[nml_block.block_name] = nml_block
 
+    def iter_params(self):
+        """Iterate over all `NMLParam` objects."""
+        for block in self.blocks.values():
+            yield from block.iter_params()
+    
+    def iter_blocks(self):
+        """Iterate over all `NMLBlock` objects."""
+        for block in self.blocks.values():
+            yield block
+
     def is_none_nml(self) -> bool:
         """
         Test if all NML parameter values are `None`.
@@ -636,7 +651,7 @@ class NML(ABC):
 
     def to_dict(
         self, none_blocks: bool = True, none_params: bool = True
-    ) -> dict[str, Any]:
+    ) -> OrderedDict[str, Any]:
         """
         Nested dictionary of parameters.
 
@@ -651,7 +666,7 @@ class NML(ABC):
         none_params : bool
             Whether to include parameter values that are `None`.
         """
-        nml_dict = {}
+        nml_dict = OrderedDict()
         for block_name, nml_block in self.blocks.items():
             if none_blocks:
                 nml_dict[block_name] = nml_block.to_dict(
@@ -727,6 +742,34 @@ class NML(ABC):
         """
         return self.blocks[block_name].get_param_names()
 
+    def set_block(self, block_name: str, block: NMLBlock):
+        """
+        Set a NML Block.
+
+        Overrides, or adds a new block, to a NML.
+
+        Parameters
+        ----------
+        block_name : str
+            The block name.
+        block : NMLBlock
+            The block to set.
+        """
+        self.blocks[block_name] = block
+        
+    def get_block(self, block_name: str) -> NMLBlock:
+        """
+        Get a NML Block.
+
+        Returns an instance of a `NMLBlock` subclass from the NML.
+
+        Parameters
+        ----------
+        block_name : str
+            The block name.
+        """
+        return self.blocks[block_name]
+
     def get_block_names(self) -> List[str]:
         """
         List the block names.
@@ -754,7 +797,7 @@ class NML(ABC):
         init_params = {}
         for block_name, param_dict in nml_dict.items():
             block_cls = NML_REGISTER.get_block_cls(cls.nml_name, block_name)
-            block_obj = block_cls.from_dict(param_dict)
+            block_obj = block_cls(**param_dict)
             init_params[block_name] = block_obj
         foo = cls(**init_params)
         return foo

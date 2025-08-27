@@ -31,7 +31,7 @@ outputs = GLMSim.from_example_sim("sparkling_lake").run()
 nc = NCPlotter(outputs.get_netcdf_path())
 
 fig, ax = plt.subplots(figsize=(10, 5))
-profile = nc.plot_var_profile(ax=ax, var="temp")
+profile = nc.plot_profile(ax=ax, var_name="temp")
 fig.colorbar(profile).set_label("Temperature (°C)")
 ```
 <img src="docs/img/readme_profile.png" align="center" height="325" />

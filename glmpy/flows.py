@@ -15,7 +15,7 @@ def catchment_runoff_inflows(
     """
     Calculate catchment runoff inflows from rainfall.
 
-    Returns a dataframe of inflow by calculating catchment runoff from
+    Returns a DataFrame of inflow by calculating catchment runoff from
     precipitation data. Inflows are calculated at the same timestep as
     the precipitation data but in units of m^3/s. 
 
