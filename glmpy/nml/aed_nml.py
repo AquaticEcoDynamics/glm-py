@@ -598,17 +598,15 @@ class OrganicMatterBlock(NMLBlock):
         donr_initial: Union[float, None] = None,
         dopr_initial: Union[float, None] = None,
         cpom_initial: Union[float, None] = None,
+        rdom_minerl: Union[float, None] = None,
         rpoc_hydrol: Union[float, None] = None,
         rpon_hydrol: Union[float, None] = None,
         rpop_hydrol: Union[float, None] = None,
         theta_hydrol: Union[float, None] = None,
-        kpom_hydrol: Union[float, None] = None,
-        rdom_minerl: Union[float, None] = None,
         theta_minerl: Union[float, None] = None,
+        kpom_hydrol: Union[float, None] = None,
         kdom_minerl: Union[float, None] = None,
         simdenitrification: Union[int, None] = None,
-        f_an: Union[float, None] = None,
-        k_nit: Union[float, None] = None,
         dom_miner_oxy_reactant_var: Union[str, None] = None,
         dom_miner_nit_reactant_var: Union[str, None] = None,
         dom_miner_no2_reactant_var: Union[str, None] = None,
@@ -619,6 +617,8 @@ class OrganicMatterBlock(NMLBlock):
         doc_miner_product_variable: Union[str, None] = None,
         don_miner_product_variable: Union[str, None] = None,
         dop_miner_product_variable: Union[str, None] = None,
+        f_an: Union[float, None] = None,
+        k_nit: Union[float, None] = None,
         simrpools: Union[bool, None] = None,
         rdomr_minerl: Union[float, None] = None,
         rcpom_bdown: Union[float, None] = None,
@@ -668,21 +668,21 @@ class OrganicMatterBlock(NMLBlock):
             NMLParam(
                 "cpom_initial", float, cpom_initial, units="mmol C m^{-3}"
             ),
+            NMLParam("rdom_minerl", float, rdom_minerl, units="d^{-1}"),
             NMLParam("rpoc_hydrol", float, rpoc_hydrol, units="d^{-1}"),
             NMLParam("rpon_hydrol", float, rpon_hydrol, units="d^{-1}"),
             NMLParam("rpop_hydrol", float, rpop_hydrol, units="d^{-1}"),
             NMLParam("theta_hydrol", float, theta_hydrol),
+            NMLParam("theta_minerl", float, theta_minerl),
             NMLParam(
                 "kpom_hydrol", float, kpom_hydrol, units="mmol O_{2} m^{-3}"
             ),
-            NMLParam("rdom_minerl", float, rdom_minerl, units="d^{-1}"),
-            NMLParam("theta_minerl", float, theta_minerl),
+            
+            
             NMLParam(
                 "kdom_minerl", float, kdom_minerl, units="mmol O_{2} m^{-3}"
             ),
             NMLParam("simdenitrification", int, simdenitrification),
-            NMLParam("f_an", float, f_an),
-            NMLParam("k_nit", float, k_nit, units="mmol N m^{-3}"),
             NMLParam(
                 "dom_miner_oxy_reactant_var", str, dom_miner_oxy_reactant_var
             ),
@@ -713,6 +713,8 @@ class OrganicMatterBlock(NMLBlock):
             NMLParam(
                 "dop_miner_product_variable", str, dop_miner_product_variable
             ),
+            NMLParam("f_an", float, f_an),
+            NMLParam("k_nit", float, k_nit, units="mmol N m^{-3}"),
             NMLParam("simrpools", bool, simrpools),
             NMLParam("rdomr_minerl", float, rdomr_minerl, units="d^{-1}"),
             NMLParam("rcpom_bdown", float, rcpom_bdown, units="d^{-1}"),
@@ -1034,20 +1036,21 @@ class AEDNML(NML):
         super().__init__()
         self.init_blocks(
             aed_models,
+            aed_sedflux,
+            aed_sed_const2d,
             aed_tracer,
             aed_noncohesive,
             aed_oxygen,
             aed_carbon,
-            aed_sedflux,
-            aed_sed_const2d,
             aed_silica,
             aed_nitrogen,
             aed_phosphorus,
             aed_organic_matter,
             aed_phytoplankton,
+            aed_totals,
             aed_zooplankton,
             aed_macrophyte,
-            aed_totals,
+            
         )
         self.strict = True
 
