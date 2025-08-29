@@ -79,6 +79,7 @@ nav:
   - Home: index.md
   - Install: installation.md
   - How-to: 
+    - Simulation: how_to/how-to-simulation.md
     - NML: how_to/how-to-nml.md
     - Plots: how_to/how-to-plots.md
     - Dimensions: how_to/how-to-dimensions.md

@@ -549,7 +549,6 @@ class GLMSim():
                 f"method. Got {file_extension}"
             )
         sim_json = {
-            #"glmpy_version": str(GLMPY_VERSION),
             "glm_version": GLM_VERSION,
             "sim_name": self.sim_name,
             "sim_dir_path": self.sim_dir_path,
@@ -644,89 +643,8 @@ class GLMSim():
         return outputs
 
 
-def no_op_callback(x):
+def no_op_callback(x, y):
     return None
-
-
-class MultiSim:
-    def __init__(self, glm_sims: List[GLMSim]):
-        self.glm_sims = glm_sims
-
-    def cpu_count(self) -> Union[int, None]:
-        return os.cpu_count()
-
-    def run_single_sim(
-        self,
-        glm_sim: GLMSim,
-        on_sim_end: Callable[[GLMSim], Any],
-        rm_sim_dir: bool = False,
-        write_log: bool = True,
-        time_sim: bool = True,
-        glm_path: Union[str, None] = "./glm",
-    ):
-        glm_sim.run(
-            write_log=write_log,
-            quiet=True,
-            time_sim=time_sim,
-            glm_path=glm_path,
-        )
-        rv = on_sim_end(glm_sim)
-        if rm_sim_dir:
-            glm_sim.rm_sim_dir()
-        return rv
-
-    # run_rm for on_sim_end
-    def run(
-        self,
-        on_sim_end: Union[Callable, None] = None,
-        cpu_count: Union[int, None] = None,
-        rm_sim_dir: bool = False,
-        write_log: bool = True,
-        time_sim: bool = True,
-        time_multi_sim: bool = True,
-        glm_path: Union[str, None] = "./glm",
-    ):
-        if on_sim_end is None:
-            on_sim_end = no_op_callback
-        sys_cpu_count = self.cpu_count()
-        if sys_cpu_count is not None:
-            if cpu_count is None:
-                cpu_count = sys_cpu_count
-            if cpu_count > sys_cpu_count:
-                raise ValueError(
-                    f"cpu_count of {cpu_count} exceeds the {sys_cpu_count} "
-                    f"CPUs on the system."
-                )
-        else:
-            warnings.warn(f"Undetermined number of CPUs on the system.")
-        if time_multi_sim:
-            print(
-                f"Starting {len(self.glm_sims)} simulations for {cpu_count} "
-                "CPUs"
-            )
-            start_time = time.perf_counter()
-        args = [
-            (
-                glm_sim,
-                on_sim_end,
-                rm_sim_dir,
-                write_log,
-                time_sim,
-                glm_path,
-            )
-            for glm_sim in self.glm_sims
-        ]
-        with multiprocessing.Pool(processes=cpu_count) as pool:
-            rvs = pool.starmap(self.run_single_sim, args)
-        if time_multi_sim:
-            end_time = time.perf_counter()
-            total_duration = end_time - start_time
-            total_duration = datetime.timedelta(seconds=round(total_duration))
-            print(
-                f"Finished {len(self.glm_sims)} simulations in "
-                f"{str(total_duration)}"
-            )
-        return rvs
 
 
 class GLMOutputs:
@@ -759,11 +677,11 @@ class GLMOutputs:
     def get_csv_basenames(self) -> List[str]:
         return sorted(list(self.csv_files.keys()))
 
-    def get_csv_path(self, basename: str) -> str:
-        return self.csv_files[basename]
+    def get_csv_path(self, csv_basename: str) -> str:
+        return self.csv_files[csv_basename]
     
-    def get_csv_pd(self, basename: str) -> pd.DataFrame:
-        return pd.read_csv(self.get_csv_path(basename))
+    def get_csv_pd(self, csv_basename: str) -> pd.DataFrame:
+        return pd.read_csv(self.get_csv_path(csv_basename))
     
     def get_netcdf_path(self) -> str:
         if self.nc_path is None:
@@ -796,3 +714,146 @@ class GLMOutputs:
                     z.write(csv_path)
 
         return os.path.join(self.outputs_path, zip_name)
+
+
+class MultiSim:
+    """
+    Run `GLMSim` objects in parallel.
+
+    Uses Python's `multiprocessing` module to spawn separate processes 
+    for simultaneously running multiple `GLMSim` objects. Useful when 
+    many CPU cores are available and many permutations of a simulation
+    need to be run. The number of concurrently running simulations is 
+    determined by the number of CPU cores set in the `run()` method.
+
+    Attributes
+    ----------
+    glm_sims : List[GLMSim]
+        A list of `GLMSim` objects to be run across multiple CPU cores. 
+    """
+    def __init__(self, glm_sims: List[GLMSim]):
+        """
+        Parameters
+        ----------
+        glm_sims : List[GLMSim]
+            A list of `GLMSim` objects to be run across multiple CPU 
+            cores.
+        """
+        self.glm_sims = glm_sims
+
+    @staticmethod
+    def cpu_count() -> Union[int, None]:
+        """
+        Returns the number of CPU cores.
+        """
+        return os.cpu_count()
+
+    def run_single_sim(
+        self,
+        glm_sim: GLMSim,
+        on_sim_end: Callable[[GLMSim, GLMOutputs], Any],
+        write_log: bool = True,
+        time_sim: bool = True,
+        glm_path: Union[str, None] = "./glm",
+    ):
+        """
+        Run a `GLMSim` on a single core.
+        
+        Parameters
+        ----------
+        glm_sim : GLMSim
+            The `GLMSim` to run.
+        on_sim_end : Callable[[GLMSim, GLMOutputs], Any]
+            The function to run at the completion of `GLMSim.run()`. 
+            Must take a `GLMSim` and `GLMOutputs` object as arguments.
+        write_log : bool
+            Write a log file as GLM runs.
+        time_sim : bool
+            Prints `"Starting {sim_name}"` and 
+            `"Finished {sim_name} in {total_duration}"`
+        glm_path : Union[str, None]
+            Path to the GLM binary. If `None`, attempts to use the GLM 
+            binary included in glm-py's built distribution. 
+        """
+        glm_outputs = glm_sim.run(
+            write_log=write_log,
+            quiet=True,
+            time_sim=time_sim,
+            glm_path=glm_path,
+        )
+        rv = on_sim_end(glm_sim, glm_outputs)
+
+        return rv
+
+    def run(
+        self,
+        on_sim_end: Union[Callable[[GLMSim, GLMOutputs], Any], None] = None,
+        cpu_count: Union[int, None] = None,
+        write_log: bool = True,
+        time_sim: bool = True,
+        time_multi_sim: bool = True,
+        glm_path: Union[str, None] = "./glm",
+    ):
+        """
+        Run the multi-sim.
+
+        Parameters
+        ----------
+        on_sim_end : Callable[[GLMSim, GLMOutputs], Any]
+            The function to run at the completion of `GLMSim.run()`. 
+            Must take a `GLMSim` and `GLMOutputs` object as arguments.
+        cpu_count : Union[int, None]
+            The number of CPU cores to use, i.e., the number of 
+            simulations to run in parallel. Default is the maximum 
+            number of cores available.
+        write_log : bool
+            Write a log file as GLM runs.
+        time_sim : bool
+            Prints `"Starting {sim_name}"` and 
+            `"Finished {sim_name} in {total_duration}"`
+        glm_path : Union[str, None]
+            Path to the GLM binary. If `None`, attempts to use the GLM 
+            binary included in glm-py's built distribution. 
+        
+        """
+        if on_sim_end is None:
+            on_sim_end = no_op_callback
+        sys_cpu_count = self.cpu_count()
+        if sys_cpu_count is not None:
+            if cpu_count is None:
+                cpu_count = sys_cpu_count
+            if cpu_count > sys_cpu_count:
+                raise ValueError(
+                    f"cpu_count of {cpu_count} exceeds the {sys_cpu_count} "
+                    f"CPUs on the system."
+                )
+        else:
+            warnings.warn(f"Undetermined number of CPUs on the system.")
+        if time_multi_sim:
+            print(
+                f"Starting {len(self.glm_sims)} simulations for {cpu_count} "
+                "CPUs"
+            )
+            start_time = time.perf_counter()
+        args = [
+            (
+                glm_sim,
+                on_sim_end,
+                write_log,
+                time_sim,
+                glm_path,
+            )
+            for glm_sim in self.glm_sims
+        ]
+        with multiprocessing.Pool(processes=cpu_count) as pool:
+            rvs = pool.starmap(self.run_single_sim, args)
+        if time_multi_sim:
+            end_time = time.perf_counter()
+            total_duration = end_time - start_time
+            total_duration = datetime.timedelta(seconds=round(total_duration))
+            print(
+                f"Finished {len(self.glm_sims)} simulations in "
+                f"{str(total_duration)}"
+            )
+        return rvs
+
