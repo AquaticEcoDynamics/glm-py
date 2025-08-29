@@ -11,7 +11,12 @@ class ModelsBlock(NMLBlock):
         self,
         models: Union[List[str], None] = None,
     ):
-        """ """
+        """ 
+        Parameters
+        ----------
+        models : Union[List[str], None]
+            The AED modules to use.
+        """
         super().__init__()
         self.init_params(NMLParam("models", str, models, is_list=True))
         self.strict = True
@@ -29,10 +34,65 @@ class TracerBlock(NMLBlock):
         self,
         retention_time: Union[bool, None] = None,
         num_tracers: Union[int, None] = None,
-        decay: Union[List[float], None] = None,
-        fsed: Union[List[float], None] = None,
+        decay: Union[List[float], float, None] = None,
+        fsed: Union[List[float], float, None] = None,
+        ke_ss: Union[List[float], float, None] = None,
+        settling: Union[int, None] = None,
+        w_ss: Union[List[float], float, None] = None,
+        d_ss: Union[List[float], float, None] = None,
+        rho_ss: Union[List[float], float, None] = None,
+        resuspension: Union[int, None] = None,
+        fs: Union[List[float], float, None] = None,
+        epsilon: Union[List[float], float, None] = None,
+        tau_0: Union[List[float], float, None] = None,
+        tau_r: Union[List[float], float, None] = None,
+        ktau_0: Union[List[float], float, None] = None,
+        macrophyte_link_var: Union[str, None] = None,
     ):
-        """ """
+        """ 
+        Parameters
+        ----------
+        retention_time : Union[bool, None]
+            Activates the retention time variable.
+        num_tracers : Union[int, None]
+            Number of tracers to model.
+        decay : Union[List[float], float, None]
+            Vector of decay rates for each simulated tracer group.
+        fsed : Union[List[float], None]
+            Vector of sediment flux rates for each simulated tracer 
+            group.
+        ke_ss : Union[List[float], float, None] 
+            Vector of specific light attenuation constants for each 
+            simulated tracer group.
+        settling : Union[int, None]
+            Settling sub-model. `0` for none, `1` for constant, `2` for 
+            constant (temp. adjusted), `3` for Stokes.
+        w_ss : Union[List[float], float, None]
+            Vector of sedimentation velocity. Used if `settling` is `1` 
+            or `2`.
+        d_ss : Union[List[float], float, None]
+            Vector of particle diameter. Used if `settling` is `3`.
+        rho_ss : Union[List[float], float, None]
+            Vector of particle density.  Used if `settling` is `3`.
+        resuspension : Union[int, None]
+            Resuspension sub-model. `0` for none, `1` for constant, `2` 
+            for constant adjusted, `3` for Stokes.
+        fs : Union[List[float], float, None]
+            Vector of particle fraction within the sediment. Must be of 
+            length `num_tracers`.
+        epsilon : Union[List[float], float, None]
+            Vector of resuspension rate coefficient.
+        tau_0 : Union[List[float], float, None]
+            Vector of critical shear stress for resuspension.
+        tau_r : Union[List[float], float, None]
+            Reference shear stress.
+        ktau_0 : Union[List[float], float, None]
+            Coefficient determining the effect of `macrophyte_link_var` 
+            on `tau_0`.
+        macrophyte_link_var : Union[str, None] 
+            AED2 benthic variable on which the critical shear stress 
+            depends.
+        """
         super().__init__()
         self.init_params(
             NMLParam("retention_time", bool, retention_time),
@@ -40,7 +100,35 @@ class TracerBlock(NMLBlock):
             NMLParam("decay", float, decay, is_list=True, units="day^{-1}"),
             NMLParam(
                 "fsed", float, fsed, is_list=True, units="g (m^{2}*s)^{-1}"
-            )
+            ),
+            NMLParam(
+                "ke_ss", float, ke_ss, is_list=True, units="m^{-1} (g m^{-3})^{-1}"
+            ),
+            NMLParam("settling", int, settling, val_switch=[0, 1, 2, 3]),
+            NMLParam("w_ss", float, w_ss, is_list=True, units="m day^{-1}"),
+            NMLParam("d_ss", float, d_ss, is_list=True, units="m"),
+            NMLParam("rho_ss", float, rho_ss, is_list=True, units="kg m^{-3}"),
+            NMLParam(
+                "resuspension", int, resuspension, val_switch=[0, 1, 2, 3]
+            ),
+            NMLParam("fs", float, fs, is_list=True),
+            NMLParam(
+                "epsilon", 
+                float, 
+                epsilon, 
+                is_list=True, 
+                units="g m^{-2} s^{-1}"
+            ),
+            NMLParam("tau_0", float, tau_0, is_list=True, units="N m^{-2}"),
+            NMLParam("tau_r", float, tau_r, is_list=True, units="N m^{-2}"),
+            NMLParam(
+                "ktau_0", 
+                float, 
+                ktau_0, 
+                is_list=True, 
+                units="N m^{-2} (mmol C m^{-2})^{-1}"
+            ),
+            NMLParam("macrophyte_link_var", str, macrophyte_link_var),
         )
         self.strict = True
 
@@ -72,7 +160,42 @@ class NonCohesiveBlock(NMLBlock):
         fs: Union[List[float], None] = None,
         sed_porosity: Union[float, None] = None,
     ):
-        """ """
+        """ 
+        Parameters
+        ----------
+        num_ss: Union[int, None] 
+            Undocumented parameter.
+        ss_initial: Union[List[int], None] 
+            Undocumented parameter.
+        ke_ss: Union[List[float], None] 
+            Undocumented parameter.
+        settling: Union[int, None] 
+            Undocumented parameter.
+        w_ss: Union[List[float], None] 
+            Undocumented parameter.
+        d_ss: Union[List[float], None] 
+            Undocumented parameter.
+        rho_ss: Union[List[float], None] 
+            Undocumented parameter.
+        resuspension: Union[int, None] 
+            Undocumented parameter.
+        epsilon: Union[float, None] 
+            Undocumented parameter.
+        tau_0: Union[List[float], None] 
+            Undocumented parameter.
+        tau_r: Union[float, None] 
+            Undocumented parameter.
+        ktau_0: Union[float, None] 
+            Undocumented parameter.
+        macrophyte_link_var: Union[str, None] 
+            Undocumented parameter.
+        simsedimentmass: Union[bool, None] 
+            Undocumented parameter.
+        fs: Union[List[float], None] 
+            Undocumented parameter.
+        sed_porosity: Union[float, None] 
+            Undocumented parameter.
+        """
         super().__init__()
         self.init_params(
             NMLParam("num_ss", int, num_ss),
@@ -106,24 +229,49 @@ class OxygenBlock(NMLBlock):
     def __init__(
         self,
         oxy_initial: Union[float, None] = None,
+        oxy_min: Union[float, None] = None,
+        oxy_max: Union[float, None] = None,
         fsed_oxy: Union[float, None] = None,
         ksed_oxy: Union[float, None] = None,
         theta_sed_oxy: Union[float, None] = None,
         fsed_oxy_variable: Union[str, None] = None,
-        oxy_min: Union[float, None] = None,
-        oxy_max: Union[float, None] = None,
+        oxy_piston_model: Union[int, None] = None,
+        altitude: Union[float, None] = None,
     ):
+        """
+        Parameters
+        ----------
+        oxy_initial : Union[float, None]
+            Initial O2 concentration.
+        oxy_min : Union[float, None]
+            Minimum O2 concentration.
+        oxy_max : Union[float, None]
+            Maximum O2 concentration.
+        fsed_oxy : Union[float, None]
+            Sediment O2 flux at 20C.
+        ksed_oxy : Union[float, None]
+            Arrhenius temperature multiplier for sediment O2 flux.
+        fsed_oxy_variable : Union[str, None]
+            Variable name to link to for spatially resolved sediment 
+            zones.
+        oxy_piston_model : Union[int, None]
+            Selection of air/water O2 flux velocity method.
+        altitude : Union[float, None]
+            Altitude of site above sea level.
+        """
         super().__init__()
         self.init_params(
             NMLParam("oxy_initial", float, oxy_initial, units="mmol m^{-3}"),
+            NMLParam("oxy_min", float, oxy_min, units="mmol m^{-3}"),
+            NMLParam("oxy_max", float, oxy_max, units="mmol m^{-3}"),
             NMLParam(
                 "fsed_oxy", float, fsed_oxy, units="mmol m^{-2} day^{-1}"
             ),
             NMLParam("ksed_oxy", float, ksed_oxy, units="mmol m^{-3}"),
             NMLParam("theta_sed_oxy", float, theta_sed_oxy),
             NMLParam("fsed_oxy_variable", str, fsed_oxy_variable),
-            NMLParam("oxy_min", float, oxy_min, units="mmol m^{-3}"),
-            NMLParam("oxy_max", float, oxy_max, units="mmol m^{-3}"),
+            NMLParam("oxy_piston_model", int, oxy_piston_model),
+            NMLParam("altitude", float, altitude, units="m"),   
         )
         self.strict = True
 
@@ -137,6 +285,13 @@ class SedFluxBlock(NMLBlock):
     block_name = "aed_sedflux"
 
     def __init__(self, sedflux_model: Union[str, None] = None):
+        """
+        Parameters
+        ----------
+        sedflux_model : Union[str, None]
+            Controls the setup of zones and whether the flux is taken 
+            from a constant value or from CANDI-AED.
+        """
         super().__init__()
         self.init_params(
             NMLParam(
@@ -161,21 +316,75 @@ class SedConst2DBlock(NMLBlock):
         self,
         n_zones: Union[int, None] = None,
         active_zones: Union[List[int], None] = None,
-        fsed_oxy: Union[List[float], None] = None,
-        fsed_ch4: Union[List[float], None] = None,
+        fsed_oxy: Union[List[float], float, None] = None,
+        fsed_rsi: Union[List[float], float, None] = None,
         fsed_amm: Union[List[float], None] = None,
         fsed_nit: Union[List[float], None] = None,
         fsed_frp: Union[List[float], None] = None,
+        fsed_pon: Union[List[float], float, None] = None,
+        fsed_don: Union[List[float], float, None] = None,
+        fsed_pop: Union[List[float], float, None] = None,
+        fsed_dop: Union[List[float], float, None] = None,
+        fsed_poc: Union[List[float], float, None] = None,
+        fsed_doc: Union[List[float], float, None] = None,
+        fsed_dic: Union[List[float], float, None] = None,
+        fsed_ch4: Union[List[float], None] = None,
+        fsed_feii: Union[List[float], float, None] = None,
     ):
+        """
+        Parameters
+        ----------
+        n_zones : Union[int, None]
+            Number of zones.
+        active_zones : Union[int, None].
+            The zones to activate.
+        fsed_oxy : Union[List[float], None]
+            Sedimentation flux for oxygen.
+        fsed_rsi: Union[List[float], float, None]
+            Sedimentation flux for silica.
+        fsed_amm: Union[List[float], None]
+            Sedimentation flux for ammonia. 
+        fsed_nit: Union[List[float], None]
+            Sedimentation flux for nitrogen.
+        fsed_frp: Union[List[float], None]
+            Sedimentation flux for phosphorus.
+        fsed_pon: Union[List[float], float, None]
+            Sedimentation flux for particulate organic nitrogen.
+        fsed_don: Union[List[float], float, None]
+            Sedimentation flux for dissolved organic nitrogen.
+        fsed_pop: Union[List[float], float, None]
+            Sedimentation flux for particulate organic phosphorus.
+        fsed_dop: Union[List[float], float, None]
+            Sedimentation flux for dissolved organic phosphorus.
+        fsed_poc: Union[List[float], float, None]
+            Sedimentation flux for particulate organic carbon.
+        fsed_doc: Union[List[float], float, None]
+            Sedimentation flux for dissolved organic carbon.
+        fsed_dic: Union[List[float], float, None]
+            Sedimentation flux for dissolved inorganic carbon.
+        fsed_ch4: Union[List[float], None]
+            Sedimentation flux for methane.
+        fsed_feii: Union[List[float], float, None]
+            Sedimentation flux for iron.        
+        """
         super().__init__()
         self.init_params(
             NMLParam("n_zones", int, n_zones),
             NMLParam("active_zones", int, active_zones, is_list=True),
             NMLParam("fsed_oxy", float, fsed_oxy, is_list=True),
-            NMLParam("fsed_ch4", float, fsed_ch4, is_list=True),
+            NMLParam("fsed_rsi", float, fsed_rsi, is_list=True),
             NMLParam("fsed_amm", float, fsed_amm, is_list=True),
             NMLParam("fsed_nit", float, fsed_nit, is_list=True),
             NMLParam("fsed_frp", float, fsed_frp, is_list=True),
+            NMLParam("fsed_pon", float, fsed_pon, is_list=True),
+            NMLParam("fsed_don", float, fsed_don, is_list=True),
+            NMLParam("fsed_pop", float, fsed_pop, is_list=True),
+            NMLParam("fsed_dop", float, fsed_dop, is_list=True),
+            NMLParam("fsed_poc", float, fsed_poc, is_list=True),
+            NMLParam("fsed_doc", float, fsed_doc, is_list=True),
+            NMLParam("fsed_dic", float, fsed_dic, is_list=True),
+            NMLParam("fsed_ch4", float, fsed_ch4, is_list=True),
+            NMLParam("fsed_feii", float, fsed_feii, is_list=True),    
         )
         self.strict = True
 
@@ -377,6 +586,26 @@ class SilicaBlock(NMLBlock):
         fsed_rsi_variable: Union[str, None] = None,
         silica_reactant_variable: Union[str, None] = None,
     ):
+        """
+        Parameters
+        ----------
+        rsi_initial : Union[float, None]
+            Initial RSi concentration.
+        rsi_min : Union[float, None]
+            Minimum RSi concentration.
+        rsi_max : Union[float, None]
+            Maximum RSi concentration.
+        fsed_rsi : Union[float, None]
+            Reference sediment RSi flux at 20C.
+        ksed_rsi : Union[float, None]
+            Half-saturation oxygen concentration controlling Si flux.
+        theta_sed_rsi : Union[float, None]
+            Arrhenius temperature multiplier for sediment Si flux.
+        fsed_rsi_variable : Union[str, None]
+            Variable name to link to for spatially resolved sediment zones.
+        silica_reactant_variable : Union[str, None]
+            State variable used to control Si sediment release.
+        """
         super().__init__()
         self.init_params(
             NMLParam(
