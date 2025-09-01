@@ -198,6 +198,12 @@ class GLMSim():
 
     @property
     def sim_name(self):
+        """
+        Simulation name.
+
+        Updating `sim_name` will also update the `sim_name` parameter 
+        of the `glm_setup` block.
+        """
         return self._sim_name
 
     @sim_name.setter
@@ -422,7 +428,6 @@ class GLMSim():
 
         Returns a deep copy of the `GLMSim`. 
         """
-
         return copy.deepcopy(self)
 
     def rm_sim_dir(self):
@@ -523,6 +528,15 @@ class GLMSim():
 
     @classmethod
     def from_example_sim(cls, example_sim_name: str) -> "GLMSim":
+        """
+        Initialise an instance of `GLMSim` from an example simulation.
+
+        Parameters
+        ----------
+        example_sim_name : str
+            Name of an example simulation bundled with the glm-py 
+            package. See `get_example_sim_names()` for valid names.
+        """
         with resources.path(
             "glmpy.data.example_sims", f"{example_sim_name}.glmpy"
         ) as sim_file:
@@ -535,18 +549,30 @@ class GLMSim():
 
     @staticmethod
     def get_example_sim_names() -> List[str]:
+        """
+        Returns a list names for the example simulations bundled in 
+        the glm-py package.
+        """
         example_sims = []
         for file in resources.files("glmpy.data.example_sims").iterdir():
             if file.is_file() and file.name.endswith(".glmpy"):
                 example_sims.append(file.name.split(".")[0])
         return example_sims
 
-    def to_file(self, path: str):
-        _, file_extension = os.path.splitext(path)
+    def to_file(self, glmpy_path: str):
+        """
+        Save the `GLMSim` object to a .glmpy file
+
+        Parameters
+        ----------
+        glmpy_path : str
+            Output file path. Must have a .glmpy file extension.
+        """
+        _, file_extension = os.path.splitext(glmpy_path)
         if not file_extension == ".glmpy":
             raise ValueError(
-                "The `.glmpy` extension must be used with the to_file() "
-                f"method. Got {file_extension}"
+                "Invalid file name. Only `.glmpy` files can be used with " \
+                f"the `to_file()` method. Got extension: {file_extension}."
             )
         sim_json = {
             "glm_version": GLM_VERSION,
@@ -559,7 +585,7 @@ class GLMSim():
                 "aed": self.nml["aed"].to_dict()
             }
         }
-        with zipfile.ZipFile(path, "w") as zipf:
+        with zipfile.ZipFile(glmpy_path, "w") as zipf:
             zipf.writestr("glm_sim.json", json.dumps(sim_json, indent=2))
             for bc_name, bs_pd in self.bcs.items():
                 with io.StringIO() as buffer:
@@ -571,8 +597,22 @@ class GLMSim():
                     zipf.writestr(f"{dbase_name}.csv", buffer.getvalue())
 
     @classmethod
-    def from_file(cls, sim_file: str) -> "GLMSim":
-        with zipfile.ZipFile(sim_file, "r") as zipf:
+    def from_file(cls, glmpy_path: str) -> "GLMSim":
+        """
+        Initialise an instance of `GLMSim` from a .glmpy file.
+        
+        Parameters
+        ----------
+        glmpy_path : str
+            Path to .glmpy file.
+        """
+        _, file_extension = os.path.splitext(glmpy_path)
+        if not file_extension == ".glmpy":
+            raise ValueError(
+                "Invalid file. Only `.glmpy` files can be used with the " \
+                f"`from_file()` method. Got extension: {file_extension}."
+            )
+        with zipfile.ZipFile(glmpy_path, "r") as zipf:
             sim_json = json.loads(
                 zipf.read("glm_sim.json").decode("utf-8")
             )
@@ -596,27 +636,6 @@ class GLMSim():
             )
             return sim
 
-    # @staticmethod
-    # def from_file(path: str) -> "GLMSim":
-    #     _, file_extension = os.path.splitext(path)
-    #     if not file_extension == ".glmpy":
-    #         raise ValueError(
-    #             "The `.glmpy` extension must be used with the from_file() "
-    #             f"method. Got {file_extension}"
-    #         )
-    #     with open(path, "rb") as f:
-    #         return pickle.load(f)
-
-    # def to_file(self, path: str):
-    #     _, file_extension = os.path.splitext(path)
-    #     if not file_extension == ".glmpy":
-    #         raise ValueError(
-    #             "The `.glmpy` extension must be used with the to_file() "
-    #             f"method. Got {file_extension}"
-    #         )
-    #     with open(path, "wb") as f:
-    #         pickle.dump(self, f, pickle.HIGHEST_PROTOCOL)
-
     def run(
         self,
         write_log: bool = False,
@@ -624,6 +643,25 @@ class GLMSim():
         time_sim: bool = False,
         glm_path: Union[str, None] = "./glm",
     ):
+        """
+        Run the GLM simulation.
+
+        Validates simulation configuration, prepares input files, and 
+        then runs GLM.
+
+        Parameters
+        ----------
+        write_log : bool
+            Write a log file as GLM runs.
+        quiet : bool
+            Suppress the GLM terminal output.
+        time_sim : bool
+            Prints `"Starting {sim_name}"` and 
+            `"Finished {sim_name} in {total_duration}"`
+        glm_path : Union[str, None]
+            Path to the GLM binary. If `None`, attempts to use the GLM 
+            binary included in glm-py's built distribution. 
+        """
         self.validate()
         self.prepare_inputs()
         run_glm(
@@ -651,69 +689,103 @@ class GLMOutputs:
     def __init__(
         self,
         sim_dir: str,
-        out_dir: Union[str, None],
-        out_fn: Union[str, None],
+        out_dir: str = "output",
+        out_fn: str = "output",
         sim_name: str = "simulation",
     ):
-        out_dir = "output" if out_dir is None else out_dir
-        out_fn = "output" if out_fn is None else out_fn
-        self.sim_name = sim_name
-        self.outputs_path = os.path.join(sim_dir, out_dir)
-        files = os.listdir(self.outputs_path)
+        """
+        Return GLM output files.
 
-        self.csv_files = {}
+        Initialised at the completion of a GLM simulation to record the 
+        paths of output files. Provides methods to return the data in 
+        these files.
+
+        Attributes
+        ----------
+        sim_name : str
+            Name of the simulation.
+        """
+        self.sim_name = sim_name
+        self._outputs_path = os.path.join(sim_dir, out_dir)
+        files = os.listdir(self._outputs_path)
+
+        self._csv_files = {}
         for file in files:
             if file.endswith(".csv"):
-                self.csv_files[os.path.splitext(file)[0]] = os.path.join(
-                    self.outputs_path, file
+                self._csv_files[os.path.splitext(file)[0]] = os.path.join(
+                    self._outputs_path, file
                 )
         if not out_fn.endswith(".nc"):
             out_fn = out_fn + ".nc"
         if out_fn in files:
-            self.nc_path = os.path.join(self.outputs_path, out_fn)
+            self.nc_path = os.path.join(self._outputs_path, out_fn)
         else:
             self.nc_path = None
 
     def get_csv_basenames(self) -> List[str]:
-        return sorted(list(self.csv_files.keys()))
+        """
+        Returns a list of CSV basenames in the outputs directory.
+        """
+        return sorted(list(self._csv_files.keys()))
 
     def get_csv_path(self, csv_basename: str) -> str:
-        return self.csv_files[csv_basename]
+        """
+        Returns the full file path of a CSV in the outputs directory.
+
+        Parameters
+        ----------
+        csv_basename : str
+            The basename of a CSV in the outputs directory. To see 
+            possible basenames, use `get_csv_basenames()`.
+        """
+        return self._csv_files[csv_basename]
     
     def get_csv_pd(self, csv_basename: str) -> pd.DataFrame:
+        """
+        Returns a Pandas DataFrame of a CSV in the outputs directory.
+
+        Parameters
+        ----------
+        csv_basename : str
+            The basename of a CSV in the outputs directory. To see 
+            possible basenames, use `get_csv_basenames()`.
+        """
         return pd.read_csv(self.get_csv_path(csv_basename))
     
     def get_netcdf_path(self) -> str:
+        """
+        Returns the path of the netCDF output file.
+        """
         if self.nc_path is None:
             raise FileNotFoundError(
-                f"No output netCDF file found in {self.outputs_path}"
+                f"No output netCDF file found in {self._outputs_path}"
             )
         return self.nc_path
     
     def get_netcdf(self) -> netCDF4.Dataset:
+        """
+        Returns a `netCDF4.Dataset` instance of the netCDF output file.
+        """
         output_nc = netCDF4.Dataset(
             self.get_netcdf_path(), "r", format="NETCDF4"
         )
         return output_nc
     
     def zip_csv_outputs(self) -> str:
-        """Creates a zipfile of csv GLM outputs (csv outputs only).
+        """
+        Creates a zipfile of csv GLM outputs (csv outputs only).
 
-        Use this if you do not need a netcdf file of GLM outputs.
-
-        Returns
-        -------
-        str     Path to zipfile of GLM outputs.
+        Use this if you do not need a netCDF file of GLM outputs.
         """
         zip_name = f"{self.sim_name}_csv_outputs.zip"
         with zipfile.ZipFile(
-            os.path.join(self.outputs_path, zip_name), "w"
+            os.path.join(self._outputs_path, zip_name), "w"
         ) as z:
-            for csv_path in self.csv_files.values():
+            for csv_path in self._csv_files.values():
                 if os.path.exists(csv_path):
                     z.write(csv_path)
 
-        return os.path.join(self.outputs_path, zip_name)
+        return os.path.join(self._outputs_path, zip_name)
 
 
 class MultiSim:
