@@ -4,6 +4,16 @@ from glmpy.nml.nml import NML_REGISTER, NMLParam, NMLBlock, NML
 
 @NML_REGISTER.register_block()
 class ModelsBlock(NMLBlock):
+    """
+    `NMLBlock` subclass for the `aed_models` block.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
+    """
     nml_name = "aed"
     block_name = "aed_models"
 
@@ -27,6 +37,23 @@ class ModelsBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class TracerBlock(NMLBlock):
+    """
+    `NMLBlock` subclass for the `aed_tracer` block.
+
+    Modellers can use the aed_tracer to simulate a dissolved or 
+    particulate tracer (subject to transport processes only), or this 
+    can be optionally configured to account for decay, sedimentation 
+    and/or resuspension. This module also include an option to simulate 
+    water “retention time” where the water age increments once enters 
+    into the waterbody.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
+    """
     nml_name = "aed"
     block_name = "aed_tracer"
 
@@ -138,6 +165,16 @@ class TracerBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class NonCohesiveBlock(NMLBlock):
+    """
+    `NMLBlock` subclass for the `aed_noncohesive` block.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
+    """
     nml_name = "aed"
     block_name = "aed_noncohesive"
 
@@ -223,6 +260,23 @@ class NonCohesiveBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class OxygenBlock(NMLBlock):
+    """
+    `NMLBlock` subclass for the `aed_oxygen` block.
+
+    Dissolved oxygen (DO) dynamics are able to be simulated, accounting 
+    for atmospheric exchange and sediment oxygen demand, and through 
+    links to other modules will account for microbial use during 
+    organic matter mineralisation and nitrification, photosynthetic 
+    oxygen production and respiratory oxygen consumption, and 
+    respiration by other optional biotic components
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
+    """
     nml_name = "aed"
     block_name = "aed_oxygen"
 
@@ -281,6 +335,21 @@ class OxygenBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class SedFluxBlock(NMLBlock):
+    """
+    `NMLBlock` subclass for the `aed_sedflux` block.
+
+    An interface module designed to provide spatially variable sediment 
+    flux settings to key modules (e.g., OXY, OGM, NUT), and/or link 
+    these variables to the dynamic sediment biogeochemistry model (SDG).
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
+    """
+
     nml_name = "aed"
     block_name = "aed_sedflux"
 
@@ -309,6 +378,16 @@ class SedFluxBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class SedConst2DBlock(NMLBlock):
+    """
+    `NMLBlock` subclass for the `aed_sed_const2d` block.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
+    """
     nml_name = "aed"
     block_name = "aed_sed_const2d"
 
@@ -400,6 +479,16 @@ class SedConst2DBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class CarbonBlock(NMLBlock):
+    """
+    `NMLBlock` subclass for the `aed_carbon` block.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
+    """
     nml_name = "aed"
     block_name = "aed_carbon"
     
@@ -565,6 +654,7 @@ class CarbonBlock(NMLBlock):
             NMLParam("ch4_bub_disf2", float, ch4_bub_disf2),
             NMLParam("ch4_bub_disdp", float, ch4_bub_disdp, units="m"),
         )
+        self.strict = True
     
     def validate(self):
         self.params.validate()
@@ -572,6 +662,16 @@ class CarbonBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class SilicaBlock(NMLBlock):
+    """
+    `NMLBlock` subclass for the `aed_silica` block.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
+    """
     nml_name = "aed"
     block_name = "aed_silica"
 
@@ -633,6 +733,16 @@ class SilicaBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class NitrogenBlock(NMLBlock):
+    """
+    `NMLBlock` subclass for the `aed_nitrogen` block.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
+    """
     nml_name = "aed"
     block_name = "aed_nitrogen"
 
@@ -680,14 +790,100 @@ class NitrogenBlock(NMLBlock):
         fsed_amm_variable: Union[str, None] = None,
         fsed_nit_variable: Union[str, None] = None,
     ):
+        """
+        Parameters
+        ----------
+        amm_initial : Union[float, None]
+            Initial CH4 concentrations.
+        nit_initial : Union[float, None]
+            Initial NO3 concentrations.
+        n2o_initial : Union[float, None]
+            Initial N2O concentrations.
+        no2_initial : Union[float, None]
+            Initial NO2 concentrations.
+        rnitrif : Union[float, None]
+            Maximum reaction rate of nitrification at 20C.
+        knitrif : Union[float, None]
+            Half-saturation oxygen concentration for nitrification.
+        theta_nitrif : Union[float, None]
+            Undocumented parameter.
+        nitrif_reactant_variable : Union[str, None]
+            State variable to be consumed during nitrifition.
+        nitrif_ph_variable : Union[str, None]
+            Undocumented parameter.
+        simnitrfph : Union[bool, None]
+            Undocumented parameter.
+        rnh4o2 : Union[float, None]
+            Kinetic rate constant for nitratation.
+        rno2o2 : Union[float, None]
+            Kinetic rate constant for nitratation.
+        simn2o : Union[int, None]
+            Switch to use simple or advanced N reactions.
+        rn2o : Union[float, None]
+            Kinetic rate constant for N2O consumption
+        kpart_ammox: Union[float, None]
+            Partitioning parameter for the products of ammonium 
+            oxidation, based on O2 concentration.
+        kin_deamm : Union[float, None]
+            O2 concentration for inhibition of deammonification.
+        atm_n2o : Union[float, None]
+            Atmospheric N2O concentration.
+        n2o_piston_model : Union[int, None]
+            Undocumented parameter.
+        rnh4no2 : Union[float, None]
+            Kinetic rate constant for deammonification.
+        kanammox : Union[float, None]
+            Undocumented parameter.
+        kanmx_nit : Union[float, None]
+            Undocumented parameter.
+        kanmx_amm : Union[float, None]
+            Undocumented parameter.
+        rdenit : Union[float, None]
+            Maximum reaction rate of denitrification at 20C.
+        kdenit : Union[float, None]
+            Half-saturation oxygen concentration for denitrification.
+        theta_denit : Union[float, None]
+            Undocumented parameter.
+        rdnra : Union[float, None]
+            Undocumented parameter.
+        kdnra_oxy : Union[float, None]
+            Undocumented parameter.
+        simdrydeposition : Union[bool, None]
+            Undocumented parameter.
+        atm_din_dd : Union[float, None]
+            Undocumented parameter.
+        simwetdeposition : Union[bool, None]
+            Undocumented parameter.
+        atm_din_conc : Union[float, None]
+            Undocumented parameter.
+        ksed_amm : Union[float, None]
+            Undocumented parameter.
+        ksed_nit : Union[float, None]
+            Undocumented parameter.
+        fsed_n2o : Union[float, None]
+            Maximum N2O sediment flux rate.
+        ksed_n2o : Union[float, None]
+            O2 inhibition concentration parameter. 
+        theta_sed_amm : Union[float, None]
+            Undocumented parameter.
+        theta_sed_nit : Union[float, None]
+            Undocumented parameter.
+        fsed_amm : Union[float, None]
+            Sediment NH4 flux.
+        fsed_nit : Union[float, None]
+            Undocumented parameter.
+        fsed_amm_variable : Union[str, None]
+            Undocumented parameter.
+        fsed_nit_variable : Union[str, None]
+        """
         super().__init__()
         self.init_params(
-            NMLParam("amm_initial", float, amm_initial),
-            NMLParam("nit_initial", float, nit_initial),
+            NMLParam("amm_initial", float, amm_initial, units="mmol m^{-3}"),
+            NMLParam("nit_initial", float, nit_initial, units="mmol m^{-3}"),
             NMLParam("n2o_initial", float, n2o_initial),
             NMLParam("no2_initial", float, no2_initial),
             NMLParam("rnitrif", float, rnitrif, units="day^{-1}"),
-            NMLParam("knitrif", float, knitrif),
+            NMLParam("knitrif", float, knitrif, units="mmol m^{-3}"),
             NMLParam("theta_nitrif", float, theta_nitrif),
             NMLParam(
                 "nitrif_reactant_variable", str, nitrif_reactant_variable
@@ -696,7 +892,7 @@ class NitrogenBlock(NMLBlock):
             NMLParam("simnitrfph", bool, simnitrfph),
             NMLParam("rnh4o2", float, rnh4o2, units="mmol^{-1} m^{3} s^{-1}"),
             NMLParam("rno2o2", float, rno2o2, units="mmol^{-1} m^{3} s^{-1}"),
-            NMLParam("simn2o", int, simn2o),
+            NMLParam("simn2o", int, simn2o, val_switch=[0, 1, 2]),
             NMLParam("rn2o", float, rn2o, units="s^{-1}"),
             NMLParam("kpart_ammox", float, kpart_ammox, units="mmol m^{-3}"),
             NMLParam("kin_deamm", float, kin_deamm, units="mmol m^{-3}"),
@@ -708,7 +904,7 @@ class NitrogenBlock(NMLBlock):
             NMLParam("kanammox", float, kanammox),
             NMLParam("kanmx_nit", float, kanmx_nit),
             NMLParam("kanmx_amm", float, kanmx_amm),
-            NMLParam("rdenit", float, rdenit),
+            NMLParam("rdenit", float, rdenit, units="day^{-1}"),
             NMLParam("kdenit", float, kdenit, units="mmol m^{-3}"),
             NMLParam("theta_denit", float, theta_denit),
             NMLParam("rdnra", float, rdnra),
@@ -725,12 +921,11 @@ class NitrogenBlock(NMLBlock):
             NMLParam("ksed_n2o", float, ksed_n2o, units="mmol m^{-2} y^{-1}"),
             NMLParam("theta_sed_amm", float, theta_sed_amm),
             NMLParam("theta_sed_nit", float, theta_sed_nit),
-            NMLParam("fsed_amm", float, fsed_amm),
+            NMLParam("fsed_amm", float, fsed_amm, units="mmol m^{-2} d^{-1}"),
             NMLParam("fsed_nit", float, fsed_nit),
             NMLParam("fsed_amm_variable", str, fsed_amm_variable),
             NMLParam("fsed_nit_variable", str, fsed_nit_variable),
         )
-
         self.strict = True
 
     def validate(self):
@@ -739,6 +934,16 @@ class NitrogenBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class PhosphorusBlock(NMLBlock):
+    """
+    `NMLBlock` subclass for the `aed_phosphorus` block.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
+    """
     nml_name = "aed"
     block_name = "aed_phosphorus"
 
@@ -767,6 +972,60 @@ class PhosphorusBlock(NMLBlock):
         simwetdeposition: Union[bool, None] = None,
         atm_frp_conc: Union[float, None] = None,
     ):
+        """
+        Parameters
+        ----------
+        frp_initial : Union[float, None]
+            Initial PO4 concentration.
+        frp_min : Union[float, None]
+            Minimum PO4 concentration.
+        frp_max : Union[float, None]
+            Maximum PO4 concentration.
+        fsed_frp : Union[float, None]
+            Sediment PO4 flux at 20C.
+        ksed_frp : Union[float, None]
+            Half-saturation oxygen concentration controlling O2 flux.
+        theta_sed_frp : Union[float, None]
+            Arrhenius temperature multiplier for sediment O2 flux.
+        phosphorus_reactant_variable : Union[str, None]
+            State variable used to control PO4 sediment release.
+        fsed_frp_variable : Union[str, None]
+            Variable name to link to for spatially resolved sediment 
+            zones.
+        simpo4adsorption : Union[bool, None]
+            Option to allow include absorption.
+        ads_use_external_tss : Union[bool, None]
+            Option to use externally simulated TSS concentration as 
+            sorbent.
+        po4sorption_target_variable : Union[str, None]
+            Variable name to link to for PO4 sorbent.
+        po4adsorptionmodel : Union[int, None]
+            Selection of PO4 sorption method. `1` for Ji (2008), `2` 
+            for Choa et al (2010).
+        kpo4p : Union[float, None]
+            Sorption partitioning coefficient.
+        kadsratio : Union[float, None]
+            Ratio of adsorption and desorp-tion rate coefficients (for 
+            `po4adsorptionmodel` equals `2`).
+        qmax : Union[float, None]
+            Maximum adsorption capacity (for `po4adsorptionmodel` 
+            equals `2`).
+        w_po4ads : Union[float, None]
+            Sedimentation velocity of `PO_{4}^{ads}`.
+        ads_use_ph : Union[bool, None]
+            Option to include pH control on sorption coefficient. 
+            Function based on pH sorption control on Fe minerals.
+        ph_variable : Union[str, None]
+            Variable name to link to for pH to influence sorption.
+        simdrydeposition : Union[bool, None]
+            Option to include dry (particulate) deposition of P.
+        atm_pip_dd : Union[float, None]
+            `PO_{4}^{ads}` deposition rate.
+        simwetdeposition : Union[bool, None]
+            Option to include wet deposition of P through rainfall.
+        atm_frp_conc : Union[float, None]
+            PO4 concentration in rainfall.
+        """
         super().__init__()
         self.init_params(
             NMLParam("frp_initial", float, frp_initial, units="mmol P m^{-3}"),
@@ -812,6 +1071,22 @@ class PhosphorusBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class OrganicMatterBlock(NMLBlock):
+    """
+    `NMLBlock` subclass for the `aed_organic_matter` block.
+
+    Organic matter variables cover the C, N & P stored in the dissolved 
+    and particulate organic matter pools. This module optionally also 
+    supports depiction of “labile” vs “refractory” fractions of organic 
+    matter, including the breakdown and hydrolysis process, 
+    photo-degradation and mineralisation.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
+    """
     nml_name = "aed"
     block_name = "aed_organic_matter"
 
@@ -883,6 +1158,156 @@ class OrganicMatterBlock(NMLBlock):
         diag_level: Union[int, None] = None,
         extra_diag: Union[bool, None] = None,
     ):
+        """
+        Parameters
+        ----------
+        poc_initial : Union[float, None]
+            Initial POC concentration.
+        doc_initial : Union[float, None]
+            Initial DOC concentration.
+        pon_initial : Union[float, None]
+            Initial PON concentration.
+        don_initial : Union[float, None]
+            Initial DON concentration.
+        pop_initial : Union[float, None]
+            Initial POP concentration.
+        dop_initial : Union[float, None]
+            Initial DOP concentration.
+        docr_initial : Union[float, None]
+            Initial DOCR concentration. Required if `simrpools` is 
+            `True`.
+        donr_initial : Union[float, None]
+            Initial DONR concentration. Required if `simrpools` is 
+            `True`.
+        dopr_initial : Union[float, None]
+            Initial DOPR concentration. Required if `simrpools` is 
+            `True`.
+        cpom_initial : Union[float, None]
+            Initial CPOM concentration. Required if `simrpools` is 
+            `True`.
+        rdom_minerl : Union[float, None]
+            Reference DOM mineralisation rate at 20C.
+        rpoc_hydrol : Union[float, None]
+            Reference POC hydrolysis/breakdown rate at 20C.
+        rpon_hydrol : Union[float, None]
+            Reference PON hydrolysis/breakdown rate at 20C.
+        rpop_hydrol : Union[float, None]
+            Reference POP hydrolysis/breakdown rate at 20C.
+        theta_hydrol : Union[float, None]
+            Arrhenius temperature scaling coefficient for POC 
+            hydrolysis.
+        theta_minerl : Union[float, None]
+            Arrhenius temperature scaling coefficient for DOM 
+            mineralisation.
+        kpom_hydrol : Union[float, None]
+            Half-saturation O2 concentration for POM hydrolysis.
+        kdom_minerl : Union[float, None]
+            Half-saturation O2 concentration for DOM hydrolysis.
+        simdenitrification : Union[int, None]
+            Option to select denitrification sub-model.
+        dom_miner_oxy_reactant_var : Union[str, None]
+            State variable used to control aerobic mineralisation.
+        dom_miner_nit_reactant_var : Union[str, None]
+            State variable used to control nitrate reduction.
+        dom_miner_no2_reactant_var : Union[str, None]
+            State variable used to control nitrite reduction.
+        dom_miner_n2o_reactant_var : Union[str, None]
+            State variable used to control N2O reduction.
+        dom_miner_fe3_reactant_var : Union[str, None]
+            State variable used to control iron reduction.
+        dom_miner_so4_reactant_var : Union[str, None]
+            State variable used to control sulfate reduction.
+        dom_miner_ch4_reactant_var : Union[str, None]
+            State variable to receive methan.
+        doc_miner_product_variable : Union[str, None]
+            State variable to receive DIC.
+        don_miner_product_variable : Union[str, None]
+            State variable to receive NH4.
+        dop_miner_product_variable : Union[str, None]
+            State variable to receive PO4.
+        f_an : Union[float, None]
+            Undocumented parameter.
+        k_nit : Union[float, None]
+            Undocumented parameter.
+        simrpools : Union[bool, None]
+            Option to include refractory OM pools, including DOM_{R} 
+            and CPOM.
+        rdomr_minerl : Union[float, None]
+            Reference DOM_{R} mineralisation rate at 20C.
+        rcpom_bdown : Union[float, None]
+            Reference CPOM hydrolysis/breakdown rate at 20C.
+        x_cpom_n : Union[float, None]
+            CPOM nitrogen stoichiometry.
+        x_cpom_p : Union[float, None]
+            CPOM phosphorus  stoichiometry.
+        kedom : Union[float, None]
+            Specific light attenuation coefficient for DOM.
+        kepom : Union[float, None]
+            Specific light attenuation coefficient for POM.
+        kedomr : Union[float, None]
+            Specific light attenuation coefficient for DOM_{R}.
+        kecpom : Union[float, None]
+            Specific light attenuation coefficient for CPOM.
+        simphotolysis : Union[bool, None]
+            Option to include photo-mineralisation of DOM_{R}.
+        photo_c : Union[float, None]
+            Photolysis constant.
+        settling : Union[int, None]
+            Option to set the method of settling for POM and CPOM.
+        w_pom : Union[float, None]
+            Sedimentation velocity of POM detrital particles. Used if 
+            `settling` is `1` or `2`.
+        d_pom : Union[float, None]
+            Diameter of POM detrital particles. Used if `settling` is 
+            `3`.
+        rho_pom : Union[float, None]
+            Density of POM detrital particles. Used if `settling` is 
+            `3`.
+        w_cpom : Union[float, None]
+            Sedimentation velocity of CPOM particles. Used if 
+            `settling` is `1` or `2`.
+        d_cpom : Union[float, None]
+            Diameter of CPOM particles. Used if `settling` is `3`.
+        rho_cpom : Union[float, None]
+            Density of CPOM detrital particles. Used if `settling` is 
+            `3`.
+        resuspension : Union[int, None]
+            Option to set the method of resuspension for POM and CPOM.
+        resus_link : Union[str, None]
+            Diagnostic variable to link to for resuspension rate.
+        sedimentomfrac : Union[float, None]
+            Fraction by weight of surficial sediment organic matter.
+        xsc : Union[float, None]
+            Stoichiometry of sedment particulate carbon.
+        xsn : Union[float, None]
+            Stoichiometry of sedment particulate nitrogen.
+        xsp : Union[float, None]
+            Stoichiometry of sedment particulate phosphorus.
+        fsed_doc : Union[float, None]
+            Reference sediment DOC flux at 20C.
+        fsed_don : Union[float, None]
+            Reference sediment DON flux at 20C.
+        fsed_dop : Union[float, None]
+            Reference sediment DOP flux at 20C.
+        ksed_dom : Union[float, None]
+            Half-saturation oxygen concentraion controlling DOM 
+            sediment flux.
+        theta_sed_dom : Union[float, None]
+            Arrhenius temperature multiplier for sediment DOM flux.
+        fsed_doc_variable : Union[str, None]
+            Variable name to link to for spatially resolved sediment 
+            zones.
+        fsed_don_variable : Union[str, None]
+            Variable name to link to for spatially resolved sediment 
+            zones.
+        fsed_dop_variable : Union[str, None]
+            Variable name to link to for spatially resolved sediment 
+            zones.
+        diag_level : Union[int, None]
+            Undocumented parameter.
+        extra_diag : Union[bool, None]
+            Undocumented parameter.
+        """
         super().__init__()
         self.init_params(
             NMLParam("poc_initial", float, poc_initial, units="mmol C m^{-3}"),
@@ -891,9 +1316,9 @@ class OrganicMatterBlock(NMLBlock):
             NMLParam("don_initial", float, don_initial, units="mmol C m^{-3}"),
             NMLParam("pop_initial", float, pop_initial, units="mmol P m^{-3}"),
             NMLParam("dop_initial", float, dop_initial, units="mmol P m^{-3}"),
-            NMLParam("docr_initial", float, docr_initial),
-            NMLParam("donr_initial", float, donr_initial),
-            NMLParam("dopr_initial", float, dopr_initial),
+            NMLParam("docr_initial", float, docr_initial, units="mmol m^{-3}"),
+            NMLParam("donr_initial", float, donr_initial, units="mmol m^{-3}"),
+            NMLParam("dopr_initial", float, dopr_initial, units="mmol m^{-3}"),
             NMLParam(
                 "cpom_initial", float, cpom_initial, units="mmol C m^{-3}"
             ),
@@ -967,14 +1392,14 @@ class OrganicMatterBlock(NMLBlock):
             ),
             NMLParam("simphotolysis", bool, simphotolysis),
             NMLParam("photo_c", float, photo_c),
-            NMLParam("settling", int, settling),
+            NMLParam("settling", int, settling, val_switch=[0, 1, 2, 3]),
             NMLParam("w_pom", float, w_pom, units="m d^{-1}"),
             NMLParam("d_pom", float, d_pom, units="m"),
             NMLParam("rho_pom", float, rho_pom, units="kg m^{-3}"),
             NMLParam("w_cpom", float, w_cpom, units="m d^{-1}"),
             NMLParam("d_cpom", float, d_cpom, units="m"),
             NMLParam("rho_cpom", float, rho_cpom, units="kg d^{-3}"),
-            NMLParam("resuspension", int, resuspension),
+            NMLParam("resuspension", int, resuspension, val_switch=[0, 1]),
             NMLParam("resus_link", str, resus_link),
             NMLParam(
                 "sedimentomfrac",
@@ -1025,6 +1450,22 @@ class OrganicMatterBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class PhytoplanktonBlock(NMLBlock):
+    """
+    `NMLBlock` subclass for the `aed_phytoplankton` block.
+
+    Highly customisable phytoplankton module for simulating change in 
+    algae, cyano-bacteria and chl-a, including phytoplankton 
+    production/respiration, nutrient uptake, excretion, vertical 
+    movement (eg buoyancy control), and grazing effects. Benthic 
+    phytoplankton may also be optionally configured.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
+    """
     nml_name = "aed"
     block_name = "aed_phytoplankton"
 
@@ -1062,14 +1503,81 @@ class PhytoplanktonBlock(NMLBlock):
         diag_level: Union[int, None] = None,
         extra_diag: Union[bool, None] = None,
     ):
+        """
+        Parameters
+        ----------
+        num_phytos : Union[int, None] 
+            Number of phytoplankton groups/species.
+        the_phytos : Union[List[int], int, None] 
+            Set of chosen group IDs within the database file.
+        settling : Union[List[int], int, None] 
+            Option to set the method of settling for PHY group alpha.
+        do_mpb : Union[int, None] 
+            Option to include MPB as a simulated benthic variable.
+        r_mpbg : Union[float, None] 
+            Maximum growth rate of MPB.
+        r_mpbr : Union[float, None] 
+            Dark respiration rate of MPB.
+        i_kmpb : Union[float, None] 
+            Half saturation constant for light limitation of growth.
+        mpb_max : Union[float, None] 
+            Maximum biomass density of MPB.
+        resuspension : Union[float, None] 
+            Fraction to set the amount of resuspension for PHY group 
+            alpha.
+        n_zones : Union[int, None] 
+            Number of benthic zones where MPB is active.
+        active_zones : Union[int, None] 
+            Set of benthic zones with MPB active.
+        resus_link : Union[str, None] 
+            Undocumented parameter.
+        p_excretion_target_variable : Union[str, None] 
+            State variable to add DOP excretion.
+        n_excretion_target_variable : Union[str, None] 
+            State variable to add DON excretion.
+        c_excretion_target_variable : Union[str, None] 
+            State variable to add DOC excretion.
+        si_excretion_target_variable : Union[str, None] 
+            State variable to add Si excretion.
+        p_mortality_target_variable : Union[str, None] 
+            State variable to add POP mortality
+        n_mortality_target_variable : Union[str, None] 
+            State variable to add PON mortality.
+        c_mortality_target_variable : Union[str, None] 
+            State variable to add POC mortality.
+        si_mortality_target_variable : Union[str, None] 
+            State variable to add Si mortality.
+        p1_uptake_target_variable : Union[str, None] 
+            State variable to provide FRP for growth.
+        n1_uptake_target_variable : Union[str, None] 
+            State variable to provide NO3 for growth.
+        n2_uptake_target_variable : Union[str, None] 
+            State variable to provide NH4 for growth.
+        si_uptake_target_variable : Union[str, None] 
+            State variable to provide Si for growth.
+        do_uptake_target_variable : Union[str, None] 
+            State variable to incremen during growth.
+        c_uptake_target_variable : Union[str, None] 
+            State variable to provide DIC during growth.
+        dbase : Union[str, None] 
+            Phytoplankton parameter database file.
+        min_rho : Union[float, None] 
+            Minimum cellular density. Used if `settling` is `3`.
+        max_rho : Union[float, None] 
+            Maximum cellular density.  Used if `settling` is `3`.
+        diag_level : Union[int, None] 
+            Extent of diagnostic output.
+        extra_diag : Union[bool, None] 
+            Undocumented parameter.
+        """
         super().__init__()
         self.init_params(
             NMLParam("num_phytos", int, num_phytos),
             NMLParam("the_phytos", int, the_phytos, is_list=True),
             NMLParam("settling", int, settling, is_list=True),
             NMLParam("do_mpb", int, do_mpb),
-            NMLParam("r_mpbg", float, r_mpbg),
-            NMLParam("r_mpbr", float, r_mpbr),
+            NMLParam("r_mpbg", float, r_mpbg, units="day^{-1}"),
+            NMLParam("r_mpbr", float, r_mpbr, units="day^{-1}"),
             NMLParam("i_kmpb", float, i_kmpb, units="W m^{-2}"),
             NMLParam("mpb_max", float, mpb_max, units="mmol C m^{-2}"),
             NMLParam("resuspension", float, resuspension),
@@ -1077,50 +1585,89 @@ class PhytoplanktonBlock(NMLBlock):
             NMLParam("active_zones", int, active_zones),
             NMLParam("resus_link", str, resus_link),
             NMLParam(
-                "p_excretion_target_variable", str, p_excretion_target_variable
+                "p_excretion_target_variable", 
+                str, 
+                p_excretion_target_variable,
+                units="mmol P m^{-3}"
             ),
             NMLParam(
-                "n_excretion_target_variable", str, n_excretion_target_variable
+                "n_excretion_target_variable", 
+                str, 
+                n_excretion_target_variable,
+                units="mmol N m^{-3}"
             ),
             NMLParam(
-                "c_excretion_target_variable", str, c_excretion_target_variable
+                "c_excretion_target_variable", 
+                str, 
+                c_excretion_target_variable,
+                units="mmol C m^{-3}"
             ),
             NMLParam(
                 "si_excretion_target_variable",
                 str,
                 si_excretion_target_variable,
+                units="mmol Si m^{-3}"
             ),
             NMLParam(
-                "p_mortality_target_variable", str, p_mortality_target_variable
+                "p_mortality_target_variable", 
+                str, 
+                p_mortality_target_variable,
+                units="mmol P m^{-3}"
             ),
             NMLParam(
-                "n_mortality_target_variable", str, n_mortality_target_variable
+                "n_mortality_target_variable", 
+                str, 
+                n_mortality_target_variable,
+                units="mmol N m^{-3}"
+
             ),
             NMLParam(
-                "c_mortality_target_variable", str, c_mortality_target_variable
+                "c_mortality_target_variable", 
+                str, 
+                c_mortality_target_variable,
+                units="mmol C m^{-3}"
             ),
             NMLParam(
                 "si_mortality_target_variable",
                 str,
                 si_mortality_target_variable,
+                units="mmol Si m^{-3}"
             ),
             NMLParam(
-                "p1_uptake_target_variable", str, p1_uptake_target_variable
+                "p1_uptake_target_variable", 
+                str, 
+                p1_uptake_target_variable,
+                units="mmol P m^{-3}"
             ),
             NMLParam(
-                "n1_uptake_target_variable", str, n1_uptake_target_variable
+                "n1_uptake_target_variable", 
+                str, 
+                n1_uptake_target_variable,
+                units="mmol N m^{-3}"
             ),
             NMLParam(
-                "n2_uptake_target_variable", str, n2_uptake_target_variable
+                "n2_uptake_target_variable", 
+                str, 
+                n2_uptake_target_variable,
+                units="mmol N m^{-3}"
             ),
             NMLParam(
-                "si_uptake_target_variable", str, si_uptake_target_variable
+                "si_uptake_target_variable", 
+                str, 
+                si_uptake_target_variable,
+                units="mmol Si m^{-3}"
             ),
             NMLParam(
-                "do_uptake_target_variable", str, do_uptake_target_variable
+                "do_uptake_target_variable", 
+                str, 
+                do_uptake_target_variable,
+                units="mmol O_{2} m^{-3}"
             ),
             NMLParam(
-                "c_uptake_target_variable", str, c_uptake_target_variable
+                "c_uptake_target_variable", 
+                str, 
+                c_uptake_target_variable,
+                units="mmol C m^{-3}"
             ),
             NMLParam("dbase", str, dbase, is_dbase_fl=True),
             NMLParam("min_rho", float, min_rho),
@@ -1138,13 +1685,28 @@ class PhytoplanktonBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class ZooplanktonBlock(NMLBlock):
+    """
+    `aed_zooplankton` block.
+
+    Simulates different size classes of zooplankton, accounting for 
+    carbon and nutrient assimilation from grazing, carbon loss via 
+    respiration, excretion of DOM, faecal pellet production, mortality, 
+    and predation by larger organisms.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
+    """
     nml_name = "aed"
     block_name = "aed_zooplankton"
 
     def __init__(
         self,
         num_zoops: Union[int, None] = None,
-        the_zoops: Union[List[int], None] = None,
+        the_zoops: Union[List[int], int, None] = None,
         dn_target_variable: Union[str, None] = None,
         pn_target_variable: Union[str, None] = None,
         dp_target_variable: Union[str, None] = None,
@@ -1154,6 +1716,31 @@ class ZooplanktonBlock(NMLBlock):
         dbase: Union[str, None] = None,
         simzoopfeedback: Union[bool, None] = None,
     ):
+        """
+        Parameters
+        ----------
+        num_zoops : Union[int, None]
+            Number of zooplankton groups.
+        the_zoops : Union[List[int], int, None]
+            List of ID's of groups in aed_zoo_pars database. Length
+            must equal `num_phyto`. 
+        dn_target_variable : Union[str, None]
+            Undocumented parameter.
+        pn_target_variable : Union[str, None]
+            Undocumented parameter.
+        dp_target_variable : Union[str, None]
+            Undocumented parameter.
+        pp_target_variable : Union[str, None]
+            Undocumented parameter.
+        dc_target_variable : Union[str, None]
+            Undocumented parameter.
+        pc_target_variable : Union[str, None]
+            Undocumented parameter.
+        dbase : Union[str, None]
+            Undocumented parameter.
+        simzoopfeedback : Union[bool, None]
+            Undocumented parameter.
+        """
         super().__init__()
         self.init_params(
             NMLParam("num_zoops", int, num_zoops),
@@ -1175,6 +1762,19 @@ class ZooplanktonBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class MacrophyteBlock(NMLBlock):
+    """
+    `aed_macrophyte` block.
+
+    Simulates benthic habitat and/or growth of macrophytes such as 
+    seagrasses in specified sediment zones.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
+    """
     nml_name = "aed"
     block_name = "aed_macrophyte"
 
@@ -1188,6 +1788,24 @@ class MacrophyteBlock(NMLBlock):
         simmacfeedback: Union[bool, None] = None,
         dbase: Union[str, None] = None,
     ):
+        """
+        Parameters
+        ----------
+        num_mphy : Union[int, None]
+            Undocumented parameter.
+        the_mphy : Union[List[int], None]
+            Undocumented parameter.
+        n_zones : Union[int, None]
+            Undocumented parameter.
+        active_zones : Union[List[int], None]
+            Undocumented parameter.
+        simstaticbiomass : Union[bool, None]
+            Undocumented parameter.
+        simmacfeedback : Union[bool, None]
+            Undocumented parameter.
+        dbase : Union[str, None]
+            Undocumented parameter.
+        """
         super().__init__()
         self.init_params(
             NMLParam("num_mphy", int, num_mphy),
@@ -1207,6 +1825,20 @@ class MacrophyteBlock(NMLBlock):
 
 @NML_REGISTER.register_block()
 class TotalsBlock(NMLBlock):
+    """
+    `NMLBlock` subclass for the `aed_totals` block.
+
+    `aed_totals` is a summary module, allowing users to “sum-up” 
+    component variables from other modules into a total, for example, 
+    to compute TN, TP or TSS.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
+    """
     nml_name = "aed"
     block_name = "aed_totals"
 
@@ -1222,6 +1854,28 @@ class TotalsBlock(NMLBlock):
         tss_vars: Union[List[str], str, None] = None,
         tss_varscale: Union[List[float], float, None] = None,
     ):
+        """
+        Parameters
+        ----------
+        outputlight : Union[bool, None]
+            Undocumented parameter.
+        tn_vars : Union[List[str], str, None]
+            Undocumented parameter.
+        tn_varscale : Union[List[float], float, None]
+            Undocumented parameter.
+        tp_vars : Union[List[str], str, None]
+            Undocumented parameter.
+        tp_varscale : Union[List[float], float, None]
+            Undocumented parameter.
+        toc_vars : Union[List[str], str, None]
+            Undocumented parameter.
+        toc_varscale : Union[List[float], float, None]
+            Undocumented parameter.
+        tss_vars : Union[List[str], str, None]
+            Undocumented parameter.
+        tss_varscale : Union[List[float], float, None]
+            Undocumented parameter.
+        """
         super().__init__()
         self.init_params(
             NMLParam("outputlight", bool, outputlight),
@@ -1242,6 +1896,16 @@ class TotalsBlock(NMLBlock):
 
 @NML_REGISTER.register_nml()
 class AEDNML(NML):
+    """
+    `NML` subclass for the `aed` .NML file.
+
+    Attributes
+    ----------
+    blocks : Dict[str, NMLBlock]
+        Dictionary of `NMLBlock` objects.
+    strict : bool
+        Switch to turn on or off block and parameter validation.
+    """
     nml_name = "aed"
 
     def __init__(
@@ -1262,6 +1926,25 @@ class AEDNML(NML):
         aed_macrophyte: MacrophyteBlock = MacrophyteBlock(),
         aed_totals: TotalsBlock = TotalsBlock(),
     ):
+        """
+        Parameters
+        ----------
+        aed_models : ModelsBlock
+        aed_tracer : TracerBlock
+        aed_noncohesive : NonCohesiveBlock
+        aed_oxygen : OxygenBlock
+        aed_carbon : CarbonBlock
+        aed_sedflux : SedFluxBlock
+        aed_sed_const2d : SedConst2DBlock
+        aed_silica : SilicaBlock
+        aed_nitrogen : NitrogenBlock
+        aed_phosphorus : PhosphorusBlock
+        aed_organic_matter : OrganicMatterBlock
+        aed_phytoplankton : PhytoplanktonBlock
+        aed_zooplankton : ZooplanktonBlock
+        aed_macrophyte : MacrophyteBlock
+        aed_totals : TotalsBlock
+        """
         super().__init__()
         self.init_blocks(
             aed_models,
@@ -1279,7 +1962,6 @@ class AEDNML(NML):
             aed_totals,
             aed_zooplankton,
             aed_macrophyte,
-            
         )
         self.strict = True
 

@@ -5,12 +5,14 @@ from glmpy.nml.nml import NML_REGISTER, NMLParam, NMLBlock, NML
 @NML_REGISTER.register_block()
 class GLMSetupBlock(NMLBlock):
     """
-    `glm_setup` parameters.
+    `NMLBlock` subclass for the `glm_setup` block.
 
     Attributes
     ----------
     params : Dict[str, NMLParam]
         Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
     """
 
     nml_name = "glm"
@@ -62,19 +64,20 @@ class GLMSetupBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
-        """Validate block parameters."""
         self.params.validate()
 
 
 @NML_REGISTER.register_block()
 class TimeBlock(NMLBlock):
     """
-    `time` parameters.
+    `NMLBlock` subclass for the `time` block.
 
     Attributes
     ----------
     params : Dict[str, NMLParam]
         Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
     """
     nml_name = "glm"
     block_name = "time"
@@ -129,7 +132,6 @@ class TimeBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
-        """Validate block parameters."""
         self.params.validate()
         self.val_incompat_param_values("timefmt", 2, "stop", None)
         self.val_incompat_param_values("timefmt", 3, "num_days", None)
@@ -138,12 +140,14 @@ class TimeBlock(NMLBlock):
 @NML_REGISTER.register_block()
 class MorphometryBlock(NMLBlock):
     """
-    `morphometry` parameters.
+    `NMLBlock` subclass for the `morphometry` block.
 
     Attributes
     ----------
     params : Dict[str, NMLParam]
         Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
     """
     nml_name = "glm"
     block_name = "morphometry"
@@ -208,7 +212,6 @@ class MorphometryBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
-        """Validate block parameters."""
         self.params.validate()
         self.val_list_len_params("bsn_vals", "h")
         self.val_list_len_params("bsn_vals", "a")
@@ -217,12 +220,14 @@ class MorphometryBlock(NMLBlock):
 @NML_REGISTER.register_block()
 class InitProfilesBlock(NMLBlock):
     """
-    `init_profiles` parameters.
+    `NMLBlock` subclass for the `init_profiles` block.
 
     Attributes
     ----------
     params : Dict[str, NMLParam]
         Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
     """
     nml_name = "glm"
     block_name = "init_profiles"
@@ -295,7 +300,6 @@ class InitProfilesBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
-        """Validate block parameters."""
         self.params.validate()
         self.val_list_len_params("num_depths", "the_depths")
         self.val_list_len_params("num_depths", "the_temps")
@@ -306,12 +310,14 @@ class InitProfilesBlock(NMLBlock):
 @NML_REGISTER.register_block()
 class MixingBlock(NMLBlock):
     """
-    `mixing` parameters.
+    `NMLBlock` subclass for the `mixing` block.
 
     Attributes
     ----------
     params : Dict[str, NMLParam]
         Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
     """
     nml_name = "glm"
     block_name = "mixing"
@@ -377,19 +383,20 @@ class MixingBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
-        """Validate block parameters."""
         self.params.validate()
 
 
 @NML_REGISTER.register_block()
 class WQSetupBlock(NMLBlock):
     """
-    `wq_setup` parameters.
+    `NMLBlock` subclass for the `wq_setup` block.
 
     Attributes
     ----------
     params : Dict[str, NMLParam]
         Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
     """
     nml_name = "glm"
     block_name = "wq_setup"
@@ -441,19 +448,20 @@ class WQSetupBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
-        """Validate block parameters."""
         self.params.validate()
 
 
 @NML_REGISTER.register_block()
 class OutputBlock(NMLBlock):
     """
-    `output` parameters.
+    `NMLBlock` subclass for the `output` block.
 
     Attributes
     ----------
     params : Dict[str, NMLParam]
         Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
     """
     nml_name = "glm"
     block_name = "output"
@@ -538,7 +546,6 @@ class OutputBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
-        """Validate block parameters."""
         self.params.validate()
         self.val_list_len_params("csv_point_nlevs", "csv_point_at")
         self.val_list_len_params("csv_point_nlevs", "csv_point_frombot")
@@ -549,12 +556,14 @@ class OutputBlock(NMLBlock):
 @NML_REGISTER.register_block()
 class LightBlock(NMLBlock):
     """
-    `light` parameters.
+    `NMLBlock` subclass for the `light` block.
 
     Attributes
     ----------
     params : Dict[str, NMLParam]
         Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
     """
     nml_name = "glm"
     block_name = "light"
@@ -605,7 +614,6 @@ class LightBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
-        """Validate block parameters."""
         self.params.validate()
         self.val_incompat_param_values("light_mode", 1, "n_bands", None)
         self.val_incompat_param_values("light_mode", 0, "kw", None)
@@ -617,12 +625,14 @@ class LightBlock(NMLBlock):
 @NML_REGISTER.register_block()
 class BirdModelBlock(NMLBlock):
     """
-    `bird_model` parameters.
+    `NMLBlock` subclass for the `bird_model` block.
 
     Attributes
     ----------
     params : Dict[str, NMLParam]
         Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
     """
     nml_name = "glm"
     block_name = "bird_model"
@@ -665,19 +675,20 @@ class BirdModelBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
-        """Validate block parameters."""
         self.params.validate()
 
 
 @NML_REGISTER.register_block()
 class SedimentBlock(NMLBlock):
     """
-    `sediment` parameters.
+    `NMLBlock` subclass for the `sediment` block.
 
     Attributes
     ----------
     params : Dict[str, NMLParam]
         Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
     """
     nml_name = "glm"
     block_name = "sediment"
@@ -761,7 +772,6 @@ class SedimentBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
-        """Validate block parameters."""
         self.params.validate()
         self.val_incompat_param_values(
             "benthic_mode",
@@ -792,7 +802,7 @@ class SedimentBlock(NMLBlock):
 @NML_REGISTER.register_block()
 class SnowIceBlock(NMLBlock):
     """
-    `snowice` parameters.
+    `snowice` block.
 
     Attributes
     ----------
@@ -840,19 +850,20 @@ class SnowIceBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
-        """Validate block parameters."""
         self.params.validate()
 
 
 @NML_REGISTER.register_block()
 class MeteorologyBlock(NMLBlock):
     """
-    `meteorology` parameters.
+    `NMLBlock` subclass for the `meteorology` block.
 
     Attributes
     ----------
     params : Dict[str, NMLParam]
         Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
     """
     nml_name = "glm"
     block_name = "meteorology"
@@ -1028,7 +1039,6 @@ class MeteorologyBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
-        """Validate block parameters."""
         self.params.validate()
         self.val_incompat_param_values("fetch_mode", 1, "aws", None)
         self.val_incompat_param_values("fetch_mode", 2, "xws", None)
@@ -1048,12 +1058,14 @@ class MeteorologyBlock(NMLBlock):
 @NML_REGISTER.register_block()
 class InflowBlock(NMLBlock):
     """
-    `inflow` parameters.
+    `NMLBlock` subclass for the `inflow` block.
 
     Attributes
     ----------
     params : Dict[str, NMLParam]
         Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
     """
     nml_name = "glm"
     block_name = "inflow"
@@ -1142,7 +1154,6 @@ class InflowBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
-        """Validate block parameters."""
         self.params.validate()
         self.val_list_len_params("num_inflows", "names_of_strms")
         self.val_list_len_params("num_inflows", "subm_flag")
@@ -1159,12 +1170,14 @@ class InflowBlock(NMLBlock):
 @NML_REGISTER.register_block()
 class OutflowBlock(NMLBlock):
     """
-    `outflow` parameters.
+    `NMLBlock` subclass for the `outflow` block.
 
     Attributes
     ----------
     params : Dict[str, NMLParam]
         Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
     """
     nml_name = "glm"
     block_name = "outflow"
@@ -1335,7 +1348,6 @@ class OutflowBlock(NMLBlock):
         self.strict = True
 
     def validate(self):
-        """Validate block parameters."""
         self.params.validate()
         self.val_list_len_params("num_outlet", "outflow_fl")
         self.val_list_len_params("num_outlet", "outflow_factor")
@@ -1351,12 +1363,14 @@ class OutflowBlock(NMLBlock):
 @NML_REGISTER.register_nml()
 class GLMNML(NML):
     """
-    `glm` blocks.
+    `NML` subclass for the `glm` .NML file.
 
     Attributes
     ----------
     blocks : Dict[str, NMLBlock]
-        Dictionary of subclassed `NMLBlock` objects.
+        Dictionary of `NMLBlock` objects.
+    strict : bool
+        Switch to turn on or off block and parameter validation.
     """
     nml_name = "glm"
     def __init__(
@@ -1380,33 +1394,19 @@ class GLMNML(NML):
         Parameters
         ----------
         glm_setup : GLMSetupBlock 
-            Model setup parameters.
         time : TimeBlock 
-            Time parameters.
         morphometry : MorphometryBlock 
-            Morphometry parameters.
         init_profiles : InitProfilesBlock 
-            Initial profile parameters.
         mixing : MixingBlock
-            Mixing parameters.
         wq_setup : WQSetupBlock
-            Water quality setup parameters.
         output : OutputBlock
-            Output parameters.
         light : LightBlock
-            Light parameters.
-        bird_model : BirdModelBlock
-            Bird model parameters.
+        bird_model : BirdModelBlock   
         sediment : SedimentBlock
-            Sediment parameters.
         snowice : SnowIceBlock
-            Snow and ice parameters.
         meteorology : MeteorologyBlock
-            Meteorology parameters.
         inflow : InflowBlock
-            Inflow parameters.
         outflow : OutflowBlock
-            Outflow parameters.
         """
         super().__init__()
         self.init_blocks(
@@ -1428,7 +1428,6 @@ class GLMNML(NML):
         self.strict = True
 
     def validate(self):
-        """Validate block parameters."""
         self.blocks.validate()
         self.val_required_block("glm_setup")
         self.val_required_block("time")
