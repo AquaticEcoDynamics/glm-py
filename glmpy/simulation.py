@@ -139,7 +139,6 @@ def read_aed_dbase(dbase_path: str) -> pd.DataFrame:
         col = []
         for j in range(0, len(data[i][1:])):
             val = data[i][1 + j].strip(" ")
-
             col.append(val)
         transposed[header] = col
     df = pd.DataFrame(transposed)
@@ -424,7 +423,7 @@ class GLMSim():
         write_log: bool = False,
         quiet: bool = False,
         time_sim: bool = False,
-        glm_path: Union[str, None] = "./glm",
+        glm_path: Union[str, None] = None,
     ):
         """
         Run the GLM simulation.
@@ -854,7 +853,7 @@ class MultiSim:
         on_sim_end: Callable[[GLMSim, GLMOutputs], Any],
         write_log: bool = True,
         time_sim: bool = True,
-        glm_path: Union[str, None] = "./glm",
+        glm_path: Union[str, None] = None,
     ):
         """
         Run a `GLMSim` on a single core.
@@ -892,7 +891,7 @@ class MultiSim:
         write_log: bool = True,
         time_sim: bool = True,
         time_multi_sim: bool = True,
-        glm_path: Union[str, None] = "./glm",
+        glm_path: Union[str, None] = None,
     ):
         """
         Run the multi-sim.
