@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "glm-py"
 dynamic = ["version"]
-description = "Python tools for running General Lake Model (GLM) simulations"
+description = "Python API for the General Lake Model (GLM)."
 readme = "README.md"
 authors = []
 license = { file = "LICENSE" }
@@ -20,12 +20,11 @@ requires-python = ">=3.9"
 
 dependencies = [
   "pandas>=2.0.0",
-  "fastapi[all]>=0.88.0",
   "numpy>=1.26",
   "python-multipart",
-  "regex>=2023.12.25",
   "netcdf4>=1.7.1.post2",
-  "matplotlib>=3.9.0"
+  "matplotlib>=3.9.0",
+  "f90nml>=1.4.5",
 ]
 
 [project.optional-dependencies]
@@ -35,7 +34,7 @@ toml = ["tomli; python_version < '3.11'"]
 include-package-data = true
 
 [tool.setuptools.package-data]
-"glmpy.data" = ["sparkling_sim/*.json", "sparkling_sim/*.csv"]
+"glmpy.data" = ["example_sims/*.glmpy"]
 
 [project.urls]
 Repository = "https://github.com/AquaticEcoDynamics/glm-py"

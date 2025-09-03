@@ -1,11 +1,9 @@
 import os
-import copy
 import json
 import f90nml
 
 from f90nml import Namelist
 from datetime import datetime
-from importlib import resources
 from collections import OrderedDict
 from abc import ABC, abstractmethod
 from typing import (
