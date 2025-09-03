@@ -1959,9 +1959,9 @@ class AEDNML(NML):
             aed_phosphorus,
             aed_organic_matter,
             aed_phytoplankton,
-            aed_totals,
             aed_zooplankton,
             aed_macrophyte,
+            aed_totals,
         )
         self.strict = True
 

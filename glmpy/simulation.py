@@ -26,7 +26,7 @@ def glmpy_glm_path() -> Union[str, None]:
     glm-py GLM binary path.
 
     Returns the path to the GLM binary included with the glm-py built
-    distribution. Returns `Non` if the binary was not found.
+    distribution. Returns `None` if the binary was not found.
     """
     base_path = os.path.dirname(os.path.abspath(__file__))
     if os.name == "nt":
@@ -101,9 +101,7 @@ def run_glm(
             os.system(run_command)
             end_time = time.perf_counter()
             total_duration = end_time - start_time
-            total_duration = datetime.timedelta(
-                seconds=round(total_duration)
-            )
+            total_duration = datetime.timedelta(seconds=round(total_duration))
         else:
             os.system(run_command)
     finally:
@@ -442,88 +440,94 @@ class GLMSim():
         """
         return os.path.join(self.sim_dir_path, self.sim_name)
 
-    def _write_aux_fl(self, nml_param: NMLParam):
-        fl_paths = nml_param.value
-        if not isinstance(fl_paths, list):
-            fl_paths = [fl_paths]
-        for fl_path in fl_paths:
-            fl = os.path.basename(fl_path).split(".")[0]
-            if nml_param.is_bcs_fl:
-                if fl not in self.bcs.keys():
-                    raise KeyError(
-                        f"The boundary condition file parameter "
-                        f"{nml_param.name} is currently set to "
-                        f"{nml_param.value}. {fl} was not found in the keys "
-                        "of the bcs dictionary attribute of the GLMSim object."
-                    )
-                bc_pd = self.bcs[fl]
-                out_dir = os.path.join(
-                    self.get_sim_dir(), os.path.dirname(fl_path)
-                )
-                os.makedirs(out_dir, exist_ok=True)
-                bc_pd.to_csv(
-                    os.path.join(self.get_sim_dir(), fl_path),
-                    index=False,
-                )
-            if nml_param.is_dbase_fl:
-                if fl not in self.aed_dbase.keys():
-                    raise KeyError(
-                        f"The AED dbase parameter {nml_param.name} is "
-                        f"currently set to {nml_param.value}. {fl} was not "
-                        "found in the keys of the aed_dbase dictionary "
-                        "attribute of the GLMSim object."
-                    )
-                dbase_pd = self.aed_dbase[fl]
-                out_dir = os.path.join(
-                    self.get_sim_dir(), os.path.dirname(fl_path)
-                )
-                os.makedirs(out_dir, exist_ok=True)
-                write_aed_dbase(
-                    dbase_pd, os.path.join(self.get_sim_dir(), fl_path)
-                )
-
     def prepare_bcs_and_dbase(self):
-        for nml_param in self.iter_params():
-            if nml_param.is_bcs_fl or nml_param.is_dbase_fl:
-                if nml_param.value is not None:
-                    self._write_aux_fl(nml_param)
+        """
+        Prepare the boundary condition and database files.
 
-    def _prepare_nml(self):
+        Writes the boundary condition and datase files to the simulation 
+        directory. Creates the directory if it doesn't already exist.
+        """
+        for nml_param in self.iter_params():
+            name = nml_param.name
+            is_dbase_fl = nml_param.is_dbase_fl
+            is_bcs_fl = nml_param.is_bcs_fl
+            fl_paths = nml_param.value
+
+            if not (is_bcs_fl or is_dbase_fl) or fl_paths is None:
+                continue
+
+            if not isinstance(fl_paths, list):
+                fl_paths = [fl_paths]
+            
+            for fl_path in fl_paths:
+                fl = os.path.basename(fl_path).split(".")[0]
+                output_path = os.path.join(self.get_sim_dir(), fl_path)
+                out_dir = os.path.dirname(output_path)
+                os.makedirs(out_dir, exist_ok=True)
+
+                if is_bcs_fl:
+                    if fl not in self.bcs.keys():
+                        raise KeyError(
+                            f"The boundary condition file parameter {name} is "
+                            f"currently set to {fl_paths}. {fl} was not found "
+                            "found in the keys of the bcs dictionary "
+                            "attribute."
+                        )
+                    bc_pd = self.bcs[fl]
+                    bc_pd.to_csv(output_path, index=False)
+                if is_dbase_fl:
+                    if fl not in self.aed_dbase.keys():
+                        raise KeyError(
+                            f"The AED dbase parameter {name} is currently set "
+                            f"to {fl_paths}. {fl} was not found in the keys "
+                            "of the aed_dbase dictionary attribute."
+                        )
+                    dbase_pd = self.aed_dbase[fl]
+                    write_aed_dbase(dbase_pd, output_path)
+
+    def prepare_nml(self):
+        """
+        Prepare the NML files.
+
+        Writes the NML files to the simulation directory. Creates the 
+        directory if it doesn't already exist.
+        """
         for nml_obj in self.nml.values():
-            if not nml_obj.is_none_nml():
-                nml_name = nml_obj.nml_name
-                if nml_name == "glm":
-                    self.nml[nml_name].to_nml(
-                        os.path.join(
-                            self.get_sim_dir(), "glm3.nml"
-                        )
-                    )
-                elif nml_name == "aed":
-                    wq_nml_file = self.get_param_value(
-                        "glm", "wq_setup", "wq_nml_file"
-                    )
-                    if wq_nml_file is None:
-                        raise ValueError(
-                            f"" ## raise error
-                        )
+            if nml_obj.is_none_nml():
+                continue
+            nml_name = nml_obj.nml_name
+            if nml_name == "glm":
+                output_path = os.path.join(self.get_sim_dir(), "glm3.nml")
+                os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                self.nml[nml_name].to_nml(output_path)
+            elif nml_name == "aed":
+                wq_nml_file = self.get_param_value(
+                    "glm", "wq_setup", "wq_nml_file"
+                )
+                if wq_nml_file is not None:
                     path = os.path.join(self.get_sim_dir(), wq_nml_file)
                     os.makedirs(os.path.dirname(path), exist_ok=True)
                     self.nml[nml_name].to_nml(path)
-                else:
-                    self.nml[nml_name].to_nml(
-                        os.path.join(
-                            self.get_sim_dir(), f"{nml_name}.nml"
-                        )
+            else:
+                self.nml[nml_name].to_nml(
+                    os.path.join(
+                        self.get_sim_dir(), f"{nml_name}.nml"
                     )
+                )
         
+    def prepare_all_inputs(self):
+        """
+        Prepare all input files for GLM.
 
-    def prepare_inputs(self):
+        Creates the simulation directory and writes the NML, boundary 
+        condition, and database files. If the simulation directory 
+        already exists, the directory is first deleted.
+        """
         if os.path.isdir(self.get_sim_dir()):
             shutil.rmtree(self.get_sim_dir())
         os.makedirs(self.get_sim_dir())
 
-        # Prepare NML
-        self._prepare_nml()
+        self.prepare_nml()
         self.prepare_bcs_and_dbase()
 
     @classmethod
@@ -663,7 +667,7 @@ class GLMSim():
             binary included in glm-py's built distribution. 
         """
         self.validate()
-        self.prepare_inputs()
+        self.prepare_all_inputs()
         run_glm(
             glm_nml_path=os.path.join(self.get_sim_dir(), "glm3.nml"),
             sim_name=self.sim_name,
@@ -679,10 +683,6 @@ class GLMSim():
             sim_name=self.sim_name
         )
         return outputs
-
-
-def no_op_callback(x, y):
-    return None
 
 
 class GLMOutputs:
@@ -787,6 +787,9 @@ class GLMOutputs:
 
         return os.path.join(self._outputs_path, zip_name)
 
+
+def no_op_callback(x, y):
+    return None
 
 class MultiSim:
     """
