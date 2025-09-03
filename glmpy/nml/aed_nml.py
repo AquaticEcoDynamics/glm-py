@@ -1103,6 +1103,9 @@ class OrganicMatterBlock(NMLBlock):
         dopr_initial: Union[float, None] = None,
         cpom_initial: Union[float, None] = None,
         rdom_minerl: Union[float, None] = None,
+        rdoc_minerl: Union[float, None] = None,
+        rdon_minerl: Union[float, None] = None,
+        rdop_minerl: Union[float, None] = None,
         rpoc_hydrol: Union[float, None] = None,
         rpon_hydrol: Union[float, None] = None,
         rpop_hydrol: Union[float, None] = None,
@@ -1187,6 +1190,12 @@ class OrganicMatterBlock(NMLBlock):
             `True`.
         rdom_minerl : Union[float, None]
             Reference DOM mineralisation rate at 20C.
+        rdoc_minerl : Union[float, None]
+            Reference DOC mineralisation rate at 20C.
+        rdon_minerl : Union[float, None]
+            Reference DON mineralisation rate at 20C.
+        rdop_minerl : Union[float, None]
+            Reference DOP mineralisation rate at 20C.
         rpoc_hydrol : Union[float, None]
             Reference POC hydrolysis/breakdown rate at 20C.
         rpon_hydrol : Union[float, None]
@@ -1323,6 +1332,9 @@ class OrganicMatterBlock(NMLBlock):
                 "cpom_initial", float, cpom_initial, units="mmol C m^{-3}"
             ),
             NMLParam("rdom_minerl", float, rdom_minerl, units="d^{-1}"),
+            NMLParam("rdoc_minerl", float, rdoc_minerl, units="d^{-1}"),
+            NMLParam("rdon_minerl", float, rdon_minerl, units="d^{-1}"),
+            NMLParam("rdop_minerl", float, rdon_minerl, units="d^{-1}"),
             NMLParam("rpoc_hydrol", float, rpoc_hydrol, units="d^{-1}"),
             NMLParam("rpon_hydrol", float, rpon_hydrol, units="d^{-1}"),
             NMLParam("rpop_hydrol", float, rpop_hydrol, units="d^{-1}"),
@@ -1823,6 +1835,147 @@ class MacrophyteBlock(NMLBlock):
         self.val_list_len_params("num_mphy", "the_mphy")
         self.val_list_len_params("n_zones", "active_zones")
 
+
+@NML_REGISTER.register_block()
+class BivalveBlock(NMLBlock):
+    """
+    `NMLBlock` subclass for the `aed_bivalve` block.
+
+    A model of one or more groups of benthic filter feeders, able to 
+    assimilate C, N and P and recycle filter material back to the water 
+    column and sediment.
+
+    Attributes
+    ----------
+    params : Dict[str, NMLParam]
+        Dictionary of `NMLParam` objects.
+    strict : bool
+        Switch to turn on or off parameter validation.
+    """
+    nml_name = "aed"
+    block_name = "aed_bivalve"
+
+    def __init__(
+        self,
+        num_biv: Union[int, None] = None,
+        the_biv: Union[List[int], int, None] = None,
+        dbase: Union[str, None] = None,
+        x_c: Union[float, None] = None,
+        n_zones: Union[int, None] = None,
+        active_zones: Union[List[int], int, None] = None,
+        initfromdensity: Union[bool, None] = None,
+        simbivtracer: Union[bool, None] = None,
+        simbivfeedback: Union[bool, None] = None,
+        simstaticbiomass: Union[bool, None] = None,
+        bt_renewal: Union[float, None] = None,
+        dn_target_variable: Union[str, None] = None,
+        pn_target_variable: Union[str, None] = None,
+        dp_target_variable: Union[str, None] = None,
+        pp_target_variable: Union[str, None] = None,
+        dc_target_variable: Union[str, None] = None,
+        pc_target_variable: Union[str, None] = None,
+        do_uptake_variable: Union[str, None] = None,
+        ss_uptake_variable: Union[str, None] = None,
+        simfixedenv: Union[bool, None] = None,
+        fixed_temp: Union[float, None] = None,
+        fixed_oxy: Union[float, None] = None,
+        fixed_food: Union[float, None] = None,
+        extra_diag: Union[bool, None] = None,
+        diag_level: Union[int, None] = None,
+    ):
+        """
+        Parameters
+        ----------
+        num_biv : Union[int, None]
+            Number of zooplankton groups.
+        the_biv : Union[List[int], int, None]
+            List of IDs of groups in `aed_bivalve_pars` dbase 
+            (length equals `num_biv`).
+        dbase : Union[str, None]
+            `aed_bivalve_pars` path.
+        x_c : Union[float, None]
+            Undocumented parameter.
+        n_zones : Union[int, None]
+            Number of sediment zones where bivalves will be active.
+        active_zones : Union[List[int], int, None]
+            The vector of sediment zones to include.
+        initfromdensity : Union[bool, None]
+            Undocumented parameter,
+        simbivtracer : Union[bool, None]
+            Opton to include water column tracer tracking filtration 
+            amount.	
+        simbivfeedback : Union[bool, None]
+            Switch to enable/disable feedbacks between bivalve 
+            metabolism and water column variable concentration.
+        simstaticbiomass : Union[bool, None]
+            Undocumented parameter.
+        bt_renewal : Union[float, None]
+            Undocumented parameter.
+        dn_target_variable : Union[str, None]
+            Water column variable to receive DON excretion.
+        pn_target_variable : Union[str, None]
+            Water column variable to receive PON egestion/mortality.
+        dp_target_variable : Union[str, None]
+            Water column variable to receive DOP excretion.
+        pp_target_variable : Union[str, None]
+            Water column variable to receive POP egestion/mortality.
+        dc_target_variable : Union[str, None]
+            Water column variable to receive DOC excretion.
+        pc_target_variable : Union[str, None]
+            Water column variable to receive POC egestion/mortality.
+        do_uptake_variable : Union[str, None]
+            Water column variable providing DO concentration.
+        ss_uptake_variable:  Union[str, None]
+            Water column variable providing SS concentration.
+        simfixedenv : Union[bool, None]
+            Switch to enable/disable environmental variables to be 
+            fixed (for testing).
+        fixed_temp : Union[float, None]
+            Fixed temperature.
+        fixed_oxy : Union[float, None]
+            Fixed oxygen concentration.
+        fixed_food : Union[float, None]
+            Fixed food concentration.
+        extra_diag : Union[bool, None]
+            Switch to enable/disable extra diagnostics to be output.
+        diag_level : Union[int, None]
+            Undocumented parameter.
+        """
+        super().__init__()
+        self.init_params(
+            NMLParam("num_biv", int , num_biv),
+            NMLParam("the_biv", int , the_biv, is_list=True),
+            NMLParam("dbase", str, dbase, is_dbase_fl=True),
+            NMLParam("x_c", float , x_c),
+            NMLParam("n_zones", int , n_zones),
+            NMLParam("active_zones", int , active_zones, is_list=True),
+            NMLParam("initfromdensity", bool, initfromdensity),
+            NMLParam("simbivtracer", bool, simbivtracer),
+            NMLParam("simbivfeedback", bool, simbivfeedback),
+            NMLParam("simstaticbiomass", bool, simstaticbiomass),
+            NMLParam("bt_renewal", float , bt_renewal),
+            NMLParam("dn_target_variable", str, dn_target_variable),
+            NMLParam("pn_target_variable", str, pn_target_variable),
+            NMLParam("dp_target_variable", str, dp_target_variable),
+            NMLParam("pp_target_variable", str, pp_target_variable),
+            NMLParam("dc_target_variable", str, dc_target_variable),
+            NMLParam("pc_target_variable", str, pc_target_variable),
+            NMLParam("do_uptake_variable", str, do_uptake_variable),
+            NMLParam("ss_uptake_variable", str, ss_uptake_variable),
+            NMLParam("simfixedenv", bool, simfixedenv),
+            NMLParam("fixed_temp", float , fixed_temp),
+            NMLParam(
+                "fixed_oxy", float , fixed_oxy, units="mmol O_{2} m^{-3}"
+            ),
+            NMLParam("fixed_food", float , fixed_food, units="mmol C m^{-3}"),
+            NMLParam("extra_diag", bool, extra_diag),
+            NMLParam("diag_level", int, diag_level),
+        )
+        self.strict = True
+
+    def validate(self):
+        self.params.validate()
+
 @NML_REGISTER.register_block()
 class TotalsBlock(NMLBlock):
     """
@@ -1924,6 +2077,7 @@ class AEDNML(NML):
         aed_phytoplankton: PhytoplanktonBlock = PhytoplanktonBlock(),
         aed_zooplankton: ZooplanktonBlock = ZooplanktonBlock(),
         aed_macrophyte: MacrophyteBlock = MacrophyteBlock(),
+        aed_bivalve: BivalveBlock = BivalveBlock(),
         aed_totals: TotalsBlock = TotalsBlock(),
     ):
         """
@@ -1943,6 +2097,7 @@ class AEDNML(NML):
         aed_phytoplankton : PhytoplanktonBlock
         aed_zooplankton : ZooplanktonBlock
         aed_macrophyte : MacrophyteBlock
+        aed_bivalve : BivalveBlock
         aed_totals : TotalsBlock
         """
         super().__init__()
@@ -1961,6 +2116,7 @@ class AEDNML(NML):
             aed_phytoplankton,
             aed_zooplankton,
             aed_macrophyte,
+            aed_bivalve,
             aed_totals,
         )
         self.strict = True
