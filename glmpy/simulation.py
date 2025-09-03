@@ -1,21 +1,21 @@
-import os
 import io
+import os
 import csv
 import copy
-import time
 import json
+import time
 import shutil
-import zipfile
 import netCDF4
-import warnings
+import zipfile
 import datetime
+import warnings
 import pandas as pd
 import multiprocessing
 
 from importlib import resources
-from glmpy.nml.glm_nml import GLMNML
 from glmpy.nml.aed_nml import AEDNML
-from glmpy.nml.nml import NML, NMLDict, NMLBlock, NMLParam
+from glmpy.nml.glm_nml import GLMNML
+from glmpy.nml.nml import NML, NMLDict, NMLBlock
 from typing import Any, Union, Dict, List, Callable
 
 
@@ -184,6 +184,31 @@ class GLMSim():
         aed_dbase: Dict[str, pd.DataFrame] = {},  
         sim_dir_path: str = ".",
     ):
+        """
+        Parameters
+        ----------
+        sim_name : str
+            The simulation name. Updates the `sim_name` parameter of 
+            the `glm_setup` block.
+        glm_nml : GLMNML
+            The `GLMNML` object of GLM model parameters.
+        aed_nml : AEDNML
+            The `aed_nml` object of AED model parameters.
+        bcs : Dict[str, pd.DataFrame]
+            Dictionary of boundary condition dataframes. The keys are 
+            the basename (without extension) of the boundary condition 
+            file and the values are Pandas `DataFrame` objects. For 
+            example: `{'met_data_filename': met_data_pd}`.
+        aed_dbase : Dict[str, pd.DataFrame]
+            Dictionary of AED database dataframes. The keys are 
+            the basename (without extension) of the database file and  
+            the values are Pandas `DataFrame` objects. For example: 
+            `{'aed_zoop_pars': aed_zoop_pars_pd}`. Use 
+            `read_aed_dbase()` to read in database CSV files.
+        sim_dir_path : str
+            Path to where the simulation directory should be created. 
+            Default is the current working directory.
+        """
         self.nml: NMLDict[str, NML] = NMLDict() 
         self.nml[glm_nml.nml_name] = glm_nml
         self.nml[aed_nml.nml_name] = aed_nml
@@ -194,6 +219,250 @@ class GLMSim():
         self.aed_dbase = aed_dbase
         self.sim_dir_path = sim_dir_path
 
+    @classmethod
+    def from_example_sim(cls, example_sim_name: str) -> "GLMSim":
+        """
+        Initialise an instance of `GLMSim` from an example simulation.
+
+        Parameters
+        ----------
+        example_sim_name : str
+            Name of an example simulation bundled with the glm-py 
+            package. See `get_example_sim_names()` for valid names.
+        """
+        with resources.path(
+            "glmpy.data.example_sims", f"{example_sim_name}.glmpy"
+        ) as sim_file:
+            assert sim_file.is_file(), (
+                f"{example_sim_name} is not an example sim. Available sims "
+                f"are {cls.get_example_sim_names()}"
+            )
+            sim = cls.from_file(str(sim_file))
+            return sim
+
+    @staticmethod
+    def get_example_sim_names() -> List[str]:
+        """
+        Returns a list names for the example simulations bundled in 
+        the glm-py package.
+        """
+        example_sims = []
+        for file in resources.files("glmpy.data.example_sims").iterdir():
+            if file.is_file() and file.name.endswith(".glmpy"):
+                example_sims.append(file.name.split(".")[0])
+        return example_sims
+
+    @classmethod
+    def from_file(cls, glmpy_path: str) -> "GLMSim":
+        """
+        Initialise an instance of `GLMSim` from a .glmpy file.
+        
+        Parameters
+        ----------
+        glmpy_path : str
+            Path to .glmpy file.
+        """
+        _, file_extension = os.path.splitext(glmpy_path)
+        if not file_extension == ".glmpy":
+            raise ValueError(
+                "Invalid file. Only `.glmpy` files can be used with the " \
+                f"`from_file()` method. Got extension: {file_extension}."
+            )
+        with zipfile.ZipFile(glmpy_path, "r") as zipf:
+            sim_json = json.loads(
+                zipf.read("glm_sim.json").decode("utf-8")
+            )
+            glm_nml = GLMNML.from_dict(sim_json["nml"]["glm"])
+            aed_nml = AEDNML.from_dict(sim_json["nml"]["aed"])
+            bcs = {}
+            for fname in sim_json["bcs"]:
+                bc_pd = pd.read_csv(zipf.open(fname + ".csv"))
+                bcs[fname] = bc_pd
+            aed_dbase = {}
+            for fname in sim_json["aed_dbase"]:
+                dbase_pd = pd.read_csv(zipf.open(fname + ".csv"))
+                aed_dbase[fname] = dbase_pd
+            sim = cls(
+                sim_name=sim_json["sim_name"],
+                glm_nml=glm_nml,
+                aed_nml=aed_nml,
+                bcs=bcs,
+                aed_dbase=aed_dbase,
+                sim_dir_path=sim_json["sim_dir_path"]
+            )
+            return sim
+    
+    def to_file(self, glmpy_path: str):
+        """
+        Save the `GLMSim` object to a .glmpy file
+
+        Parameters
+        ----------
+        glmpy_path : str
+            Output file path. Must have a .glmpy file extension.
+        """
+        _, file_extension = os.path.splitext(glmpy_path)
+        if not file_extension == ".glmpy":
+            raise ValueError(
+                "Invalid file name. Only `.glmpy` files can be used with " \
+                f"the `to_file()` method. Got extension: {file_extension}."
+            )
+        sim_json = {
+            "glm_version": GLM_VERSION,
+            "sim_name": self.sim_name,
+            "sim_dir_path": self.sim_dir_path,
+            "bcs": list(self.bcs.keys()),
+            "aed_dbase": list(self.aed_dbase.keys()),
+            "nml": {
+                "glm": self.nml["glm"].to_dict(),
+                "aed": self.nml["aed"].to_dict()
+            }
+        }
+        with zipfile.ZipFile(glmpy_path, "w") as zipf:
+            zipf.writestr("glm_sim.json", json.dumps(sim_json, indent=2))
+            for bc_name, bs_pd in self.bcs.items():
+                with io.StringIO() as buffer:
+                    bs_pd.to_csv(buffer, index=False)
+                    zipf.writestr(f"{bc_name}.csv", buffer.getvalue())
+            for dbase_name, dbase_pd in self.aed_dbase.items():
+                with io.StringIO() as buffer:
+                    dbase_pd.to_csv(buffer, index=False)
+                    zipf.writestr(f"{dbase_name}.csv", buffer.getvalue())
+
+    def prepare_bcs_and_dbase(self):
+        """
+        Prepare the boundary condition and database files.
+
+        Writes the boundary condition and datase files to the simulation 
+        directory. Creates the directory if it doesn't already exist.
+        """
+        for nml_param in self.iter_params():
+            name = nml_param.name
+            is_dbase_fl = nml_param.is_dbase_fl
+            is_bcs_fl = nml_param.is_bcs_fl
+            fl_paths = nml_param.value
+
+            if not (is_bcs_fl or is_dbase_fl) or fl_paths is None:
+                continue
+
+            if not isinstance(fl_paths, list):
+                fl_paths = [fl_paths]
+            
+            for fl_path in fl_paths:
+                fl = os.path.basename(fl_path).split(".")[0]
+                output_path = os.path.join(self.get_sim_dir(), fl_path)
+                out_dir = os.path.dirname(output_path)
+                os.makedirs(out_dir, exist_ok=True)
+
+                if is_bcs_fl:
+                    if fl not in self.bcs.keys():
+                        raise KeyError(
+                            f"The boundary condition file parameter {name} is "
+                            f"currently set to {fl_paths}. {fl} was not found "
+                            "found in the keys of the bcs dictionary "
+                            "attribute."
+                        )
+                    bc_pd = self.bcs[fl]
+                    bc_pd.to_csv(output_path, index=False)
+                if is_dbase_fl:
+                    if fl not in self.aed_dbase.keys():
+                        raise KeyError(
+                            f"The AED dbase parameter {name} is currently set "
+                            f"to {fl_paths}. {fl} was not found in the keys "
+                            "of the aed_dbase dictionary attribute."
+                        )
+                    dbase_pd = self.aed_dbase[fl]
+                    write_aed_dbase(dbase_pd, output_path)
+
+    def prepare_nml(self):
+        """
+        Prepare the NML files.
+
+        Writes the NML files to the simulation directory. Creates the 
+        directory if it doesn't already exist.
+        """
+        for nml_obj in self.nml.values():
+            if nml_obj.is_none_nml():
+                continue
+            nml_name = nml_obj.nml_name
+            if nml_name == "glm":
+                output_path = os.path.join(self.get_sim_dir(), "glm3.nml")
+                os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                self.nml[nml_name].to_nml(output_path)
+            elif nml_name == "aed":
+                wq_nml_file = self.get_param_value(
+                    "glm", "wq_setup", "wq_nml_file"
+                )
+                if wq_nml_file is not None:
+                    path = os.path.join(self.get_sim_dir(), wq_nml_file)
+                    os.makedirs(os.path.dirname(path), exist_ok=True)
+                    self.nml[nml_name].to_nml(path)
+            else:
+                self.nml[nml_name].to_nml(
+                    os.path.join(
+                        self.get_sim_dir(), f"{nml_name}.nml"
+                    )
+                )
+        
+    def prepare_all_inputs(self):
+        """
+        Prepare all input files for GLM.
+
+        Creates the simulation directory and writes the NML, boundary 
+        condition, and database files. If the simulation directory 
+        already exists, the directory is first deleted.
+        """
+        if os.path.isdir(self.get_sim_dir()):
+            shutil.rmtree(self.get_sim_dir())
+        os.makedirs(self.get_sim_dir())
+
+        self.prepare_nml()
+        self.prepare_bcs_and_dbase()
+
+    def run(
+        self,
+        write_log: bool = False,
+        quiet: bool = False,
+        time_sim: bool = False,
+        glm_path: Union[str, None] = "./glm",
+    ):
+        """
+        Run the GLM simulation.
+
+        Validates simulation configuration, prepares input files, and 
+        then runs GLM.
+
+        Parameters
+        ----------
+        write_log : bool
+            Write a log file as GLM runs.
+        quiet : bool
+            Suppress the GLM terminal output.
+        time_sim : bool
+            Prints `"Starting {sim_name}"` and 
+            `"Finished {sim_name} in {total_duration}"`
+        glm_path : Union[str, None]
+            Path to the GLM binary. If `None`, attempts to use the GLM 
+            binary included in glm-py's built distribution. 
+        """
+        self.validate()
+        self.prepare_all_inputs()
+        run_glm(
+            glm_nml_path=os.path.join(self.get_sim_dir(), "glm3.nml"),
+            sim_name=self.sim_name,
+            write_log=write_log,
+            quiet=quiet,
+            time_sim=time_sim,
+            glm_path=glm_path,
+        )
+        outputs = GLMOutputs(
+            sim_dir=self.get_sim_dir(),
+            out_dir=self.get_param_value("glm", "output", "out_dir"),
+            out_fn=self.get_param_value("glm", "output", "out_fn"),
+            sim_name=self.sim_name
+        )
+        return outputs
+    
     @property
     def sim_name(self):
         """
@@ -439,250 +708,6 @@ class GLMSim():
         Return the simulation directory.
         """
         return os.path.join(self.sim_dir_path, self.sim_name)
-
-    def prepare_bcs_and_dbase(self):
-        """
-        Prepare the boundary condition and database files.
-
-        Writes the boundary condition and datase files to the simulation 
-        directory. Creates the directory if it doesn't already exist.
-        """
-        for nml_param in self.iter_params():
-            name = nml_param.name
-            is_dbase_fl = nml_param.is_dbase_fl
-            is_bcs_fl = nml_param.is_bcs_fl
-            fl_paths = nml_param.value
-
-            if not (is_bcs_fl or is_dbase_fl) or fl_paths is None:
-                continue
-
-            if not isinstance(fl_paths, list):
-                fl_paths = [fl_paths]
-            
-            for fl_path in fl_paths:
-                fl = os.path.basename(fl_path).split(".")[0]
-                output_path = os.path.join(self.get_sim_dir(), fl_path)
-                out_dir = os.path.dirname(output_path)
-                os.makedirs(out_dir, exist_ok=True)
-
-                if is_bcs_fl:
-                    if fl not in self.bcs.keys():
-                        raise KeyError(
-                            f"The boundary condition file parameter {name} is "
-                            f"currently set to {fl_paths}. {fl} was not found "
-                            "found in the keys of the bcs dictionary "
-                            "attribute."
-                        )
-                    bc_pd = self.bcs[fl]
-                    bc_pd.to_csv(output_path, index=False)
-                if is_dbase_fl:
-                    if fl not in self.aed_dbase.keys():
-                        raise KeyError(
-                            f"The AED dbase parameter {name} is currently set "
-                            f"to {fl_paths}. {fl} was not found in the keys "
-                            "of the aed_dbase dictionary attribute."
-                        )
-                    dbase_pd = self.aed_dbase[fl]
-                    write_aed_dbase(dbase_pd, output_path)
-
-    def prepare_nml(self):
-        """
-        Prepare the NML files.
-
-        Writes the NML files to the simulation directory. Creates the 
-        directory if it doesn't already exist.
-        """
-        for nml_obj in self.nml.values():
-            if nml_obj.is_none_nml():
-                continue
-            nml_name = nml_obj.nml_name
-            if nml_name == "glm":
-                output_path = os.path.join(self.get_sim_dir(), "glm3.nml")
-                os.makedirs(os.path.dirname(output_path), exist_ok=True)
-                self.nml[nml_name].to_nml(output_path)
-            elif nml_name == "aed":
-                wq_nml_file = self.get_param_value(
-                    "glm", "wq_setup", "wq_nml_file"
-                )
-                if wq_nml_file is not None:
-                    path = os.path.join(self.get_sim_dir(), wq_nml_file)
-                    os.makedirs(os.path.dirname(path), exist_ok=True)
-                    self.nml[nml_name].to_nml(path)
-            else:
-                self.nml[nml_name].to_nml(
-                    os.path.join(
-                        self.get_sim_dir(), f"{nml_name}.nml"
-                    )
-                )
-        
-    def prepare_all_inputs(self):
-        """
-        Prepare all input files for GLM.
-
-        Creates the simulation directory and writes the NML, boundary 
-        condition, and database files. If the simulation directory 
-        already exists, the directory is first deleted.
-        """
-        if os.path.isdir(self.get_sim_dir()):
-            shutil.rmtree(self.get_sim_dir())
-        os.makedirs(self.get_sim_dir())
-
-        self.prepare_nml()
-        self.prepare_bcs_and_dbase()
-
-    @classmethod
-    def from_example_sim(cls, example_sim_name: str) -> "GLMSim":
-        """
-        Initialise an instance of `GLMSim` from an example simulation.
-
-        Parameters
-        ----------
-        example_sim_name : str
-            Name of an example simulation bundled with the glm-py 
-            package. See `get_example_sim_names()` for valid names.
-        """
-        with resources.path(
-            "glmpy.data.example_sims", f"{example_sim_name}.glmpy"
-        ) as sim_file:
-            assert sim_file.is_file(), (
-                f"{example_sim_name} is not an example sim. Available sims "
-                f"are {cls.get_example_sim_names()}"
-            )
-            sim = cls.from_file(str(sim_file))
-            return sim
-
-    @staticmethod
-    def get_example_sim_names() -> List[str]:
-        """
-        Returns a list names for the example simulations bundled in 
-        the glm-py package.
-        """
-        example_sims = []
-        for file in resources.files("glmpy.data.example_sims").iterdir():
-            if file.is_file() and file.name.endswith(".glmpy"):
-                example_sims.append(file.name.split(".")[0])
-        return example_sims
-
-    def to_file(self, glmpy_path: str):
-        """
-        Save the `GLMSim` object to a .glmpy file
-
-        Parameters
-        ----------
-        glmpy_path : str
-            Output file path. Must have a .glmpy file extension.
-        """
-        _, file_extension = os.path.splitext(glmpy_path)
-        if not file_extension == ".glmpy":
-            raise ValueError(
-                "Invalid file name. Only `.glmpy` files can be used with " \
-                f"the `to_file()` method. Got extension: {file_extension}."
-            )
-        sim_json = {
-            "glm_version": GLM_VERSION,
-            "sim_name": self.sim_name,
-            "sim_dir_path": self.sim_dir_path,
-            "bcs": list(self.bcs.keys()),
-            "aed_dbase": list(self.aed_dbase.keys()),
-            "nml": {
-                "glm": self.nml["glm"].to_dict(),
-                "aed": self.nml["aed"].to_dict()
-            }
-        }
-        with zipfile.ZipFile(glmpy_path, "w") as zipf:
-            zipf.writestr("glm_sim.json", json.dumps(sim_json, indent=2))
-            for bc_name, bs_pd in self.bcs.items():
-                with io.StringIO() as buffer:
-                    bs_pd.to_csv(buffer, index=False)
-                    zipf.writestr(f"{bc_name}.csv", buffer.getvalue())
-            for dbase_name, dbase_pd in self.aed_dbase.items():
-                with io.StringIO() as buffer:
-                    dbase_pd.to_csv(buffer, index=False)
-                    zipf.writestr(f"{dbase_name}.csv", buffer.getvalue())
-
-    @classmethod
-    def from_file(cls, glmpy_path: str) -> "GLMSim":
-        """
-        Initialise an instance of `GLMSim` from a .glmpy file.
-        
-        Parameters
-        ----------
-        glmpy_path : str
-            Path to .glmpy file.
-        """
-        _, file_extension = os.path.splitext(glmpy_path)
-        if not file_extension == ".glmpy":
-            raise ValueError(
-                "Invalid file. Only `.glmpy` files can be used with the " \
-                f"`from_file()` method. Got extension: {file_extension}."
-            )
-        with zipfile.ZipFile(glmpy_path, "r") as zipf:
-            sim_json = json.loads(
-                zipf.read("glm_sim.json").decode("utf-8")
-            )
-            glm_nml = GLMNML.from_dict(sim_json["nml"]["glm"])
-            aed_nml = AEDNML.from_dict(sim_json["nml"]["aed"])
-            bcs = {}
-            for fname in sim_json["bcs"]:
-                bc_pd = pd.read_csv(zipf.open(fname + ".csv"))
-                bcs[fname] = bc_pd
-            aed_dbase = {}
-            for fname in sim_json["aed_dbase"]:
-                dbase_pd = pd.read_csv(zipf.open(fname + ".csv"))
-                aed_dbase[fname] = dbase_pd
-            sim = cls(
-                sim_name=sim_json["sim_name"],
-                glm_nml=glm_nml,
-                aed_nml=aed_nml,
-                bcs=bcs,
-                aed_dbase=aed_dbase,
-                sim_dir_path=sim_json["sim_dir_path"]
-            )
-            return sim
-
-    def run(
-        self,
-        write_log: bool = False,
-        quiet: bool = False,
-        time_sim: bool = False,
-        glm_path: Union[str, None] = "./glm",
-    ):
-        """
-        Run the GLM simulation.
-
-        Validates simulation configuration, prepares input files, and 
-        then runs GLM.
-
-        Parameters
-        ----------
-        write_log : bool
-            Write a log file as GLM runs.
-        quiet : bool
-            Suppress the GLM terminal output.
-        time_sim : bool
-            Prints `"Starting {sim_name}"` and 
-            `"Finished {sim_name} in {total_duration}"`
-        glm_path : Union[str, None]
-            Path to the GLM binary. If `None`, attempts to use the GLM 
-            binary included in glm-py's built distribution. 
-        """
-        self.validate()
-        self.prepare_all_inputs()
-        run_glm(
-            glm_nml_path=os.path.join(self.get_sim_dir(), "glm3.nml"),
-            sim_name=self.sim_name,
-            write_log=write_log,
-            quiet=quiet,
-            time_sim=time_sim,
-            glm_path=glm_path,
-        )
-        outputs = GLMOutputs(
-            sim_dir=self.get_sim_dir(),
-            out_dir=self.get_param_value("glm", "output", "out_dir"),
-            out_fn=self.get_param_value("glm", "output", "out_fn"),
-            sim_name=self.sim_name
-        )
-        return outputs
 
 
 class GLMOutputs:
