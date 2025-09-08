@@ -1,4 +1,3 @@
-cd ..
 black --line-length 79 glmpy
-isort glmpy
+isort --lss glmpy 
 ruff glmpy

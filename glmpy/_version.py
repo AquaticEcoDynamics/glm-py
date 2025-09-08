@@ -10,13 +10,13 @@
 
 """Git implementation of _version.py."""
 
-import errno
 import os
 import re
-import subprocess
 import sys
-from typing import Any, Callable, Dict, List, Optional, Tuple
+import errno
 import functools
+import subprocess
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 
 def get_keywords() -> Dict[str, str]:

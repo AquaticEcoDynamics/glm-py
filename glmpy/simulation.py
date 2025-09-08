@@ -5,21 +5,22 @@ import copy
 import json
 import time
 import shutil
-import netCDF4
 import zipfile
 import datetime
 import warnings
-import pandas as pd
 import multiprocessing
-
 from importlib import resources
+from typing import Any, Callable, Dict, List, Union
+
+import pandas as pd
+import netCDF4
+
 from glmpy.nml.aed_nml import AEDNML
 from glmpy.nml.glm_nml import GLMNML
-from glmpy.nml.nml import NML, NMLDict, NMLBlock
-from typing import Any, Union, Dict, List, Callable
-
+from glmpy.nml.nml import NML, NMLBlock, NMLDict
 
 GLM_VERSION = "3.3.3"
+
 
 def glmpy_glm_path() -> Union[str, None]:
     """
@@ -38,6 +39,7 @@ def glmpy_glm_path() -> Union[str, None]:
         return exe_path
     else:
         return None
+
 
 def run_glm(
     glm_nml_path: str,
@@ -63,11 +65,11 @@ def run_glm(
     quiet : bool
         Suppress the GLM terminal output.
     time_sim : bool
-        Prints `"Starting {sim_name}"` and 
+        Prints `"Starting {sim_name}"` and
         `"Finished {sim_name} in {total_duration}"`
     glm_path : Union[str, None]
-        Path to the GLM binary. If `None`, attempts to use the GLM 
-        binary included in glm-py's built distribution. 
+        Path to the GLM binary. If `None`, attempts to use the GLM
+        binary included in glm-py's built distribution.
     """
     if glm_path is None:
         glm_path = glmpy_glm_path()
@@ -119,8 +121,8 @@ def read_aed_dbase(dbase_path: str) -> pd.DataFrame:
     """
     Read an AED database CSV
 
-    
-    Returns a Pandas `DataFrame` of the database that has been 
+
+    Returns a Pandas `DataFrame` of the database that has been
     transposed to ensure consistent column data types.
 
     Parameters
@@ -129,7 +131,7 @@ def read_aed_dbase(dbase_path: str) -> pd.DataFrame:
         Path to the AED database CSV
     """
 
-    with open(dbase_path, 'r') as file:
+    with open(dbase_path, "r") as file:
         reader = csv.reader(file)
         data = list(reader)
 
@@ -144,17 +146,18 @@ def read_aed_dbase(dbase_path: str) -> pd.DataFrame:
     df = pd.DataFrame(transposed)
     for col in df.columns:
         try:
-            df[col] = pd.to_numeric(df[col], errors='raise')
+            df[col] = pd.to_numeric(df[col], errors="raise")
         except ValueError:
             pass
 
     return df
 
+
 def write_aed_dbase(dbase_pd: pd.DataFrame, dbase_path: str) -> None:
     """
     Write an AED database CSV.
 
-    Writes an AED database CSV that has been read by 
+    Writes an AED database CSV that has been read by
     `read_aed_dbase()`. Transposes the data back to the original format.
 
     Parameters
@@ -164,8 +167,8 @@ def write_aed_dbase(dbase_pd: pd.DataFrame, dbase_path: str) -> None:
     dbase_path : str
         Path of the database CSV to write.
     """
-    dbase_dict = dbase_pd.to_dict('list')
-    with open(dbase_path, 'w', newline='') as csvfile:
+    dbase_dict = dbase_pd.to_dict("list")
+    with open(dbase_path, "w", newline="") as csvfile:
         writer = csv.writer(csvfile)
         for k, v in dbase_dict.items():
             row = [k]
@@ -173,47 +176,47 @@ def write_aed_dbase(dbase_pd: pd.DataFrame, dbase_path: str) -> None:
             writer.writerow(row)
 
 
-class GLMSim():
+class GLMSim:
     def __init__(
         self,
         sim_name: str,
         glm_nml: GLMNML = GLMNML(),
-        aed_nml: AEDNML = AEDNML(), 
+        aed_nml: AEDNML = AEDNML(),
         bcs: Dict[str, pd.DataFrame] = {},
-        aed_dbase: Dict[str, pd.DataFrame] = {},  
+        aed_dbase: Dict[str, pd.DataFrame] = {},
         sim_dir_path: str = ".",
     ):
         """
         Parameters
         ----------
         sim_name : str
-            The simulation name. Updates the `sim_name` parameter of 
+            The simulation name. Updates the `sim_name` parameter of
             the `glm_setup` block.
         glm_nml : GLMNML
             The `GLMNML` object of GLM model parameters.
         aed_nml : AEDNML
             The `aed_nml` object of AED model parameters.
         bcs : Dict[str, pd.DataFrame]
-            Dictionary of boundary condition dataframes. The keys are 
-            the basename (without extension) of the boundary condition 
-            file and the values are Pandas `DataFrame` objects. For 
+            Dictionary of boundary condition dataframes. The keys are
+            the basename (without extension) of the boundary condition
+            file and the values are Pandas `DataFrame` objects. For
             example: `{'met_data_filename': met_data_pd}`.
         aed_dbase : Dict[str, pd.DataFrame]
-            Dictionary of AED database dataframes. The keys are 
-            the basename (without extension) of the database file and  
-            the values are Pandas `DataFrame` objects. For example: 
-            `{'aed_zoop_pars': aed_zoop_pars_pd}`. Use 
+            Dictionary of AED database dataframes. The keys are
+            the basename (without extension) of the database file and
+            the values are Pandas `DataFrame` objects. For example:
+            `{'aed_zoop_pars': aed_zoop_pars_pd}`. Use
             `read_aed_dbase()` to read in database CSV files.
         sim_dir_path : str
-            Path to where the simulation directory should be created. 
+            Path to where the simulation directory should be created.
             Default is the current working directory.
         """
-        self.nml: NMLDict[str, NML] = NMLDict() 
+        self.nml: NMLDict[str, NML] = NMLDict()
         self.nml[glm_nml.nml_name] = glm_nml
         self.nml[aed_nml.nml_name] = aed_nml
 
         self.sim_name = sim_name
-        
+
         self.bcs = bcs
         self.aed_dbase = aed_dbase
         self.sim_dir_path = sim_dir_path
@@ -226,7 +229,7 @@ class GLMSim():
         Parameters
         ----------
         example_sim_name : str
-            Name of an example simulation bundled with the glm-py 
+            Name of an example simulation bundled with the glm-py
             package. See `get_example_sim_names()` for valid names.
         """
         with resources.path(
@@ -242,7 +245,7 @@ class GLMSim():
     @staticmethod
     def get_example_sim_names() -> List[str]:
         """
-        Returns a list names for the example simulations bundled in 
+        Returns a list names for the example simulations bundled in
         the glm-py package.
         """
         example_sims = []
@@ -255,7 +258,7 @@ class GLMSim():
     def from_file(cls, glmpy_path: str) -> "GLMSim":
         """
         Initialise an instance of `GLMSim` from a .glmpy file.
-        
+
         Parameters
         ----------
         glmpy_path : str
@@ -264,13 +267,11 @@ class GLMSim():
         _, file_extension = os.path.splitext(glmpy_path)
         if not file_extension == ".glmpy":
             raise ValueError(
-                "Invalid file. Only `.glmpy` files can be used with the " \
+                "Invalid file. Only `.glmpy` files can be used with the "
                 f"`from_file()` method. Got extension: {file_extension}."
             )
         with zipfile.ZipFile(glmpy_path, "r") as zipf:
-            sim_json = json.loads(
-                zipf.read("glm_sim.json").decode("utf-8")
-            )
+            sim_json = json.loads(zipf.read("glm_sim.json").decode("utf-8"))
             glm_nml = GLMNML.from_dict(sim_json["nml"]["glm"])
             aed_nml = AEDNML.from_dict(sim_json["nml"]["aed"])
             bcs = {}
@@ -287,10 +288,10 @@ class GLMSim():
                 aed_nml=aed_nml,
                 bcs=bcs,
                 aed_dbase=aed_dbase,
-                sim_dir_path=sim_json["sim_dir_path"]
+                sim_dir_path=sim_json["sim_dir_path"],
             )
             return sim
-    
+
     def to_file(self, glmpy_path: str):
         """
         Save the `GLMSim` object to a .glmpy file
@@ -303,7 +304,7 @@ class GLMSim():
         _, file_extension = os.path.splitext(glmpy_path)
         if not file_extension == ".glmpy":
             raise ValueError(
-                "Invalid file name. Only `.glmpy` files can be used with " \
+                "Invalid file name. Only `.glmpy` files can be used with "
                 f"the `to_file()` method. Got extension: {file_extension}."
             )
         sim_json = {
@@ -314,8 +315,8 @@ class GLMSim():
             "aed_dbase": list(self.aed_dbase.keys()),
             "nml": {
                 "glm": self.nml["glm"].to_dict(),
-                "aed": self.nml["aed"].to_dict()
-            }
+                "aed": self.nml["aed"].to_dict(),
+            },
         }
         with zipfile.ZipFile(glmpy_path, "w") as zipf:
             zipf.writestr("glm_sim.json", json.dumps(sim_json, indent=2))
@@ -332,7 +333,7 @@ class GLMSim():
         """
         Prepare the boundary condition and database files.
 
-        Writes the boundary condition and datase files to the simulation 
+        Writes the boundary condition and datase files to the simulation
         directory. Creates the directory if it doesn't already exist.
         """
         for nml_param in self.iter_params():
@@ -346,7 +347,7 @@ class GLMSim():
 
             if not isinstance(fl_paths, list):
                 fl_paths = [fl_paths]
-            
+
             for fl_path in fl_paths:
                 fl = os.path.basename(fl_path).split(".")[0]
                 output_path = os.path.join(self.get_sim_dir(), fl_path)
@@ -377,7 +378,7 @@ class GLMSim():
         """
         Prepare the NML files.
 
-        Writes the NML files to the simulation directory. Creates the 
+        Writes the NML files to the simulation directory. Creates the
         directory if it doesn't already exist.
         """
         for nml_obj in self.nml.values():
@@ -398,17 +399,15 @@ class GLMSim():
                     self.nml[nml_name].to_nml(path)
             else:
                 self.nml[nml_name].to_nml(
-                    os.path.join(
-                        self.get_sim_dir(), f"{nml_name}.nml"
-                    )
+                    os.path.join(self.get_sim_dir(), f"{nml_name}.nml")
                 )
-        
+
     def prepare_all_inputs(self):
         """
         Prepare all input files for GLM.
 
-        Creates the simulation directory and writes the NML, boundary 
-        condition, and database files. If the simulation directory 
+        Creates the simulation directory and writes the NML, boundary
+        condition, and database files. If the simulation directory
         already exists, the directory is first deleted.
         """
         if os.path.isdir(self.get_sim_dir()):
@@ -428,7 +427,7 @@ class GLMSim():
         """
         Run the GLM simulation.
 
-        Validates simulation configuration, prepares input files, and 
+        Validates simulation configuration, prepares input files, and
         then runs GLM.
 
         Parameters
@@ -438,11 +437,11 @@ class GLMSim():
         quiet : bool
             Suppress the GLM terminal output.
         time_sim : bool
-            Prints `"Starting {sim_name}"` and 
+            Prints `"Starting {sim_name}"` and
             `"Finished {sim_name} in {total_duration}"`
         glm_path : Union[str, None]
-            Path to the GLM binary. If `None`, attempts to use the GLM 
-            binary included in glm-py's built distribution. 
+            Path to the GLM binary. If `None`, attempts to use the GLM
+            binary included in glm-py's built distribution.
         """
         self.validate()
         self.prepare_all_inputs()
@@ -458,16 +457,16 @@ class GLMSim():
             sim_dir=self.get_sim_dir(),
             out_dir=self.get_param_value("glm", "output", "out_dir"),
             out_fn=self.get_param_value("glm", "output", "out_fn"),
-            sim_name=self.sim_name
+            sim_name=self.sim_name,
         )
         return outputs
-    
+
     @property
     def sim_name(self):
         """
         Simulation name.
 
-        Updating `sim_name` will also update the `sim_name` parameter 
+        Updating `sim_name` will also update the `sim_name` parameter
         of the `glm_setup` block.
         """
         return self._sim_name
@@ -475,21 +474,15 @@ class GLMSim():
     @sim_name.setter
     def sim_name(self, value: str):
         self._sim_name = value
-        self.set_param_value(
-            "glm", "glm_setup", "sim_name", self.sim_name
-        )
-    
+        self.set_param_value("glm", "glm_setup", "sim_name", self.sim_name)
+
     def iter_params(self):
         """Iterate over all `NMLParam` objects."""
         for nml in self.nml.values():
             yield from nml.iter_params()
 
     def set_param_value(
-        self,
-        nml_name: str,
-        block_name: str,
-        param_name: str,
-        value: Any
+        self, nml_name: str, block_name: str, param_name: str, value: Any
     ):
         """
         Set a parameter value.
@@ -663,16 +656,16 @@ class GLMSim():
 
         Parameters
         ----------
-        bcs_name : str 
+        bcs_name : str
             Name of the boundary condition.
-        
+
         """
         return self.bcs[bcs_name]
 
     def set_bc(self, bcs_name: str, bcs_pd: pd.DataFrame):
         """
         Adds, or overrides, a boundary condition dataframe.
-        
+
         Parameters
         ----------
         bcs_name : str
@@ -692,7 +685,7 @@ class GLMSim():
         """
         Copy the `GLMSim` object.
 
-        Returns a deep copy of the `GLMSim`. 
+        Returns a deep copy of the `GLMSim`.
         """
         return copy.deepcopy(self)
 
@@ -720,8 +713,8 @@ class GLMOutputs:
         """
         Return GLM output files.
 
-        Initialised at the completion of a GLM simulation to record the 
-        paths of output files. Provides methods to return the data in 
+        Initialised at the completion of a GLM simulation to record the
+        paths of output files. Provides methods to return the data in
         these files.
 
         Attributes
@@ -759,11 +752,11 @@ class GLMOutputs:
         Parameters
         ----------
         csv_basename : str
-            The basename of a CSV in the outputs directory. To see 
+            The basename of a CSV in the outputs directory. To see
             possible basenames, use `get_csv_basenames()`.
         """
         return self._csv_files[csv_basename]
-    
+
     def get_csv_pd(self, csv_basename: str) -> pd.DataFrame:
         """
         Returns a Pandas DataFrame of a CSV in the outputs directory.
@@ -771,11 +764,11 @@ class GLMOutputs:
         Parameters
         ----------
         csv_basename : str
-            The basename of a CSV in the outputs directory. To see 
+            The basename of a CSV in the outputs directory. To see
             possible basenames, use `get_csv_basenames()`.
         """
         return pd.read_csv(self.get_csv_path(csv_basename))
-    
+
     def get_netcdf_path(self) -> str:
         """
         Returns the path of the netCDF output file.
@@ -785,7 +778,7 @@ class GLMOutputs:
                 f"No output netCDF file found in {self._outputs_path}"
             )
         return self.nc_path
-    
+
     def get_netcdf(self) -> netCDF4.Dataset:
         """
         Returns a `netCDF4.Dataset` instance of the netCDF output file.
@@ -794,7 +787,7 @@ class GLMOutputs:
             self.get_netcdf_path(), "r", format="NETCDF4"
         )
         return output_nc
-    
+
     def zip_csv_outputs(self) -> str:
         """
         Creates a zipfile of csv GLM outputs (csv outputs only).
@@ -815,27 +808,29 @@ class GLMOutputs:
 def no_op_callback(x, y):
     return None
 
+
 class MultiSim:
     """
     Run `GLMSim` objects in parallel.
 
-    Uses Python's `multiprocessing` module to spawn separate processes 
-    for simultaneously running multiple `GLMSim` objects. Useful when 
+    Uses Python's `multiprocessing` module to spawn separate processes
+    for simultaneously running multiple `GLMSim` objects. Useful when
     many CPU cores are available and many permutations of a simulation
-    need to be run. The number of concurrently running simulations is 
+    need to be run. The number of concurrently running simulations is
     determined by the number of CPU cores set in the `run()` method.
 
     Attributes
     ----------
     glm_sims : List[GLMSim]
-        A list of `GLMSim` objects to be run across multiple CPU cores. 
+        A list of `GLMSim` objects to be run across multiple CPU cores.
     """
+
     def __init__(self, glm_sims: List[GLMSim]):
         """
         Parameters
         ----------
         glm_sims : List[GLMSim]
-            A list of `GLMSim` objects to be run across multiple CPU 
+            A list of `GLMSim` objects to be run across multiple CPU
             cores.
         """
         self.glm_sims = glm_sims
@@ -857,22 +852,22 @@ class MultiSim:
     ):
         """
         Run a `GLMSim` on a single core.
-        
+
         Parameters
         ----------
         glm_sim : GLMSim
             The `GLMSim` to run.
         on_sim_end : Callable[[GLMSim, GLMOutputs], Any]
-            The function to run at the completion of `GLMSim.run()`. 
+            The function to run at the completion of `GLMSim.run()`.
             Must take a `GLMSim` and `GLMOutputs` object as arguments.
         write_log : bool
             Write a log file as GLM runs.
         time_sim : bool
-            Prints `"Starting {sim_name}"` and 
+            Prints `"Starting {sim_name}"` and
             `"Finished {sim_name} in {total_duration}"`
         glm_path : Union[str, None]
-            Path to the GLM binary. If `None`, attempts to use the GLM 
-            binary included in glm-py's built distribution. 
+            Path to the GLM binary. If `None`, attempts to use the GLM
+            binary included in glm-py's built distribution.
         """
         glm_outputs = glm_sim.run(
             write_log=write_log,
@@ -899,21 +894,21 @@ class MultiSim:
         Parameters
         ----------
         on_sim_end : Callable[[GLMSim, GLMOutputs], Any]
-            The function to run at the completion of `GLMSim.run()`. 
+            The function to run at the completion of `GLMSim.run()`.
             Must take a `GLMSim` and `GLMOutputs` object as arguments.
         cpu_count : Union[int, None]
-            The number of CPU cores to use, i.e., the number of 
-            simulations to run in parallel. Default is the maximum 
+            The number of CPU cores to use, i.e., the number of
+            simulations to run in parallel. Default is the maximum
             number of cores available.
         write_log : bool
             Write a log file as GLM runs.
         time_sim : bool
-            Prints `"Starting {sim_name}"` and 
+            Prints `"Starting {sim_name}"` and
             `"Finished {sim_name} in {total_duration}"`
         glm_path : Union[str, None]
-            Path to the GLM binary. If `None`, attempts to use the GLM 
-            binary included in glm-py's built distribution. 
-        
+            Path to the GLM binary. If `None`, attempts to use the GLM
+            binary included in glm-py's built distribution.
+
         """
         if on_sim_end is None:
             on_sim_end = no_op_callback
@@ -927,7 +922,7 @@ class MultiSim:
                     f"CPUs on the system."
                 )
         else:
-            warnings.warn(f"Undetermined number of CPUs on the system.")
+            warnings.warn("Undetermined number of CPUs on the system.")
         if time_multi_sim:
             print(
                 f"Starting {len(self.glm_sims)} simulations for {cpu_count} "
@@ -955,4 +950,3 @@ class MultiSim:
                 f"{str(total_duration)}"
             )
         return rvs
-

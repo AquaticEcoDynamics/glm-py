@@ -1,23 +1,13 @@
 import os
 import json
-import f90nml
-
-from f90nml import Namelist
-from datetime import datetime
-from collections import OrderedDict
 from abc import ABC, abstractmethod
-from typing import (
-    Any,
-    Union,
-    List,
-    Callable,
-    TypeVar,
-    Generic,
-    Type,
-    TypeAlias,
-    Protocol,
-)
+from collections import OrderedDict
+from datetime import datetime
+from typing import (Any, Callable, Generic, List, Protocol, Type, TypeAlias,
+                    TypeVar, Union)
 
+import f90nml
+from f90nml import Namelist
 
 NMLParamValue: TypeAlias = Union[
     int,
@@ -340,14 +330,14 @@ class NMLBlock(ABC):
     def strict(self, value: bool):
         self.params.strict = value
         self._strict = value
-    
+
     def init_params(self, *args: NMLParam):
         """
         Populate the `params` dictionary with instances of `NMLParam`.
         """
         for nml_param in args:
             self.params[nml_param.name] = nml_param
-    
+
     def iter_params(self):
         """Iterate over all `NMLParam` objects."""
         for param in self.params.values():
@@ -629,7 +619,7 @@ class NML(ABC):
         """Iterate over all `NMLParam` objects."""
         for block in self.blocks.values():
             yield from block.iter_params()
-    
+
     def iter_blocks(self):
         """Iterate over all `NMLBlock` objects."""
         for block in self.blocks.values():
@@ -754,7 +744,7 @@ class NML(ABC):
             The block to set.
         """
         self.blocks[block_name] = block
-        
+
     def get_block(self, block_name: str) -> NMLBlock:
         """
         Get a NML Block.
@@ -854,15 +844,16 @@ class NMLWriter:
     """
     Write a NML file.
 
-    Provides methods to write a dictionary as either a NML file or a 
+    Provides methods to write a dictionary as either a NML file or a
     JSON representation of a NML file.
 
     Attributes
     ----------
     nml_dict : dict
-        Nested dictionary of the NML file. Keys are the block names, 
+        Nested dictionary of the NML file. Keys are the block names,
         values are dictionaries of parameter names/values.
     """
+
     def __init__(self, nml_dict: dict):
         self.nml_dict = nml_dict
 
@@ -903,8 +894,8 @@ class NMLReader:
     """
     Read a NML file.
 
-    Provides methods that convert a NML file, or a JSON representation 
-    of a NML file, to either a dictionary or an instance of a `NML` 
+    Provides methods that convert a NML file, or a JSON representation
+    of a NML file, to either a dictionary or an instance of a `NML`
     subclass.
 
     Attributes
@@ -912,6 +903,7 @@ class NMLReader:
     nml_path : str
         Path either a NML file or a JSON representation of a NML file.
     """
+
     def __init__(self, nml_path: str):
         self.nml_path = nml_path
 
@@ -950,9 +942,9 @@ class NMLReader:
 
     def to_nml_obj(self, nml_cls: Type[T_NML]) -> T_NML:
         """
-        Return an instance of a `NML` subclass that has been 
+        Return an instance of a `NML` subclass that has been
         initialised with the parameters in the NML file.
-        
+
         Parameters
         ----------
         nml_cls : NML
@@ -967,6 +959,7 @@ class NMLReader:
             block_obj = block_cls(**nml[block_name])
             nml_kwargs[block_name] = block_obj
         return nml_cls(**nml_kwargs)
+
 
 # Adapted from:
 # github.com/facebookresearch/fvcore/blob/main/fvcore/common/registry.py
@@ -993,8 +986,8 @@ class NMLRegistry:
         self.cls_map = {}
 
     def _do_register_block(
-            self, nml_name: str, block_name: str, block_cls: Any
-        ):
+        self, nml_name: str, block_name: str, block_cls: Any
+    ):
         if nml_name not in self.cls_map:
             self.cls_map[nml_name] = {"blocks": {}, "nml": None}
         assert block_name not in self.cls_map[nml_name]["blocks"], (
@@ -1014,7 +1007,7 @@ class NMLRegistry:
 
     def register_block(self) -> Callable:
         """
-        Register a `NMLBlock` subclass under the name `cls.block_name`. 
+        Register a `NMLBlock` subclass under the name `cls.block_name`.
         Used as a decorator.
         """
 
@@ -1028,9 +1021,10 @@ class NMLRegistry:
 
     def register_nml(self) -> Callable:
         """
-        Register a `NML` subclass under the name `cls.nml_name`. 
+        Register a `NML` subclass under the name `cls.nml_name`.
         Used as a decorator.
         """
+
         def deco(nml_cls: NML):
             nml_name = nml_cls.nml_name
             self._do_register_nml(nml_name, nml_cls)

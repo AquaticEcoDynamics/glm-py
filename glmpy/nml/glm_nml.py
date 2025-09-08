@@ -1,5 +1,6 @@
-from typing import Union, List
-from glmpy.nml.nml import NML_REGISTER, NMLParam, NMLBlock, NML
+from typing import List, Union
+
+from glmpy.nml.nml import NML, NML_REGISTER, NMLBlock, NMLParam
 
 
 @NML_REGISTER.register_block()
@@ -42,11 +43,11 @@ class GLMSetupBlock(NMLBlock):
         max_layer_thick : Union[float, None]
             Maximum thickness of a layer (m).
         density_model : Union[int, None]
-            Switch to set the density equation. Options are `1` for 
-            TEOS-10, `2` for UNESCO(1981), and `3` for a custom 
-            implementation. 
+            Switch to set the density equation. Options are `1` for
+            TEOS-10, `2` for UNESCO(1981), and `3` for a custom
+            implementation.
         non_avg : Union[bool, None]
-            Switch to configure flow boundary condition temporal 
+            Switch to configure flow boundary condition temporal
             interpolation.
         """
         super().__init__()
@@ -79,6 +80,7 @@ class TimeBlock(NMLBlock):
     strict : bool
         Switch to turn on or off parameter validation.
     """
+
     nml_name = "glm"
     block_name = "time"
 
@@ -95,20 +97,20 @@ class TimeBlock(NMLBlock):
         Parameters
         ----------
         timefmt : Union[int, None]
-            Time configuration switch. Options are `2` when using 
-            `start` and `stop` parameters or `3` when using `num_days`. 
+            Time configuration switch. Options are `2` when using
+            `start` and `stop` parameters or `3` when using `num_days`.
         start : Union[str, None]
-            Start time/date of simulation in format 
-            'yyyy-mm-dd hh:mm:ss'. 
+            Start time/date of simulation in format
+            'yyyy-mm-dd hh:mm:ss'.
         stop : Union[str, None]
-            End time/date of simulation in format 
-            'yyyy-mm-dd hh:mm:ss'. Used when `timefmt=2`. 
+            End time/date of simulation in format
+            'yyyy-mm-dd hh:mm:ss'. Used when `timefmt=2`.
         dt : Union[float, None]
             Time step (seconds).
         num_days : Union[int, None]
-            Number of days to simulate. Used when `timefmt=3`. 
+            Number of days to simulate. Used when `timefmt=3`.
         timezone : Union[float, None]
-            UTC time zone. 
+            UTC time zone.
         """
         super().__init__()
         self.init_params(
@@ -149,6 +151,7 @@ class MorphometryBlock(NMLBlock):
     strict : bool
         Switch to turn on or off parameter validation.
     """
+
     nml_name = "glm"
     block_name = "morphometry"
 
@@ -175,17 +178,17 @@ class MorphometryBlock(NMLBlock):
         longitude : Union[float, None]
             Longitude, positive East (°E).
         base_elev: Union[float, None]
-            Elevation of the bottom-most point of the lake (m above 
+            Elevation of the bottom-most point of the lake (m above
             datum).
         crest_elev : Union[float, None]
-            Elevation of a weir crest, where overflow begins (m above 
-            datum). 
+            Elevation of a weir crest, where overflow begins (m above
+            datum).
         bsn_len : Union[float, None]
             Length of the lake basin, at crest height (m).
         bsn_wid : Union[float, None]
             Width of the lake basin, at crest height (m).
         bsn_vals : Union[int, None]
-            Number of points being provided to described the 
+            Number of points being provided to described the
             hyposgraphic details.
         h : Union[List[float], None]
             Comma-separated list of lake elevations (m above datum).
@@ -229,6 +232,7 @@ class InitProfilesBlock(NMLBlock):
     strict : bool
         Switch to turn on or off parameter validation.
     """
+
     nml_name = "glm"
     block_name = "init_profiles"
 
@@ -256,19 +260,19 @@ class InitProfilesBlock(NMLBlock):
         num_depths : Union[int, None]
             Number of depths provided for initial profiles.
         the_depths : Union[List[float], float, None]
-            The depths of the initial profile points (m). 
+            The depths of the initial profile points (m).
         the_temps : Union[List[float], float, None]
-            The temperature (°C) at each of the initial profile points. 
+            The temperature (°C) at each of the initial profile points.
         the_sals : Union[List[float], float, None]
-            The salinity (ppt) at each of the initial profile points. 
+            The salinity (ppt) at each of the initial profile points.
         num_wq_vars : Union[int, None]
-            Number of non-GLM (i.e., FABM or AED2) variables to be 
+            Number of non-GLM (i.e., FABM or AED2) variables to be
             initialised.
         wq_names : Union[List[str], str, None]
-            Names of non-GLM (i.e., FABM or AED2) variables to be 
+            Names of non-GLM (i.e., FABM or AED2) variables to be
             initialised.
         wq_init_vals : Union[List[float], float, None]
-            List of water quality variable initial data. 
+            List of water quality variable initial data.
         snow_thickness : Union[float, None]
             Thickness of snow (m).
         white_ice_thickness : Union[float, None]
@@ -276,8 +280,8 @@ class InitProfilesBlock(NMLBlock):
         blue_ice_thickness : Union[float, None]
             Thickness of blue ice (m).
         restart_variables : Union[List[float], float, None]
-            Restart variables to restart model from a previous saved 
-            state. 
+            Restart variables to restart model from a previous saved
+            state.
         """
         super().__init__()
         self.init_params(
@@ -319,6 +323,7 @@ class MixingBlock(NMLBlock):
     strict : bool
         Switch to turn on or off parameter validation.
     """
+
     nml_name = "glm"
     block_name = "mixing"
 
@@ -339,28 +344,28 @@ class MixingBlock(NMLBlock):
         Parameters
         ----------
         surface_mixing : Union[int, None]
-            Switch to select the options of the surface mixing model. 
-            Options are `0` for no surface mixing, `1`, and `2`. 
+            Switch to select the options of the surface mixing model.
+            Options are `0` for no surface mixing, `1`, and `2`.
         coef_mix_conv : Union[float, None]
             Mixing efficiency - convective overturn.
         coef_wind_stir : Union[float, None]
             Mixing efficiency - wind stirring.
         coef_mix_shear : Union[float, None]
-            Mixing efficiency - shear production. 
+            Mixing efficiency - shear production.
         coef_mix_turb : Union[float, None]
             Mixing efficiency - unsteady turbulence effects.
         coef_mix_kh : Union[float, None]
             Mixing efficiency - Kelvin-Helmholtz billowing.
         deep_mixing : Union[int, None]
-            Switch to select the options of the deep (hypolimnetic) 
-            mixing model. Options are `0` for no deep mixing, `1` for 
+            Switch to select the options of the deep (hypolimnetic)
+            mixing model. Options are `0` for no deep mixing, `1` for
             constant diffusivity, and `2` for the Weinstock model.
         coef_mix_hyp : Union[float, None]
             Mixing efficiency - hypolimnetic turbulence.
         coef_mix_shreq : Union[int, None]
             Undocumented parameter.
         diff : Union[float, None]
-            Background (molecular) diffusivity in the hypolimnion. 
+            Background (molecular) diffusivity in the hypolimnion.
         """
         super().__init__()
         self.init_params(
@@ -398,6 +403,7 @@ class WQSetupBlock(NMLBlock):
     strict : bool
         Switch to turn on or off parameter validation.
     """
+
     nml_name = "glm"
     block_name = "wq_setup"
 
@@ -415,23 +421,23 @@ class WQSetupBlock(NMLBlock):
         Parameters
         ----------
         wq_lib : Union[str, None]
-            Water quality model selection. Options are `"aed2"` and 
-            `"fabm"`. 
+            Water quality model selection. Options are `"aed2"` and
+            `"fabm"`.
         wq_nml_file : Union[str, None]
-            Filename of water quality configuration file, e.g., 
-            `"./aed2.nml"`. 
+            Filename of water quality configuration file, e.g.,
+            `"./aed2.nml"`.
         bioshade_feedback : Union[bool, None]
             Switch to enable K_{w} to be updated by the WQ model.
         mobility_off : Union[bool, None]
-            Switch to enable settling within the WQ model. 
+            Switch to enable settling within the WQ model.
         ode_method : Union[int, None]
             Method to use for ODE solution of water quality module.
         split_factor : Union[float, None]
-            Factor weighting implicit vs explicit numerical solution of 
-            the WQ model. `split_factor` has a valid range between 
-            `0.0` and `1.0`. 
+            Factor weighting implicit vs explicit numerical solution of
+            the WQ model. `split_factor` has a valid range between
+            `0.0` and `1.0`.
         repair_state : Union[bool, None]
-            Switch to correct negative or out of range WQ variables. 
+            Switch to correct negative or out of range WQ variables.
         """
         super().__init__()
         self.init_params(
@@ -463,6 +469,7 @@ class OutputBlock(NMLBlock):
     strict : bool
         Switch to turn on or off parameter validation.
     """
+
     nml_name = "glm"
     block_name = "output"
 
@@ -488,40 +495,40 @@ class OutputBlock(NMLBlock):
         Parameters
         ----------
         out_dir : Union[str, None]
-            Directory to write the output files. 
+            Directory to write the output files.
         out_fn : Union[str, None]
-            Filename of the main NetCDF output file. 
+            Filename of the main NetCDF output file.
         nsave : Union[int, None]
-            Frequency to write to the NetCDF and CSV point files. 
+            Frequency to write to the NetCDF and CSV point files.
         csv_lake_fname : Union[str, None]
-            Filename for the daily summary file. 
+            Filename for the daily summary file.
         csv_point_nlevs : Union[int, None]
-            Number of specific level/depth CSV files to be created. 
+            Number of specific level/depth CSV files to be created.
         csv_point_fname : Union[str, None]
-            Name to be appended to specified depth CSV files. 
+            Name to be appended to specified depth CSV files.
         csv_point_frombot : Union[List[bool], bool, None]
-            Comma separated list identify whether each output point 
-            listed in `csv_point_at` is relative to the bottom 
-            (i.e., heights) or the surface (i.e., depths). 
+            Comma separated list identify whether each output point
+            listed in `csv_point_at` is relative to the bottom
+            (i.e., heights) or the surface (i.e., depths).
         csv_point_at : Union[List[float], float, None]
-            Height or Depth of points to output at 
-            (comma-separated list). 
+            Height or Depth of points to output at
+            (comma-separated list).
         csv_point_nvars : Union[int, None]
-            Number of variables to output into the csv files. 
+            Number of variables to output into the csv files.
         csv_point_vars : Union[List[str], str, None]
-            Comma separated list of variable names. 
+            Comma separated list of variable names.
         csv_outlet_allinone : Union[bool, None]
-            Switch to create an optional outlet file combining all 
-            outlets. 
+            Switch to create an optional outlet file combining all
+            outlets.
         csv_outlet_fname : Union[str, None]
-            Name to be appended to each of the outlet CSV files. 
+            Name to be appended to each of the outlet CSV files.
         csv_outlet_nvars : Union[int, None]
             Number of variables to be written into the outlet file(s).
         csv_outlet_vars : Union[List[str], str, None]
-            Comma separated list of variable names to be included in 
-            the output file(s). 
+            Comma separated list of variable names to be included in
+            the output file(s).
         csv_ovrflw_fname : Union[str, None]
-            Filename to be used for recording the overflow details. 
+            Filename to be used for recording the overflow details.
         """
         super().__init__()
         self.init_params(
@@ -565,6 +572,7 @@ class LightBlock(NMLBlock):
     strict : bool
         Switch to turn on or off parameter validation.
     """
+
     nml_name = "glm"
     block_name = "light"
 
@@ -582,24 +590,24 @@ class LightBlock(NMLBlock):
         Parameters
         ----------
         light_mode : Union[int, None]
-            Switch to configure the approach to light penetration. 
-            Options are `0` or `1`. 
+            Switch to configure the approach to light penetration.
+            Options are `0` or `1`.
         kw : Union[float, None]
-            Light extinction coefficient (m^{-1}). Used when 
-            `light_mode=0`. 
+            Light extinction coefficient (m^{-1}). Used when
+            `light_mode=0`.
         kw_file : Union[str, None]
-            Name of file with Kw time-series included. 
+            Name of file with Kw time-series included.
         n_bands : Union[int, None]
-            Number of light bandwidths to simulate. Used when 
-            `light_mode=1`. 
+            Number of light bandwidths to simulate. Used when
+            `light_mode=1`.
         light_extc : Union[List[float], float, None]
-            Comma-separated list of light extinction coefficients for 
-            each waveband. 
+            Comma-separated list of light extinction coefficients for
+            each waveband.
         energy_frac : Union[List[float], float, None]
-            Comma-separated list of energy fraction captured by each 
+            Comma-separated list of energy fraction captured by each
             waveband.
         benthic_imin : Union[float, None]
-            Critical fraction of incident light reaching the benthos. 
+            Critical fraction of incident light reaching the benthos.
         """
         super().__init__()
         self.init_params(
@@ -634,6 +642,7 @@ class BirdModelBlock(NMLBlock):
     strict : bool
         Switch to turn on or off parameter validation.
     """
+
     nml_name = "glm"
     block_name = "bird_model"
 
@@ -650,17 +659,17 @@ class BirdModelBlock(NMLBlock):
         Parameters
         ----------
         ap : Union[float, None]
-            Atmospheric pressure (hPa). 
+            Atmospheric pressure (hPa).
         oz : Union[float, None]
-            Ozone concentration (atm-cm). 
+            Ozone concentration (atm-cm).
         watvap : Union[float, None]
-            Total Precipitable water vapor (atm-cm). 
+            Total Precipitable water vapor (atm-cm).
         aod500 : Union[float, None]
-            Dimensionless Aerosol Optical Depth at wavelength 500 nm. 
+            Dimensionless Aerosol Optical Depth at wavelength 500 nm.
         aod380 : Union[float, None]
-            Dimensionless Aerosol Optical Depth at wavelength 380 nm. 
+            Dimensionless Aerosol Optical Depth at wavelength 380 nm.
         albedo : Union[float, None]
-            Albedo of the surface used for Bird Model insolation 
+            Albedo of the surface used for Bird Model insolation
             calculation.
         """
         super().__init__()
@@ -690,6 +699,7 @@ class SedimentBlock(NMLBlock):
     strict : bool
         Switch to turn on or off parameter validation.
     """
+
     nml_name = "glm"
     block_name = "sediment"
 
@@ -711,35 +721,35 @@ class SedimentBlock(NMLBlock):
         Parameters
         ----------
         benthic_mode : Union[int, None]
-            Switch to configure which mode of benthic interaction to 
-            apply. Options are `0` for bottom layer only, `1` for 
-            bottom layer and layer flanks, `2` for sediment zones, and 
-            `3` for an undocumented use case. 
+            Switch to configure which mode of benthic interaction to
+            apply. Options are `0` for bottom layer only, `1` for
+            bottom layer and layer flanks, `2` for sediment zones, and
+            `3` for an undocumented use case.
         sed_heat_model : Union[int, None]
             Undocumented parameter.
         n_zones : Union[int, None]
-            Number of sediment zones to simulate. Required if 
-            `benthic_mode=2` or `benthic_mode=3`. 
+            Number of sediment zones to simulate. Required if
+            `benthic_mode=2` or `benthic_mode=3`.
         sed_heat_ksoil : Union[float, None]
-            Heat conductivity of soil/sediment. 
+            Heat conductivity of soil/sediment.
         sed_temp_depth : Union[float, None]
-            Depth of soil/sediment layer below the lake bottom, used 
-            for heat flux calculation. 
+            Depth of soil/sediment layer below the lake bottom, used
+            for heat flux calculation.
         sed_temp_mean : Union[List[float], float, None]
-            Annual mean sediment temperature. A list if `n_zones > 1`. 
+            Annual mean sediment temperature. A list if `n_zones > 1`.
         sed_temp_amplitude : Union[List[float], float, None]
-            Amplitude of temperature variation experienced in the 
-            sediment over one year. A list if `n_zones > 1`. 
+            Amplitude of temperature variation experienced in the
+            sediment over one year. A list if `n_zones > 1`.
         sed_temp_peak_doy : Union[List[int], int, None]
-            Day of the year where the sediment temperature peaks. A 
-            list if `n_zones > 1`. 
+            Day of the year where the sediment temperature peaks. A
+            list if `n_zones > 1`.
         zone_heights : Union[List[float], float, None]
-            Upper height of zone boundary. Required if `benthic_mode=2` 
-            or `benthic_mode=3`. 
-        sed_reflectivity : Union[List[float], float, None] 
-            Sediment reflectivity. 
+            Upper height of zone boundary. Required if `benthic_mode=2`
+            or `benthic_mode=3`.
+        sed_reflectivity : Union[List[float], float, None]
+            Sediment reflectivity.
         sed_roughness : Union[List[float], float, None]
-            Undocumented parameter. 
+            Undocumented parameter.
         """
         super().__init__()
         self.init_params(
@@ -809,6 +819,7 @@ class SnowIceBlock(NMLBlock):
     params : Dict[str, NMLParam]
         Dictionary of `NMLParam` objects.
     """
+
     nml_name = "glm"
     block_name = "snowice"
 
@@ -825,12 +836,12 @@ class SnowIceBlock(NMLBlock):
         Paramters
         ---------
         snow_albedo_factor : Union[float, None]
-            Scaling factor used to as a multiplier to scale the 
-            snow/ice albedo estimate. 
+            Scaling factor used to as a multiplier to scale the
+            snow/ice albedo estimate.
         snow_rho_min : Union[float, None]
-            Maximum snow density allowable (kg m^{-3}). 
+            Maximum snow density allowable (kg m^{-3}).
         snow_rho_max : Union[float, None]
-            Minimum snow density allowable (kg m^{-3}). 
+            Minimum snow density allowable (kg m^{-3}).
         min_ice_thickness : Union[float, None]
             Undocumented parameter.
         dt_iceon_avg : Union[float, None]
@@ -865,6 +876,7 @@ class MeteorologyBlock(NMLBlock):
     strict : bool
         Switch to turn on or off parameter validation.
     """
+
     nml_name = "glm"
     block_name = "meteorology"
 
@@ -904,93 +916,93 @@ class MeteorologyBlock(NMLBlock):
         Parameters
         ----------
         met_sw : Union[bool, None]
-            Switch to enable the surface heating module. 
+            Switch to enable the surface heating module.
         meteo_fl : Union[str, None]
-            Filename of the meterological file. Include path and 
-            filename. 
+            Filename of the meterological file. Include path and
+            filename.
         subdaily : Union[bool, None]
-            Switch to indicate the meteorological data is provided with 
-            sub-daily resolution, at an interval equivalent to `dt` 
-            from `TimeBlock` (Δt). 
+            Switch to indicate the meteorological data is provided with
+            sub-daily resolution, at an interval equivalent to `dt`
+            from `TimeBlock` (Δt).
         time_fmt : Union[str, None]
             Time format of the 1st column in the inflow_fl. For example,
-            'YYYY-MM-DD hh:mm:ss'. 
+            'YYYY-MM-DD hh:mm:ss'.
         rad_mode : Union[int, None]
-            Switch to configure which incoming radiation option to use. 
-            Options are `1`, `2`, `3`, `4`, or `5`. 
+            Switch to configure which incoming radiation option to use.
+            Options are `1`, `2`, `3`, `4`, or `5`.
         albedo_mode : Union[int, None]
-            Switch to configure which albedo calculation option is 
-            used. Options are `1` for Hamilton & Schladow, `2` for 
-            Briegleb et al., or `3` for Yajima & Yamamoto. 
+            Switch to configure which albedo calculation option is
+            used. Options are `1` for Hamilton & Schladow, `2` for
+            Briegleb et al., or `3` for Yajima & Yamamoto.
         sw_factor : Union[float, None]
-            Scaling factor to adjust the shortwave radiation data 
-            provided in the `meteo_fl`. 
+            Scaling factor to adjust the shortwave radiation data
+            provided in the `meteo_fl`.
         lw_type : Union[str, None]
             Switch to configure which input approach is being used for
-            longwave/cloud data in the `meteo_fl`. Options are 
-            `'LW_IN'` for incident longwave, `'LW_NET'` for net 
-            longwave, or `'LW_CC'` for cloud cover. 
+            longwave/cloud data in the `meteo_fl`. Options are
+            `'LW_IN'` for incident longwave, `'LW_NET'` for net
+            longwave, or `'LW_CC'` for cloud cover.
         cloud_mode : Union[int, None]
-            Switch to configure which atmospheric emmissivity 
-            calculation option is used. Options are `1` for Idso and 
-            Jackson, `2` for Swinbank, `3` for Brutsaert, `4` for 
-            Yajima & Yamamoto. 
+            Switch to configure which atmospheric emmissivity
+            calculation option is used. Options are `1` for Idso and
+            Jackson, `2` for Swinbank, `3` for Brutsaert, `4` for
+            Yajima & Yamamoto.
         lw_factor : Union[float, None]
-            Scaling factor to adjust the longwave (or cloud) data 
-            provided in the `meteo_fl`. 
+            Scaling factor to adjust the longwave (or cloud) data
+            provided in the `meteo_fl`.
         atm_stab : Union[int, None]
-            Switch to configure which approach to atmospheric stability 
-            is used. `0` for neutral conditions, `1` for an 
-            undocumented use case, and `2` for an undocumented use 
-            case. 
+            Switch to configure which approach to atmospheric stability
+            is used. `0` for neutral conditions, `1` for an
+            undocumented use case, and `2` for an undocumented use
+            case.
         rh_factor : Union[float, None]
-            Scaling factor to adjust the relative humidity data 
-            provided in the `meteo_fl`. 
+            Scaling factor to adjust the relative humidity data
+            provided in the `meteo_fl`.
         at_factor : Union[float, None]
-            Scaling factor to adjust the air temperature data provided 
-            in the `meteo_fl`. 
+            Scaling factor to adjust the air temperature data provided
+            in the `meteo_fl`.
         ce : Union[float, None]
-            Bulk aerodynamic transfer coefficient for latent heat flux. 
+            Bulk aerodynamic transfer coefficient for latent heat flux.
         ch : Union[float, None]
-            Bulk aerodynamic transfer coefficient for sensible heat 
-            flux. 
+            Bulk aerodynamic transfer coefficient for sensible heat
+            flux.
         rain_sw : Union[bool, None]
-            Switch to configure rainfall input concentrations. 
+            Switch to configure rainfall input concentrations.
         rain_factor : Union[float, None]
-            Scaling factor to adjust the rainfall data provided in the 
+            Scaling factor to adjust the rainfall data provided in the
             `meteo_fl`.
         catchrain : Union[bool, None]
-            Switch that configures runoff from exposed banks of lake 
-            area. 
+            Switch that configures runoff from exposed banks of lake
+            area.
         rain_threshold : Union[float, None]
-            Daily rainfall amount (m) required before runoff from 
-            exposed banks occurs. 
+            Daily rainfall amount (m) required before runoff from
+            exposed banks occurs.
         runoff_coef : Union[float, None]
-            Conversion fraction of infiltration excess rainfall to 
-            runoff in exposed lake banks. 
+            Conversion fraction of infiltration excess rainfall to
+            runoff in exposed lake banks.
         cd : Union[float, None]
-            Bulk aerodynamic transfer coefficient for momentum. 
+            Bulk aerodynamic transfer coefficient for momentum.
         wind_factor : Union[float, None]
-            Scaling factor to adjust the windspeed data provided in the 
+            Scaling factor to adjust the windspeed data provided in the
             `meteo_fl`.
         fetch_mode : Union[int, None]
-            Switch to configure which wind-sheltering/fetch option to 
-            use. Options are `0` for no sheltering, `1` for area-based 
-            scaling, `2` for Markfort length-scale, or `3` for user 
-            input scaling table. 
+            Switch to configure which wind-sheltering/fetch option to
+            use. Options are `0` for no sheltering, `1` for area-based
+            scaling, `2` for Markfort length-scale, or `3` for user
+            input scaling table.
         aws: Union[float, None]
-            Undocumented parameter. Required if `fetch_mode` is `1`. 
+            Undocumented parameter. Required if `fetch_mode` is `1`.
         xws: Union[float, None]
-            Undocumented parameter. Required if `fetch_mode` is `2`. 
+            Undocumented parameter. Required if `fetch_mode` is `2`.
         num_dir : Union[int, None]
-            Number of wind direction reference points being read in. 
-            Required if `fetch_mode` is `2` or `fetch_mode` is `3`. 
+            Number of wind direction reference points being read in.
+            Required if `fetch_mode` is `2` or `fetch_mode` is `3`.
         wind_dir : Union[float, None]
-            Wind directions used for wind-sheltering effects. Required 
-            if `fetch_mode=2` or `fetch_mode=3`. 
+            Wind directions used for wind-sheltering effects. Required
+            if `fetch_mode=2` or `fetch_mode=3`.
         fetch_scale : Union[float, None]
-            Direction specific wind-sheltering scaling factors. 
-            Required if `fetch_mode=2` or `fetch_mode=3`. 
+            Direction specific wind-sheltering scaling factors.
+            Required if `fetch_mode=2` or `fetch_mode=3`.
         """
         super().__init__()
         self.init_params(
@@ -1067,6 +1079,7 @@ class InflowBlock(NMLBlock):
     strict : bool
         Switch to turn on or off parameter validation.
     """
+
     nml_name = "glm"
     block_name = "inflow"
 
@@ -1090,41 +1103,41 @@ class InflowBlock(NMLBlock):
         Parameters
         ----------
         num_inflows : Union[int, None]
-            Number of inflows to be simulated in this simulation. 
+            Number of inflows to be simulated in this simulation.
         names_of_strms : Union[List[str], str, None]
-            Names of each inflow. A list if `num_inflows > 1`. 
+            Names of each inflow. A list if `num_inflows > 1`.
         subm_flag : Union[List[bool], bool, None]
-            Switch indicating if the inflow is entering as a submerged 
-            input. A list if `num_inflows > 1`. 
+            Switch indicating if the inflow is entering as a submerged
+            input. A list if `num_inflows > 1`.
         subm_elev : Union[List[float], float, None]
-            Elevation of the submerged inflow. A list if 
-            `num_inflows > 1`. 
+            Elevation of the submerged inflow. A list if
+            `num_inflows > 1`.
         strm_hf_angle : Union[List[float], float, None]
-            Angle describing the width of an inflow river channel 
-            ("half angle"). A list if `num_inflows > 1`. 
+            Angle describing the width of an inflow river channel
+            ("half angle"). A list if `num_inflows > 1`.
         strmbd_slope :  Union[List[float], float, None]
-            Slope of the streambed / river thalweg for each river 
-            (degrees). A list if `num_inflows > 1`. 
+            Slope of the streambed / river thalweg for each river
+            (degrees). A list if `num_inflows > 1`.
         strmbd_drag : Union[List[float], float, None]
-            Drag coefficient of the river inflow thalweg, to calculate 
+            Drag coefficient of the river inflow thalweg, to calculate
             entrainment during insertion. A list if `num_inflows > 1`.
         coef_inf_entrain : Union[List[float], float, None]
-            Undocumented parameter. A list if `num_inflows > 1`. 
+            Undocumented parameter. A list if `num_inflows > 1`.
         inflow_factor : Union[List[float], float, None]
-            Scaling factor that can be applied to adjust the provided 
-            input data. A list if `num_inflows > 1`. 
+            Scaling factor that can be applied to adjust the provided
+            input data. A list if `num_inflows > 1`.
         inflow_fl : Union[List[str], str, None]
-            Filename(s) of the inflow CSV boundary condition files. A 
-            list if `num_inflows > 1`. 
+            Filename(s) of the inflow CSV boundary condition files. A
+            list if `num_inflows > 1`.
         inflow_varnum : Union[int, None]
-            Number of variables being listed in the columns of 
-            `inflow_fl`. Can include GLM variables. 
+            Number of variables being listed in the columns of
+            `inflow_fl`. Can include GLM variables.
         inflow_vars : Union[List[str], str, None]
-            Names of the variables in the `inflow_fl`. Provide 
-            variables in the order as they are in the file. 
+            Names of the variables in the `inflow_fl`. Provide
+            variables in the order as they are in the file.
         time_fmt : Union[str, None]
-            Time format of the 1st column in the `inflow_fl`. For 
-            example, `'YYYY-MM-DD hh:mm:ss'`. 
+            Time format of the 1st column in the `inflow_fl`. For
+            example, `'YYYY-MM-DD hh:mm:ss'`.
         """
         super().__init__()
         self.init_params(
@@ -1179,6 +1192,7 @@ class OutflowBlock(NMLBlock):
     strict : bool
         Switch to turn on or off parameter validation.
     """
+
     nml_name = "glm"
     block_name = "outflow"
 
@@ -1217,41 +1231,41 @@ class OutflowBlock(NMLBlock):
         Parameters
         ----------
         num_outlet : Union[int, None]
-            Number of outflows (including withdrawals, outlets or 
-            offtakes) to be included in this simulation. 
+            Number of outflows (including withdrawals, outlets or
+            offtakes) to be included in this simulation.
         outflow_fl : Union[List[str], str, None]
-            Filename of the file containing the outflow time-series. 
+            Filename of the file containing the outflow time-series.
             A list if `num_outlet > 1`.
         time_fmt : Union[str, None]
-            Time format of the 1st column in the `outflow_fl`. 
+            Time format of the 1st column in the `outflow_fl`.
         outflow_factor : Union[List[float], float, None]
-            Scaling factor used as a multiplier for outflows. A list if 
-            `num_outlet > 1`. 
+            Scaling factor used as a multiplier for outflows. A list if
+            `num_outlet > 1`.
         outflow_thick_limit : Union[List[float], float, None]
-            Maximum vertical limit of withdrawal entrainment. A list if 
-            `num_outlet > 1`. 
+            Maximum vertical limit of withdrawal entrainment. A list if
+            `num_outlet > 1`.
         single_layer_draw : Union[List[bool], bool, None]
-            Switch to only limit withdrawal entrainment and force 
-            outflows from layer at the outlet elevation height. A list 
-            if `num_outlet > 1`. 
+            Switch to only limit withdrawal entrainment and force
+            outflows from layer at the outlet elevation height. A list
+            if `num_outlet > 1`.
         flt_off_sw : Union[List[bool], bool, None]
-            Switch to indicate if the outflows are floating offtakes 
-            (taking water from near the surface). A list if 
-            `num_outlet > 1`. 
+            Switch to indicate if the outflows are floating offtakes
+            (taking water from near the surface). A list if
+            `num_outlet > 1`.
         outlet_type : Union[List[int], int, None]
-            Switch to configure approach of each withdrawal. Options 
-            are `1` for fixed outlet height, `2` for floating offtake, 
-            `3` for adaptive offtake/low oxy avoidance, `4` for 
-            adaptive offtake/isotherm following, or `5` for adaptive 
-            offtake/temp time-series. A list if `num_outlet > 1`. 
+            Switch to configure approach of each withdrawal. Options
+            are `1` for fixed outlet height, `2` for floating offtake,
+            `3` for adaptive offtake/low oxy avoidance, `4` for
+            adaptive offtake/isotherm following, or `5` for adaptive
+            offtake/temp time-series. A list if `num_outlet > 1`.
         outl_elvs : Union[List[float], float, None]
-            Outlet elevations (m). A list if `num_outlet > 1`. 
+            Outlet elevations (m). A list if `num_outlet > 1`.
         bsn_len_outl : Union[List[float], float, None]
-            Basin length at the outlet height(s) (m). A list if 
-            `num_outlet > 1`. 
+            Basin length at the outlet height(s) (m). A list if
+            `num_outlet > 1`.
         bsn_wid_outl : Union[List[float], float, None]
-            Basin width at the outlet heights (m). A list if 
-            `num_outlet > 1`. 
+            Basin width at the outlet heights (m). A list if
+            `num_outlet > 1`.
         crit_o2 : Union[int, None]
             Undocumented parameter.
         crit_o2_dep : Union[int, None]
@@ -1275,23 +1289,23 @@ class OutflowBlock(NMLBlock):
         mix_withdraw : Union[bool, None]
             Undocumented parameter.
         coupl_oxy_sw : Union[bool, None]
-            Undocumented parameter. 
+            Undocumented parameter.
         withdrtemp_fl : Union[str, None]
-            Filename of the file containing the temperature time-series 
-            the adaptive withdrawal is targeting. Required if 
-            `outlet_type=5`. 
+            Filename of the file containing the temperature time-series
+            the adaptive withdrawal is targeting. Required if
+            `outlet_type=5`.
         seepage : Union[bool, None]
-            Switch to enable the seepage of water from the lake bottom. 
+            Switch to enable the seepage of water from the lake bottom.
         seepage_rate : Union[float, None]
-            Seepage rate of water, or, soil hydraulic conductivity 
-            (m day^{-1}). 
+            Seepage rate of water, or, soil hydraulic conductivity
+            (m day^{-1}).
         crest_width : Union[float, None]
-            Width of weir (at crest height) where lake overflows (m). 
+            Width of weir (at crest height) where lake overflows (m).
         crest_factor : Union[float, None]
-            Drag coefficient associated with the weir crest, used to 
-            compute the overflow discharge rate. Applies only when the 
-            crest elevation is configured to be less than the maximum 
-            elevation of the domain. 
+            Drag coefficient associated with the weir crest, used to
+            compute the overflow discharge rate. Applies only when the
+            crest elevation is configured to be less than the maximum
+            elevation of the domain.
         """
         super().__init__()
         self.init_params(
@@ -1314,11 +1328,11 @@ class OutflowBlock(NMLBlock):
             ),
             NMLParam("flt_off_sw", bool, flt_off_sw, is_list=True),
             NMLParam(
-                "outlet_type", 
-                int, 
-                outlet_type, 
-                val_switch=[1, 2, 3, 4, 5], 
-                is_list=True
+                "outlet_type",
+                int,
+                outlet_type,
+                val_switch=[1, 2, 3, 4, 5],
+                is_list=True,
             ),
             NMLParam("outl_elvs", float, outl_elvs, "m", is_list=True),
             NMLParam(
@@ -1372,7 +1386,9 @@ class GLMNML(NML):
     strict : bool
         Switch to turn on or off block and parameter validation.
     """
+
     nml_name = "glm"
+
     def __init__(
         self,
         glm_setup: GLMSetupBlock = GLMSetupBlock(),
@@ -1388,20 +1404,20 @@ class GLMNML(NML):
         snowice: SnowIceBlock = SnowIceBlock(),
         meteorology: MeteorologyBlock = MeteorologyBlock(),
         inflow: InflowBlock = InflowBlock(),
-        outflow: OutflowBlock = OutflowBlock()
+        outflow: OutflowBlock = OutflowBlock(),
     ):
         """
         Parameters
         ----------
-        glm_setup : GLMSetupBlock 
-        time : TimeBlock 
-        morphometry : MorphometryBlock 
-        init_profiles : InitProfilesBlock 
+        glm_setup : GLMSetupBlock
+        time : TimeBlock
+        morphometry : MorphometryBlock
+        init_profiles : InitProfilesBlock
         mixing : MixingBlock
         wq_setup : WQSetupBlock
         output : OutputBlock
         light : LightBlock
-        bird_model : BirdModelBlock   
+        bird_model : BirdModelBlock
         sediment : SedimentBlock
         snowice : SnowIceBlock
         meteorology : MeteorologyBlock

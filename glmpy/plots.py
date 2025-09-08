@@ -1,14 +1,14 @@
-import netCDF4
+from datetime import datetime, timedelta
+from typing import List
+
 import numpy as np
 import pandas as pd
+import netCDF4
 import numpy.ma as ma
 import matplotlib.dates as mdates
-
-from typing import List
 from matplotlib.axes import Axes
-from matplotlib.lines import Line2D
 from matplotlib.image import AxesImage
-from datetime import datetime, timedelta
+from matplotlib.lines import Line2D
 
 
 class WQPlotter:
@@ -195,8 +195,8 @@ class LakePlotter:
         return out
 
     def plot_surface_height(
-            self, ax: Axes, param_dict: dict = {}
-        ) -> List[Line2D]:
+        self, ax: Axes, param_dict: dict = {}
+    ) -> List[Line2D]:
         """
         Line plot of lake surface height.
 
@@ -262,8 +262,8 @@ class LakePlotter:
         return out
 
     def plot_water_balance(
-            self, ax: Axes, param_dict: dict = {}
-        ) -> List[Line2D]:
+        self, ax: Axes, param_dict: dict = {}
+    ) -> List[Line2D]:
         """Line plot of lake water balance.
 
         Plots a timeseries of the net water balance (m^3/day) to a
@@ -305,7 +305,7 @@ class LakePlotter:
         ax.set_xlabel("Date")
 
         return out
-        
+
     def plot_water_balance_comps(
         self,
         ax: Axes,
@@ -475,8 +475,8 @@ class LakePlotter:
         return out
 
     def plot_surface_temp(
-            self, ax: Axes, param_dict: dict = {}
-        ) -> List[Line2D]:
+        self, ax: Axes, param_dict: dict = {}
+    ) -> List[Line2D]:
         """
         Line plot of lake surface temperature.
 
@@ -564,14 +564,14 @@ class NCPlotter:
     """
     Plot NetCDF outputs.
 
-    Class for plotting the GLM output NetCDF file. 
+    Class for plotting the GLM output NetCDF file.
 
     Attributes
     ----------
     glm_nc_path : str
         Path to the output NetCDF file.
     resolution : float
-        Resolution of the depth range (m). 
+        Resolution of the depth range (m).
     ice_height : bool
         Include ice when calculating surface height.
     white_ice_height : bool
@@ -579,6 +579,7 @@ class NCPlotter:
     snow_height : bool
         Include snow when calculating surface height.
     """
+
     def __init__(
         self,
         glm_nc_path: str,
@@ -597,11 +598,11 @@ class NCPlotter:
         resolution : float
             Resolution of the depth range (m).
         ice_height : bool
-            Include ice when calculating surface height. 
+            Include ice when calculating surface height.
         white_ice_height : bool
-            Include white ice when calculating surface height. 
+            Include white ice when calculating surface height.
         snow_height : bool
-            Include snow when calculating surface height. 
+            Include snow when calculating surface height.
         """
         self.resolution = resolution
         self.ice_height = ice_height
