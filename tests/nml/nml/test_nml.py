@@ -1,6 +1,7 @@
 import pytest
 
 from glmpy.nml import nml
+from collections import OrderedDict
 
 
 # Concrete implementations for testing
@@ -149,7 +150,9 @@ class TestNML:
         nml_obj.init_blocks(block)
         
         # __str__ returns the string representation of to_dict()
-        expected = str({"block": {"param": 10}})
+        expected = str(
+            OrderedDict(block=OrderedDict(param=10))
+        )
         assert str(nml_obj) == expected
 
     def test_param_value_methods(self):

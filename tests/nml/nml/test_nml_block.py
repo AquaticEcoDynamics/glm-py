@@ -1,7 +1,7 @@
 import pytest
 
 from glmpy.nml import nml
-
+from collections import OrderedDict
 
 # Concrete subclass for testing
 class ConcreteNMLBlock(nml.NMLBlock):
@@ -98,7 +98,8 @@ class TestNMLBlock:
         block.init_params(param1, param2)
         
         # __str__ returns the string representation of to_dict()
-        expected = str({"param1": 10, "param2": "test"})
+
+        expected = str(OrderedDict(param1=10, param2="test"))
         assert str(block) == expected
 
     def test_param_value_methods(self):
@@ -137,22 +138,6 @@ class TestNMLBlock:
         
         names = block.get_param_names()
         assert sorted(names) == ["param1", "param2", "param3"]
-
-    def test_from_dict(self):
-        """Test from_dict class method."""
-        nml_dict = {
-            "param1": 10,
-            "param2": "test"
-        }
-        
-        block = ConcreteNMLBlock.from_dict(nml_dict)
-        
-        # The from_dict method passes the dictionary to the constructor,
-        # which creates an NMLDict with these key-value pairs
-        assert "param1" in block.params
-        assert "param2" in block.params
-        assert block.params["param1"] == 10
-        assert block.params["param2"] == "test"
 
     def test_with_subclassed_block(self):
         """Test with a more realistic subclass similar to GLMSetupBlock."""

@@ -83,7 +83,7 @@ nav:
     - NML: how_to/how-to-nml.md
     - Plots: how_to/how-to-plots.md
     - Dimensions: how_to/how-to-dimensions.md
-    - Flows: how_to/how-to-outflows.md
+    - Flows: how_to/how-to-flows.md
   #- Tutorials:
     #- tutorials/index.md
   - API Reference:
