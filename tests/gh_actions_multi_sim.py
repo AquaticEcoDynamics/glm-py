@@ -7,7 +7,7 @@ random.seed(42)
 
 
 def on_sim_end(glm_sim: GLMSim, glm_outputs: GLMOutputs):
-    wq_pd = glm_outputs.get_csv_pd("WQ_5")
+    wq_pd = glm_outputs.get_csv_pd("WQ_17")
     mean_temp = wq_pd["temp"].mean()
     kw = glm_sim.get_param_value("glm", "light", "kw")
     glm_sim.rm_sim_dir()
