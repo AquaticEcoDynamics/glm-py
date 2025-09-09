@@ -3,24 +3,12 @@ import json
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from datetime import datetime
-from typing import (Any, Callable, Generic, List, Protocol, Type, TypeAlias,
-                    TypeVar, Union)
+from typing import (Any, Callable, Generic, List, Protocol, Type, TypeVar, 
+                    Union)
 
 import f90nml
 from f90nml import Namelist
 
-NMLParamValue: TypeAlias = Union[
-    int,
-    float,
-    str,
-    bool,
-    None,
-    List[int],
-    List[float],
-    List[str],
-    List[bool],
-    List[None],
-]
 T_NML = TypeVar("T_NML", bound="NML")
 
 

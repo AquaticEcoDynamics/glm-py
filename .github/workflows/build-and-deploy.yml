@@ -160,7 +160,7 @@ jobs:
 
   build-wheels-macos-ARM64:
     name: Build wheels on MacOS for ARM64
-    runs-on: macos-14
+    runs-on: macos-13-xlarge
 
     steps:
       - name: Check out code
@@ -349,7 +349,7 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.12"]
-    runs-on: macos-14
+    runs-on: macos-13-xlarge
 
     steps:
     - name: Setup Python

@@ -84,7 +84,9 @@ def run_glm(
                 ", a GLM binary is not included. Provide the path to an "
                 "external GLM binary using the glm_path parameter."
             )
-    run_command = f'{glm_path} --nml "{glm_nml_path}"'
+    else:
+        glm_path = os.path.abspath(glm_path)
+    run_command = f'{glm_path} --nml "glm3.nml"'
     target = None
     if quiet:
         target = open(os.devnull, "w")
@@ -94,6 +96,8 @@ def run_glm(
     if time_sim:
         print(f"Starting {sim_name}")
     try:
+        current_directory = os.getcwd()
+        os.chdir(os.path.dirname(glm_nml_path))
         if target:
             save = os.dup(1), os.dup(2)
             os.dup2(target.fileno(), 1)
@@ -113,6 +117,7 @@ def run_glm(
             os.close(save[0])
             os.close(save[1])
             target.close()
+        os.chdir(current_directory)
     if time_sim:
         print(f"Finished {sim_name} in {str(total_duration)}")
 
@@ -350,6 +355,9 @@ class GLMSim:
 
             for fl_path in fl_paths:
                 fl = os.path.basename(fl_path).split(".")[0]
+                # if name == "meteo_fl":
+                #     output_path = "./warm_lake/bcs/met.csv"
+                # else:
                 output_path = os.path.join(self.get_sim_dir(), fl_path)
                 out_dir = os.path.dirname(output_path)
                 os.makedirs(out_dir, exist_ok=True)
