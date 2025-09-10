@@ -100,7 +100,7 @@ def run_glm(
     if quiet:
         target = open(os.devnull, "w")
     if write_log:
-        log_file = os.path.join(os.path.dirname(sim_dir_path), "glm.log")
+        log_file = os.path.join(sim_dir_path, "glm.log")
         target = open(log_file, "w")
     if time_sim:
         print(f"Starting {sim_name}")
