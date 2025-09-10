@@ -18,7 +18,7 @@ The built distribution of glm-py comes bundled with the GLM binary.
 
 |             | Linux       | Macos       | Windows     |
 | ----------- | ----------- | ----------- | ----------- |
-| **x86_64**  | ✅          | ✅          | ✅           |
+| **x86_64**  | ✅          | ✅          | ❌           |
 | **ARM64**   | ✅          | ✅          | ❌           |
 
 ### Source distribution
@@ -33,7 +33,8 @@ The following table lists the GLM version that is bundled with the built distrib
 
 | glm-py version | GLM version     |
 | -------------- | -----------     |
-| `0.4.*`        | `3.3.1a12 `     |
-| `0.3.*`        | `3.3.1a12 `     |
-| `0.2.*`        | `3.3.1a12 `     |
-| `0.1.*`        | `3.3.1a12 `     |
+| `0.5.*`        | `3.3.3`         |
+| `0.4.*`        | `3.3.1a12`      |
+| `0.3.*`        | `3.3.1a12`      |
+| `0.2.*`        | `3.3.1a12`      |
+| `0.1.*`        | `3.3.1a12`      |
