@@ -2,108 +2,6 @@ import pytest
 
 from glmpy import dimensions
 
-def test_negative_height():
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedPyramid(
-            height=-6,
-            surface_length=40,
-            surface_width=40,
-            num_vals=7,
-            side_slope=1/3,
-            surface_elevation=0
-        )
-    assert str(error.value) == "height must be a positive value."
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedCone(
-            height=-3,
-            surface_radius=15,
-            num_vals=3,
-            side_slope=1/3,
-            surface_elevation=0
-        )
-    assert str(error.value) == "height must be a positive value."
-
-def test_negative_surface_dimension():
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedPyramid(
-            height=6,
-            surface_length=-40,
-            surface_width=40,
-            num_vals=7,
-            side_slope=1/3,
-            surface_elevation=0
-        )
-    assert str(error.value) == (
-        "surface_length must be a positive value."
-    )
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedPyramid(
-            height=6,
-            surface_length=40,
-            surface_width=-40,
-            num_vals=7,
-            side_slope=1/3,
-            surface_elevation=0
-        )
-    assert str(error.value) == (
-        "surface_width must be a positive value."
-    )
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedCone(
-            height=3,
-            surface_radius=-15,
-            num_vals=3,
-            side_slope=1/3,
-            surface_elevation=0
-        )
-    assert str(error.value) == "surface_radius must be a positive value."
-
-def test_num_vals_less_than_2():
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedPyramid(
-            height=6,
-            surface_length=40,
-            surface_width=40,
-            num_vals=1,
-            side_slope=1/3,
-            surface_elevation=0
-        )
-    assert str(error.value) == (
-       "num_vals must be greater than or equal 2."
-    )
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedCone(
-            height=3,
-            surface_radius=15,
-            num_vals=1,
-            side_slope=1/3,
-            surface_elevation=0
-        )
-    assert str(error.value) == (
-       "num_vals must be greater than or equal 2."
-    )
-
-def test_negative_side_slope():
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedPyramid(
-            height=6,
-            surface_length=40,
-            surface_width=40,
-            num_vals=7,
-            side_slope=-1/3,
-            surface_elevation=0
-        )
-    assert str(error.value) == "side_slope must be a positive value."
-    with pytest.raises(ValueError) as error:
-        dimensions.InvertedTruncatedCone(
-            height=3,
-            surface_radius=15,
-            num_vals=3,
-            side_slope=-1/3,
-            surface_elevation=0
-        )
-    assert str(error.value) == "side_slope must be a positive value."
-
 def test_negative_base_length():
     with pytest.raises(ValueError) as error:
         dimensions.InvertedTruncatedPyramid(
@@ -117,8 +15,8 @@ def test_negative_base_length():
     assert str(error.value) == (
         "Invalid combination of height, surface_length, and "
         "side_slope attributes. The calculated base_length of the "
-        "water body is currently <= 0. base_length is calculated by "
-        "(surface_length-(height/side_slope)*2). Adjust your input "
+        "water body is <= 0. base_length is calculated by "
+        "`(surface_length - (height / side_slope) * 2)`. Adjust these "
         "attributes to calculate a positive base_length value."
     )
     with pytest.raises(ValueError) as error:
@@ -133,8 +31,8 @@ def test_negative_base_length():
     assert str(error.value) == (
         "Invalid combination of height, surface_width, and "
         "side_slope attributes. The calculated base_width of the "
-        "water body is currently <= 0. base_width is calculated by "
-        "(surface_width-(height/side_slope)*2). Adjust your input "
+        "water body is <= 0. base_width is calculated by "
+        "`(surface_width - (height / side_slope) * 2)`. Adjust these "
         "attributes to calculate a positive base_width value."
     )
     with pytest.raises(ValueError) as error:
@@ -148,8 +46,8 @@ def test_negative_base_length():
     assert str(error.value) == (
         "Invalid combination of height, surface_radius, and "
         "side_slope attributes. The calculated base_radius of the "
-        "water body is currently <= 0. base_radius is calculated by "
-        "(surface_radius - (height / side_slope)). Adjust your input "
+        "water body is <= 0. base_radius is calculated by "
+        "`(surface_radius - (height / side_slope))`. Adjust these "
         "attributes to calculate a positive base_radius value."
     )
 

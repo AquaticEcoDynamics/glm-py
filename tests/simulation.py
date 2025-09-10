@@ -5,51 +5,33 @@ Run in devcontainer environment which includes development Python packages
 and the ubuntu binary for GLM. 
 
 Do not test using pytest. 
+
+Run: `python -m tests.simulation`
 """
-
 import os
-import shutil
+import matplotlib.pyplot as plt
 
-from glmpy import simulation as sim
-
-files = {
-    "glm3.nml": os.path.join(os.getcwd(), "test-data", "glm3.nml"),
-    "met.csv": os.path.join(os.getcwd(), "test-data", "met.csv"),
-}
+from glmpy.plots import NCPlotter
+from glmpy.simulation import GLMSim
 
 
-glm_run = sim.GLMSim(files, False, "/inputs")
-inputs_dir = glm_run.prepare_inputs()
+os.makedirs("dev/local_tests/", exist_ok=True)
 
-glm_run.glm_run(inputs_dir, "/glm/glm")
+example_sims = GLMSim.get_example_sim_names()
 
-outputs_dir = os.path.join(inputs_dir, "output")
+for example_sim in example_sims:
+    glm_sim = GLMSim.from_example_sim(example_sim)
+    glm_sim.sim_dir_path = "dev/local_tests/"
+    outputs = glm_sim.run(time_sim=True, quiet=True, glm_path="./glm")
 
-# test `zip_outputs()` endpoint
-glm_process = sim.GLMPostProcessor(outputs_dir)
-files_zip_path = glm_process.zip_outputs()
+    nc = NCPlotter(outputs.get_netcdf_path())
+    fig, ax = plt.subplots(figsize=(10, 5))
+    profile = nc.plot_profile(ax=ax, var_name="temp")
+    fig.colorbar(profile).set_label("Temperature (°C)")
+    ax.set_title(example_sim)
+    fig.savefig(f"dev/local_tests/{example_sim}.png")
+    glm_sim.rm_sim_dir()
 
-if "glm_outputs.zip" in os.listdir(outputs_dir):
-    print("zip_outputs() OK")
 
-# test `zip_csvs()` endpoint
-files_zip_csv_path = glm_process.zip_csvs()
 
-if "glm_csvs.zip" in os.listdir(outputs_dir):
-    print("zip_csvs() OK")
 
-# test `zip_json()` endpoint
-files_zip_json_path = glm_process.zip_json()
-
-if "glm_json.zip" in os.listdir(outputs_dir):
-    print("zip_json() OK")
-
-# test `csv_to_json()` stream of JSON
-json_stream = glm_process.csv_to_json(
-    "lake.csv",
-    ["Lake Level"]
-)
-print(json_stream)
-
-print("**** cleaning up ****")
-shutil.rmtree("/inputs")

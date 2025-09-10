@@ -1,5 +1,11 @@
-examples
-
+# dev files
+glm
+dev
+dev.py
+dev.ipynb
+notes.md
+sparkling_lake
+grosse_dhuenn
 *.DS_Store
 
 */__pycache__
@@ -19,7 +25,7 @@ sparkling.nml
 # MkDocs documentation
 site*/
 
-#glm3.nml
 notebooks/glmpy-demo/inputs
 
-glm
+
+

@@ -1,0 +1,430 @@
+name: build-and-test-deploy
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build-source-dist:
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.9 
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install setuptools wheel build
+
+    - name: Build package
+      shell: bash
+      run: |
+        BASE_URL="https://raw.githubusercontent.com/AquaticEcoDynamics/glm-aed/main/binaries/"
+        mkdir -p glmpy/bin
+        python -m build --sdist
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: source-dist
+        path: dist/
+
+  build-wheels-manylinux-aarch64:
+    name: Build wheels on manylinux for aarch64
+    runs-on: ubuntu-22.04
+    
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+        with:
+          platforms: all
+
+      - name: Set up Docker buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Compile GLM for aarch64
+        run: |
+          docker run --platform linux/arm64/v8 --rm -v $(pwd)/glm:/glm quay.io/pypa/manylinux2014_aarch64 /bin/bash -c "\
+            git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git && \
+            yum update -y && \
+            yum install epel-release -y && \
+            yum install -y netcdf-devel gd gd-devel gcc-gfortran && \
+            cd glm-aed/glm-source && \
+            mkdir binaries && \
+            ./build_glm.sh && \
+            cp /glm-aed/glm-source/binaries/glm_latest/glm /glm/ && \
+            cp /usr/lib64/{libgd.so.2,libjpeg.so.62,libnetcdf.so.7,libhdf5.so.8,libhdf5_hl.so.8,libsz.so.2,libaec.so.0,libXpm.so.4,libdl.so.2,libc.so.6,libm.so.6,libpng15.so.15} /glm/"
+          mkdir -p glmpy/bin
+          sudo mv glm/glm glmpy/bin/
+          sudo chmod +x glmpy/bin/*
+          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm
+      
+      - name: Build wheels for aarch64
+        uses: pypa/cibuildwheel@v2.16.2
+        env:
+          CIBW_BUILD: 'cp39-* cp310-* cp311-* cp312-* pp39-* pp310-*'
+          CIBW_ARCHS_LINUX: 'aarch64'
+          CIBW_MANYLINUX_AARCH64_IMAGE: quay.io/pypa/manylinux2014_aarch64
+          CIBW_ENVIRONMENT: "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm"
+      
+      - name: Upload aarch64 wheels artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-manylinux2014-aarch64
+          path: ./wheelhouse/*.whl
+
+  build-wheels-manylinux-x86_64:
+    name: Build wheels on manylinux for x86_64
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Compile GLM for x86_64
+        run: |
+          docker run --rm -v $(pwd)/glm:/glm quay.io/pypa/manylinux2014_x86_64 /bin/bash -c "\
+              git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git && \
+              yum install epel-release -y && \
+              yum update -y && \
+              yum install -y netcdf netcdf-devel gd gd-devel gcc-gfortran libjpeg-turbo hdf5 hdf5-devel libaec libaec-devel libXpm glibc libpng-1.5.13-8.el7.i686 && \
+              cd glm-aed/glm-source && \
+              mkdir binaries && \
+              ./build_glm.sh
+              cp /glm-aed/glm-source/binaries/glm_latest/glm /glm/ && \
+              cp /usr/lib64/{libgd.so.2,libjpeg.so.62,libnetcdf.so.7,libhdf5.so.8,libhdf5_hl.so.8,libsz.so.2,libaec.so.0,libXpm.so.4,libdl.so.2,libc.so.6,libm.so.6,libpng15.so.15} /glm/"
+          mkdir -p glmpy/bin
+          sudo mv glm/glm glmpy/bin/
+          sudo chmod +x glmpy/bin/*
+          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm
+      
+      - name: Build wheels for x86_64
+        uses: pypa/cibuildwheel@v2.16.2
+        env:
+          CIBW_BUILD: 'cp39-* cp310-* cp311-* cp312-* pp39-* pp310-*'
+          CIBW_ARCHS_LINUX: 'x86_64'
+          CIBW_MANYLINUX_X86_64_IMAGE: quay.io/pypa/manylinux2014_x86_64
+          CIBW_ENVIRONMENT: "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm"
+
+      - name: Upload x86_64 wheels artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-manylinux2014-x86_64
+          path: ./wheelhouse/*.whl
+  
+  build-wheels-macos-x86_64:
+    name: Build wheels on MacOS for x86_64
+    runs-on: macos-13
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Install packages and setup
+        run: |
+          brew reinstall gcc
+          brew install netcdf
+          brew install gd
+          git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git
+      
+      - name: Compile GLM for x86_64
+        env:
+            CPATH: /opt/homebrew/include:$CPATH
+            LIBRARY_PATH: /opt/homebrew/lib:$LIBRARY_PATH
+            CFLAGS: -I/opt/homebrew/include
+            LDFLAGS: -L/opt/homebrew/lib
+        run: |
+          cd $GITHUB_WORKSPACE/glm-aed/glm-source
+          ./build_glm.sh
+          MOSDIR=`grep 'SOFTWARE LICENSE AGREEMENT FOR ' '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | awk -F 'macOS ' '{print $NF}' | tr -d '\\' | tr ' ' '_'`
+          cd $GITHUB_WORKSPACE
+          mkdir $GITHUB_WORKSPACE/glmpy/bin/
+          cp $GITHUB_WORKSPACE/glm-aed/glm-source/binaries/macos/${MOSDIR}/glm_latest/glm $GITHUB_WORKSPACE/glmpy/bin/
+            
+      - name: Build wheels for x86_64
+        uses: pypa/cibuildwheel@v2.16.2
+        env:
+          CIBW_BUILD: 'cp39-* cp310-* cp311-* cp312-* pp39-* pp310-*'
+          CIBW_ARCHS_MACOS: 'x86_64'
+
+      - name: Upload x86_64 wheels artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-macos-x86_64
+          path: ./wheelhouse/*.whl
+
+  build-wheels-macos-arm64:
+    name: Build wheels on MacOS for ARM64
+    runs-on: macos-14
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Install packages and setup
+        run: |
+          brew reinstall gcc
+          brew install netcdf
+          brew install gd
+          brew install pipx
+          pipx ensurepath
+          git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git
+      
+      - name: Compile GLM for ARM64
+        env:
+          CPATH: /opt/homebrew/include:$CPATH
+          LIBRARY_PATH: /opt/homebrew/lib:$LIBRARY_PATH
+        run: |
+          cd $GITHUB_WORKSPACE/glm-aed/glm-source
+          ./build_glm.sh
+          MOSDIR=`grep 'SOFTWARE LICENSE AGREEMENT FOR ' '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | awk -F 'macOS ' '{print $NF}' | tr -d '\\' | tr ' ' '_'`
+          cd $GITHUB_WORKSPACE
+          mkdir $GITHUB_WORKSPACE/glmpy/bin/
+          cp $GITHUB_WORKSPACE/glm-aed/glm-source/binaries/macos/${MOSDIR}/glm_latest/glm $GITHUB_WORKSPACE/glmpy/bin/
+            
+      - name: Build wheels for ARM64
+        uses: pypa/cibuildwheel@v2.16.2
+        env:
+          CIBW_BUILD: 'cp39-* cp310-* cp311-* cp312-* pp39-* pp310-*'
+          CIBW_ARCHS_MACOS: 'arm64'
+
+      - name: Upload ARM64 wheels artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-macos-arm64
+          path: ./wheelhouse/*.whl
+        
+  # build-wheel-windows-amd64:
+  #   name: Build wheels on Windows for AMD64
+  #   runs-on: windows-2022
+
+  #   steps:
+  #     - name: Check out code
+  #       uses: actions/checkout@v4
+
+  #     - name: Install packages and setup
+  #       run: |
+  #         choco install make 
+  #         choco install mingw 
+  #         choco install git
+  #         choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+  #         git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git
+    
+  #     - name: Compile GLM for AMD64
+  #       shell: bash
+  #       run: |
+  #         cd $GITHUB_WORKSPACE/glm-aed/glm-source/ancillary/windows/Sources
+  #         ./build_all.sh
+  #         cd $GITHUB_WORKSPACE/glm-aed/glm-source
+  #         ./build_glm.sh
+  #         cd $GITHUB_WORKSPACE
+  #         mkdir -p $GITHUB_WORKSPACE/glmpy/bin/
+  #         cp "$GITHUB_WORKSPACE/glm-aed/glm-source/binaries/windows/glm_latest/glm.exe" "$GITHUB_WORKSPACE/glmpy/bin/"
+  #         cp "$GITHUB_WORKSPACE/glm-aed/glm-source/ancillary/windows/msys/bin/"*.dll "$GITHUB_WORKSPACE/glmpy/bin/"
+  
+  #     - name: Build wheels for AMD64
+  #       uses: pypa/cibuildwheel@v2.16.5
+  #       env:
+  #         CIBW_BUILD: 'cp39-* cp310-* cp311-* cp312-* pp39-* pp310-*'
+  #         CIBW_ARCHS_WINDOWS: "auto64"
+
+  #     - name: Upload wheels artifact
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: wheels-windows-amd64
+  #         path: ./wheelhouse/*.whl
+  
+  publish-to-testpypi:
+    name: Publish distributions to TestPyPI
+    needs: [build-source-dist, build-wheels-manylinux-aarch64, build-wheels-manylinux-x86_64, build-wheels-macos-x86_64, build-wheels-macos-arm64] #build-wheel-windows-amd64
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        distribution:
+          - source-dist
+          - wheels-manylinux2014-aarch64
+          - wheels-manylinux2014-x86_64
+          - wheels-macos-x86_64
+          - wheels-macos-arm64
+          #- wheels-windows-amd64
+
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/glm-py  
+    permissions:
+      id-token: write  
+  
+    steps:
+      - name: Download distribution artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.distribution}}
+          path: dist/
+
+      - name: Random sleep to avoid PyPI 503
+        run: |
+          RANDOM_SLEEP=$(( RANDOM % 60 + 1 ))
+          sleep $RANDOM_SLEEP
+
+      - name: Publish distribution to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
+
+  wait-for-testpypi-to-update:
+    name: Wait for TestPyPI to update
+    needs: publish-to-testpypi
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Sleep for 30 seconds
+        run: sleep 30s
+        shell: bash
+
+  test-linux-wheels-x86_64:
+    name: Test Linux wheels x86_64
+    needs: wait-for-testpypi-to-update
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+    runs-on: ubuntu-22.04
+
+    steps:
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install glmpy
+      run: |
+        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple glm-py
+    
+    - name: Test installation
+      run: |
+        curl https://raw.githubusercontent.com/AquaticEcoDynamics/glm-py/next-release/tests/gh_actions_single_sim.py --output gh_actions_single_sim.py
+        curl https://raw.githubusercontent.com/AquaticEcoDynamics/glm-py/next-release/tests/gh_actions_multi_sim.py --output gh_actions_multi_sim.py
+        python gh_actions_single_sim.py
+        python gh_actions_multi_sim.py
+
+  test-macos-wheels-x86_64:
+    name: Test MacOS wheels x86_64
+    needs: wait-for-testpypi-to-update
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
+    runs-on: macos-13
+
+    steps:
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install glmpy
+      run: |
+        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple glm-py
+    
+    - name: Test installation
+      run: |
+        curl https://raw.githubusercontent.com/AquaticEcoDynamics/glm-py/next-release/tests/gh_actions_single_sim.py --output gh_actions_single_sim.py
+        curl https://raw.githubusercontent.com/AquaticEcoDynamics/glm-py/next-release/tests/gh_actions_multi_sim.py --output gh_actions_multi_sim.py
+        python gh_actions_single_sim.py
+        python gh_actions_multi_sim.py
+
+  test-macos-wheels-arm64:
+    name: Test MacOS wheels ARM64
+    needs: wait-for-testpypi-to-update
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+    runs-on: macos-14
+
+    steps:
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install glmpy
+      run: |
+        pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple glm-py
+    
+    - name: Test installation
+      run: |
+        curl https://raw.githubusercontent.com/AquaticEcoDynamics/glm-py/next-release/tests/gh_actions_single_sim.py --output gh_actions_single_sim.py
+        curl https://raw.githubusercontent.com/AquaticEcoDynamics/glm-py/next-release/tests/gh_actions_multi_sim.py --output gh_actions_multi_sim.py
+        python gh_actions_single_sim.py
+        python gh_actions_multi_sim.py
+
+  # test-windows-wheels-amd64:
+  #   name: Test Windows wheels AMD64
+  #   needs: wait-for-testpypi-to-update
+  #   strategy:
+  #     matrix:
+  #       python-version: ["3.9", "3.10", "3.11", "3.12"]
+  #   runs-on: windows-2022
+
+  #   steps:
+  #   - name: Setup Python
+  #     uses: actions/setup-python@v4
+  #     with:
+  #       python-version: ${{ matrix.python-version}}
+    
+  #   - name: Download files to run
+  #     run: |
+  #       Invoke-WebRequest -Uri https://raw.githubusercontent.com/WET-tool/glm-py/main/notebooks/glmpy-demo/run_glmpy.py -OutFile run_glmpy.py
+  #       Invoke-WebRequest -Uri https://raw.githubusercontent.com/WET-tool/glm-py/main/notebooks/glmpy-demo/glm3.nml -OutFile glm3.nml
+  #       New-Item -ItemType Directory -Force -Path bcs
+  #       Invoke-WebRequest -Uri https://raw.githubusercontent.com/WET-tool/glm-py/main/notebooks/glmpy-demo/bcs/nldas_driver.csv -OutFile bcs/nldas_driver.csv
+
+  #   - name: Install glmpy
+  #     run: |
+  #       pip install fastapi==0.88.0
+  #       pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple glm-py --use-deprecated=legacy-resolver
+    
+  #   - name: Run glmpy
+  #     run: python run_glmpy.py
+    
+  publish-to-pypi:
+    name: Publish distributions to PyPI
+    needs: [test-macos-wheels-arm64, test-macos-wheels-x86_64, test-linux-wheels-x86_64] #test-windows-wheels-amd64
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        distribution:
+          - source-dist
+          - wheels-manylinux2014-aarch64
+          - wheels-manylinux2014-x86_64
+          - wheels-macos-x86_64
+          - wheels-macos-arm64
+          #- wheels-windows-amd64
+
+    environment:
+      name: pypi
+      url: https://pypi.org/p/glm-py  
+    permissions:
+      id-token: write  
+  
+    steps:
+      - name: Download distribution artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.distribution }}
+          path: dist/
+      
+      - name: Random sleep to avoid PyPI 503
+        run: |
+          RANDOM_SLEEP=$(( RANDOM % 60 + 1 ))
+          sleep $RANDOM_SLEEP
+
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

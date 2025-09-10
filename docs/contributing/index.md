@@ -40,8 +40,6 @@ actively developed.
 
 ## Suggested contributions
 
-- An `aed_nml` sub-module for the `nml` module that mirrors the functionality
-of the `glm_nml` sub-module. 
-- Parameter documentation for the `glm_nml` sub-module.
-- Additional simple morphometries in the `dimensions` module.
+- `aed_nml` sub-module: Cover all supported NML blocks and document parameters
+
 
