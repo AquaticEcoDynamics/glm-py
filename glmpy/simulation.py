@@ -42,7 +42,7 @@ def glmpy_glm_path() -> Union[str, None]:
 
 
 def run_glm(
-    glm_nml_path: str,
+    sim_dir_path: str,
     sim_name: str = "simulation",
     write_log: bool = False,
     quiet: bool = False,
@@ -56,8 +56,9 @@ def run_glm(
 
     Parameters
     ----------
-    glm_nml_path : str
-        Path to the GLM NML file.
+    sim_dir_path : str
+        Path to the simulation directory that contains the `glm3.nml` 
+        file. 
     sim_name : str
         Name of the simulation.
     write_log : bool
@@ -71,6 +72,14 @@ def run_glm(
         Path to the GLM binary. If `None`, attempts to use the GLM
         binary included in glm-py's built distribution.
     """
+    if not os.path.isdir(sim_dir_path):
+        raise NotADirectoryError(
+            f"'{sim_dir_path}' is not an existing directory."
+        )
+    if not os.path.isfile(os.path.join(sim_dir_path, "glm3.nml")):
+        raise FileNotFoundError(
+            f"The glm3.nml file was not found in {sim_dir_path}."
+        )
     if glm_path is None:
         glm_path = glmpy_glm_path()
         if glm_path is None:
@@ -91,13 +100,13 @@ def run_glm(
     if quiet:
         target = open(os.devnull, "w")
     if write_log:
-        log_file = os.path.join(os.path.dirname(glm_nml_path), "glm.log")
+        log_file = os.path.join(os.path.dirname(sim_dir_path), "glm.log")
         target = open(log_file, "w")
     if time_sim:
         print(f"Starting {sim_name}")
     try:
-        current_directory = os.getcwd()
-        os.chdir(os.path.dirname(glm_nml_path))
+        cwd = os.getcwd()
+        os.chdir(sim_dir_path)
         if target:
             save = os.dup(1), os.dup(2)
             os.dup2(target.fileno(), 1)
@@ -117,7 +126,7 @@ def run_glm(
             os.close(save[0])
             os.close(save[1])
             target.close()
-        os.chdir(current_directory)
+        os.chdir(cwd)
     if time_sim:
         print(f"Finished {sim_name} in {str(total_duration)}")
 
@@ -355,9 +364,6 @@ class GLMSim:
 
             for fl_path in fl_paths:
                 fl = os.path.basename(fl_path).split(".")[0]
-                # if name == "meteo_fl":
-                #     output_path = "./warm_lake/bcs/met.csv"
-                # else:
                 output_path = os.path.join(self.get_sim_dir(), fl_path)
                 out_dir = os.path.dirname(output_path)
                 os.makedirs(out_dir, exist_ok=True)
@@ -454,7 +460,7 @@ class GLMSim:
         self.validate()
         self.prepare_all_inputs()
         run_glm(
-            glm_nml_path=os.path.join(self.get_sim_dir(), "glm3.nml"),
+            sim_dir_path=self.get_sim_dir(),
             sim_name=self.sim_name,
             write_log=write_log,
             quiet=quiet,
@@ -462,7 +468,7 @@ class GLMSim:
             glm_path=glm_path,
         )
         outputs = GLMOutputs(
-            sim_dir=self.get_sim_dir(),
+            sim_dir_path=self.get_sim_dir(),
             out_dir=self.get_param_value("glm", "output", "out_dir"),
             out_fn=self.get_param_value("glm", "output", "out_fn"),
             sim_name=self.sim_name,
@@ -711,27 +717,43 @@ class GLMSim:
 
 
 class GLMOutputs:
+    """
+    Return GLM output files.
+
+    Initialised at the completion of a GLM simulation to record the
+    paths of output files. Provides methods to return the data in
+    these files.
+
+    Attributes
+    ----------
+    sim_name : str
+        Name of the simulation.
+    """
     def __init__(
         self,
-        sim_dir: str,
+        sim_dir_path: str,
         out_dir: str = "output",
         out_fn: str = "output",
         sim_name: str = "simulation",
     ):
         """
-        Return GLM output files.
-
-        Initialised at the completion of a GLM simulation to record the
-        paths of output files. Provides methods to return the data in
-        these files.
-
-        Attributes
+        Parameters
         ----------
+        sim_dir_path : str
+            Path to the simulation directory.
+        out_dir : str
+            Directory name containing the GLM output files. Set this to 
+            equal the `out_dir` parameter in the `output` block of the 
+            `glm` NML.
+        out_fn : str
+            Filename of the main NetCDF output file. Set this to equal 
+            the `out_dir` parameter in the `output` block of the `glm` 
+            NML.
         sim_name : str
             Name of the simulation.
         """
         self.sim_name = sim_name
-        self._outputs_path = os.path.join(sim_dir, out_dir)
+        self._outputs_path = os.path.join(sim_dir_path, out_dir)
         files = os.listdir(self._outputs_path)
 
         self._csv_files = {}

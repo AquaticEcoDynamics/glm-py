@@ -1,3 +1,4 @@
+# runs : 1
 name: test-gh-action-build
 
 on:
@@ -5,7 +6,7 @@ on:
     branches:
       - next-release
     paths:
-      - 'tests/gh_actions_build_trigger.txt'
+      - '.github/workflows/test-build.yml'
 
 jobs:
   build-source-dist:
