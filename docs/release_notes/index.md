@@ -2,6 +2,19 @@
 
 ## glm-py
 
+### 0.5.0 <small>(10 September, 2025)</small> { id="0.5.0" }
+
+`v0.5.0` provides a new API for glm-py that overhauls almost all existing modules. Notable changes and additions include:
+- The `GLMSim` class for configuring and running GLM simulations.
+- Five example simulations for initialising `GLMSim` via the `from_example_sim()` method. These are: Falling Creek Reservoir, Grosse Dhuenn, Sparkling Lake, Warm Lake, and Woods Lake.
+- `MultiSim` class for running `GLMSim` objects in parallel.
+- `GLMOutputs` class for retrieving outputs files.
+- `NMLParam`, `NMLBlock`, and `NML` classes for storing parameters and validation logic.
+- AED NML support  (see `glmpy.nml.aed_nml` sub-module).
+- `f90nml` backend for improved reading and writing of NML files.
+- GLM version updated to `3.3.3` (built distribution only).
+- New package logo ❤️.
+
 ### 0.4.0 <small>(17 January, 2025)</small> { id="0.4.0" }
 
 - Added `restart_variables` to `InitProfilesBlock`, 

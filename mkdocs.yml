@@ -6,6 +6,8 @@ theme:
     name: material
     logo: img/glmpy-white-stencil.png
     custom_dir: docs/custom_theme/
+    icon:
+      repo: fontawesome/brands/github
     features:
       - content.code.copy
       - navigation.tabs

@@ -1,11 +1,10 @@
-# glm-py ![Image title](https://raw.githubusercontent.com/AquaticEcoDynamics/GLM/master/glm.png){ align=right width="150"}
+# glm-py <img src="img/glmpy-square-blue.png" align="right" width="128" />
 
-
-Python tools for running General Lake Model (GLM) simulations.
+Python API for the General Lake Model (GLM).
 
 ## GLM
 
-GLM is a 1-dimensional lake water balance and stratification model. It can also be coupled with a powerful ecological modelling library to support simulations of lake water quality and ecosystem processes.
+GLM is a 1-dimensional lake water balance and stratification model. It can also be coupled with the <a href="https://github.com/AquaticEcoDynamics/aed-science" target="_blank">AED</a> modelling library to support simulations of lake water quality and ecosystem processes.
 
 GLM is suitable for a wide range of natural and engineered lakes, including shallow (well-mixed) and deep (stratified) systems. The model has been successfully applied to systems from the scale of individual ponds and wetlands to the scale of Great Lakes.
 
@@ -16,26 +15,26 @@ The <a href="https://github.com/AquaticEcoDynamics/glm-aed/tree/main/binaries" t
 
 ## Why glm-py?
 
-glm-py provides a series of classes, functions, and data structures that support running GLM simulations, preparing model input data and configurations, and processing model outputs. 
+glm-py is an object-oriented API for preparing GLM inputs, running simulations, and processing outputs. 
 
-Its goal is to make running and deploying GLM in a range of environments easy, e.g., building APIs for web applications or cloud services that use GLM, running batches of GLM simulations on HPCs, and running GLM simulations locally within Python environments such as JupyterLab or QGIS. 
+Its goal is to make working with GLM as easy as possible while providing sufficient depth to meet more complex use cases. At its most basic, a GLM simulation can be run and visualised in just a few lines of code:
 
-### NML
+```python
+import matplotlib.pyplot as plt
 
-Classes that store model parameters and methods that generate `.nml` configuration files for running GLM. 
+from glmpy.plots import NCPlotter
+from glmpy.simulation import GLMSim
 
-### Dimensions
 
-Turns simple user descriptions of lake geometries and dimensions into appropriate morphometry parameters.
+outputs = GLMSim.from_example_sim("sparkling_lake").run()
 
-### GLM_JSON
+nc = NCPlotter(outputs.get_netcdf_path())
 
-Tools to convert JSON data to `.nml` format data. Useful for handling client requests if GLM is deployed within a web API / REST API.
+fig, ax = plt.subplots(figsize=(10, 5))
+profile = nc.plot_profile(ax=ax, var_name="temp")
+fig.colorbar(profile).set_label("Temperature (°C)")
+```
+<img src="img/readme_profile.png" align="center" height="325" />
 
-### Simulation
+The API is designed to be interoperable with existing GLM workflows and easily extendable by users. glm-py can be used for running GLM simulations within local Python environments, running batches of GLM simulations on HPCs, or for interfacing with web applications/cloud services that use GLM.
 
-Classes to handle running GLM simulations and processing output data into CSV, JSON, NetCDF files, or generating a JSON stream to pass onto clients. 
-
-### Plots
-
-Matplotlib-based plotting methods that process and plot GLM's output files.
