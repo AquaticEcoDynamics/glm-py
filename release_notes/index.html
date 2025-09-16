@@ -896,6 +896,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#0.5.0" class="md-nav__link">
+    <span class="md-ellipsis">
+      0.5.0 (10 September, 2025)
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#0.4.0" class="md-nav__link">
     <span class="md-ellipsis">
       0.4.0 (17 January, 2025)
@@ -957,6 +966,17 @@
 
 <h1 id="release-notes">Release Notes<a class="headerlink" href="#release-notes" title="Permanent link">&para;</a></h1>
 <h2 id="glm-py">glm-py<a class="headerlink" href="#glm-py" title="Permanent link">&para;</a></h2>
+<h3 id="0.5.0">0.5.0 <small>(10 September, 2025)</small><a class="headerlink" href="#0.5.0" title="Permanent link">&para;</a></h3>
+<p><code>v0.5.0</code> provides a new API for glm-py that overhauls almost all existing modules. Notable changes and additions include:
+- The <code>GLMSim</code> class for configuring and running GLM simulations.
+- Five example simulations for initialising <code>GLMSim</code> via the <code>from_example_sim()</code> method. These are: Falling Creek Reservoir, Grosse Dhuenn, Sparkling Lake, Warm Lake, and Woods Lake.
+- <code>MultiSim</code> class for running <code>GLMSim</code> objects in parallel.
+- <code>GLMOutputs</code> class for retrieving outputs files.
+- <code>NMLParam</code>, <code>NMLBlock</code>, and <code>NML</code> classes for storing parameters and validation logic.
+- AED NML support  (see <code>glmpy.nml.aed_nml</code> sub-module).
+- <code>f90nml</code> backend for improved reading and writing of NML files.
+- GLM version updated to <code>3.3.3</code> (built distribution only).
+- New package logo ❤️.</p>
 <h3 id="0.4.0">0.4.0 <small>(17 January, 2025)</small><a class="headerlink" href="#0.4.0" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Added <code>restart_variables</code> to <code>InitProfilesBlock</code>, 
