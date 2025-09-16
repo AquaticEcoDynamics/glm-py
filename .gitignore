@@ -1,11 +1,6 @@
 # dev files
-glm
 dev
 dev.py
-dev.ipynb
-notes.md
-sparkling_lake
-grosse_dhuenn
 *.DS_Store
 
 */__pycache__

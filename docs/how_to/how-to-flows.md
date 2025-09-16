@@ -1,3 +1,3 @@
-# How-to: `outflows` module
+# How-to: `flows` module
 
 TO-DO

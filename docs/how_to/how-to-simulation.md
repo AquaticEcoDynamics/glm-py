@@ -128,19 +128,25 @@ def on_sim_end(glm_sim: sim.GLMSim, glm_outputs: sim.GLMOutputs):
 ### Running in parallel
 
 To run a `MultiSim`, first initialise the object with the list of 
-`GLMSims` objects. Then call the `run()` method and provide the 
+`GLMSim` objects. Then call the `run()` method and provide the 
 function name to be run at the completion of each simulation. The 
 number CPU cores to use can be optionally defined. By default, this is 
 the maximum available (as returned by `MultiSim.cpu_count()`). Upon 
 completion of `run()`, a list of the function outputs is returned.
+
+Note, due to differences in how separate processes are spawned on 
+Windows and Unix, use the `if __name__ == '__main__':` idiom to guard 
+any code that creates and runs simulations in parallel. This ensures 
+that the underlying multiprocessing module can safely start worker 
+processes without unintentionally re-importing or re-running the main 
+script. Place all simulation setup and calls to `MultiSim.run()` inside 
+this guard.
 
 ```python
 import random
 
 from glmpy import simulation as sim
 
-
-random.seed(42)
 
 def on_sim_end(glm_sim: sim.GLMSim, glm_outputs: sim.GLMOutputs):
     wq_pd = glm_outputs.get_csv_pd("WQ_17")
@@ -149,27 +155,31 @@ def on_sim_end(glm_sim: sim.GLMSim, glm_outputs: sim.GLMOutputs):
     glm_sim.rm_sim_dir()
     return (glm_sim.sim_name, round(kw, 3), round(mean_temp, 3))
 
-glm_sim = sim.GLMSim.from_example_sim("sparkling_lake")
 
-num_sims = 10
-glm_sims = []
-for i in range(num_sims):
-    random_sim = glm_sim.get_deepcopy()
-    random_sim.sim_name = f"sparkling_{i}"
-    kw = random.random()
-    random_sim.set_param_value("glm", "light", "kw", kw)
-    glm_sims.append(random_sim)
+if __name__ == '__main__':
+    random.seed(42)
 
+    glm_sim = sim.GLMSim.from_example_sim("sparkling_lake")
 
-multi_sim = sim.MultiSim(glm_sims=glm_sims)
-outputs = multi_sim.run(
-    on_sim_end=on_sim_end,
-    cpu_count=sim.MultiSim.cpu_count(),
-    write_log=True,
-    time_sim=True,
-    time_multi_sim=True
-)
-print(outputs)
+    num_sims = 10
+    glm_sims = []
+    for i in range(num_sims):
+        random_sim = glm_sim.get_deepcopy()
+        random_sim.sim_name = f"sparkling_{i}"
+        kw = random.random()
+        random_sim.set_param_value("glm", "light", "kw", kw)
+        glm_sims.append(random_sim)
+
+    multi_sim = sim.MultiSim(glm_sims=glm_sims)
+
+    outputs = multi_sim.run(
+        on_sim_end=on_sim_end,
+        cpu_count=sim.MultiSim.cpu_count(),
+        write_log=True,
+        time_sim=True,
+        time_multi_sim=True
+    )
+    print(outputs)
 ```
 
 ```
