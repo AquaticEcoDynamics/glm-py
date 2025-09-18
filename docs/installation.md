@@ -8,6 +8,17 @@ Install glm-py with `pip`:
 pip install glm-py
 ```
 
+!!! tip "Advanced"
+
+    To install the development version of glm-py use:
+
+    ```
+    pip install git+https://github.com/AquaticEcoDynamics/glm-py.git@next-release#egg=glm-py
+    ```
+
+    Note, no GLM binary is included in the development version.
+
+
 ### Built distribution (recommended)
 
 The built distribution of glm-py comes bundled with the GLM binary. 
@@ -23,9 +34,9 @@ The built distribution of glm-py comes bundled with the GLM binary.
 
 ### Source distribution
 
-In the event your system does not meet the above requirements, `pip` will install the source distribution. **The source distribution does not ship with the GLM binary**. You will still be able to use glm-py (e.g., to create `.nml` files) but the package will raise an error when you call the `glm_run()` method from the `simulation.GLMSim` class.
+In the event your system does not meet the above requirements, `pip` will install the source distribution. **The source distribution does not ship with the GLM binary**. You will still be able to use glm-py but the package will raise an error when you call the `run()` method from of `GLMSim` or `MultiSim`.
 
-To run GLM, you will either need to source a pre-compiled binary or [compile GLM yourself](https://github.com/AquaticEcoDynamics/GLM/tree/cc497b83a0726231d386b98d19407d0e294b116a). The `glm_path` parameter of the `glm_run()` method can be used to tell glm-py where to run the binary from.
+To run GLM, you will either need to source a pre-compiled binary or [compile GLM yourself](https://github.com/AquaticEcoDynamics/GLM/tree/cc497b83a0726231d386b98d19407d0e294b116a). Use the `glm_path` parameter of `run()` to tell glm-py where to your own binary.
 
 ## Release history
 

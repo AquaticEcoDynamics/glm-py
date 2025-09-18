@@ -1,146 +1,638 @@
 # How-to: `simulation` module
 
+## Configuring and running simulations with `GLMSim`
+
+### Initialising `GLMSim`
+
+#### Using the `__init__` constructor
+
+```python
+import pandas as pd
+
+from glmpy import simulation as sim
+from glmpy.nml.aed_nml import AEDNML
+from glmpy.nml.glm_nml import GLMNML
+
+
+glm_nml = GLMNML.from_file('fcr/glm3.nml')
+aed_nml = AEDNML.from_file('fcr/aed/aed.nml')
+
+bcs = {
+    'inflow1': pd.read_csv('fcr/inputs/inflow1.csv'),
+    'inflow2': pd.read_csv('fcr/inputs/inflow2.csv'),
+    'met': pd.read_csv('fcr/inputs/met.csv'),
+    'outflow': pd.read_csv('fcr/inputs/outflow.csv')
+}
+
+aed_dbase = {
+    'aed_phyto_pars': sim.read_aed_dbase('fcr/aed/aed_phyto_pars.csv'),
+    'aed_zoop_pars': sim.read_aed_dbase('fcr/aed/aed_zoop_pars.csv')
+}
+
+glm_sim = sim.GLMSim(
+    sim_name='falling_creek_reservoir',
+    glm_nml=glm_nml,
+    aed_nml=aed_nml,
+    bcs=bcs,
+    aed_dbase=aed_dbase
+)
+```
+
+#### Using the `from_file` constructor 
+
+```python 
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_file('falling_creek_reservoir.glmpy')
+```
+
+#### Using the `from_example_sim` constructor
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('falling_creek_reservoir')
+```
+
+```python
+from glmpy import simulation as sim
+
+
+print(sim.GLMSim.get_example_sim_names())
+```
+
+```
+['falling_creek_reservoir', 'sparkling_lake', 'woods_lake', 'warm_lake', 'grosse_dhuenn']
+```
+
+### Running GLM
+
+#### Using the included GLM binary
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('sparkling_lake')
+
+glm_sim.run(write_log=True, quiet=True, time_sim=True)
+```
+
+#### Using your own binary
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('sparkling_lake')
+
+glm_sim.run(
+    write_log=True,
+    quiet=True,
+    time_sim=True,
+    glm_path="path/to/your/glm_binary"
+)
+```
+
+#### Returning an instance of `GLMOutputs`
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('sparkling_lake')
+outputs = glm_sim.run()
+```
+
+### Managing the simulation directory
+
+#### Returning the simulation directory path
+
+```python
+glm_sim = sim.GLMSim.from_example_sim('sparkling_lake')
+sim_dir = glm_sim.get_sim_dir()
+print(sim_dir)
+```
+
+```
+./sparkling_lake
+```
+
+#### Deleting the simulation directory
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('sparkling_lake')
+glm_sim.run()
+glm_sim.rm_sim_dir()
+```
+
+#### Changing the simulation name
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('sparkling_lake')
+glm_sim.sim_name = "scenario_2"
+```
+
+#### Saving the simulation to file
+
+```python 
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+glm_sim.set_param_value('glm', 'light', 'kw', 0.37)
+glm_sim.to_file('warm_lake_v2.glmpy')
+```
+
+#### Checking the preparation of input files
+
+Prepare just the NML files:
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+glm_sim.prepare_nml()
+```
+
+Prepare the boundary condition and database files:
+
+```python 
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+glm_sim.prepare_bcs_and_dbase()
+```
+
+Prepare all input files:
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+glm_sim.prepare_all_inputs()
+```
+
+### Configuring model parameters
+
+#### Returning a parameter value
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+value = glm_sim.get_param_value("glm", "light", "kw")
+print(value)
+```
+
+```
+0.57
+```
+
+#### Setting a parameter value
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+glm_sim.set_param_value("glm", "light", "kw", 0.37)
+```
+
+#### Returning a parameter's units
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+units = glm_sim.get_param_units("glm", "morphometry", "h")
+print(units)
+```
+
+```
+m above datum
+```
+
+#### Returning parameter names
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+names = glm_sim.get_param_names("glm", "glm_setup")
+print(names)
+```
+
+```
+['sim_name', 'max_layers', 'min_layer_vol', 'min_layer_thick', 'max_layer_thick', 'density_model', 'non_avg']
+```
+
+#### Iterating over all parameters
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+
+for nml_param in glm_sim.iter_params():
+    print(nml_param.name, nml_param.units)
+```
+
+#### Returning block names
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+names = glm_sim.get_block_names("glm")
+print(names)
+```
+
+```
+['glm_setup', 'time', 'morphometry', 'init_profiles', 'mixing', 'wq_setup', 'output', 'light', 'bird_model', 'sediment', 'snowice', 'meteorology', 'inflow', 'outflow']
+```
+
+#### Returning a `NMLBlock` object
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+setup_block = glm_sim.get_block('glm', 'glm_setup')
+```
+
+#### Setting a `NMLBlock` object
+
+```python
+from glmpy.nml import glm_nml 
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+glm_setup = glm_nml.GLMSetupBlock(
+    sim_name='warm_lake_v2',
+    max_layers=500,
+    min_layer_vol=0.025,
+    min_layer_thick=0.15,
+    max_layer_thick=1.5,
+    density_model=1
+)
+glm_sim.set_block('glm', 'glm_setup', glm_setup)
+```
+
+#### Returning NML names
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+names = glm_sim.get_nml_names()
+print(names)
+```
+
+```
+['glm', 'aed']
+```
+
+#### Returning a `NML` object
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+aed_nml = glm_sim.get_nml('aed')
+```
+
+#### Setting a `NML` object
+
+```python
+from glmpy import simulation as sim
+from glmpy.nml.aed_nml import AEDNML
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+aed_nml = AEDNML.from_file('warm_lake_v2/aed.nml')
+glm_sim.set_nml('aed', aed_nml)
+```
+
+### Configuring boundary condition files
+
+#### Returning boundary condition names
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+names = glm_sim.get_bcs_names()
+print(names)
+```
+
+```
+['inflow1', 'inflow2', 'inflow3', 'inflow4', 'inflow5', 'inflow6', 'met', 'outflow']
+```
+
+#### Returning a boundary condition dataframe
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+met_pd = glm_sim.get_bc_pd('met')
+print(met_pd)
+```
+
+```
+                   Date  ShortWave    LongWave    AirTemp     RelHum  WindSpeed  Rain  Snow
+0      1997-01-01 00:00  -3.163000  265.275819  14.350000  81.397781   1.452622   0.0   0.0
+1      1997-01-01 01:00  -2.724000  266.519769  14.527000  77.697012   2.123961   0.0   0.0
+2      1997-01-01 02:00  -3.166000  263.252036  14.060000  81.832935   1.027210   0.0   0.0
+3      1997-01-01 03:00  -2.462000  261.473311  13.803000  80.771343   1.320110   0.0   0.0
+4      1997-01-01 04:00  -3.007000  257.468843  13.217000  86.001202   1.628178   0.0   0.0
+...                 ...        ...         ...        ...        ...        ...   ...   ...
+70171  2004-12-31 19:00  -3.189333  314.033333  15.560000  60.086667   0.446667   0.0   0.0
+70172  2004-12-31 20:00  -3.441000  311.100000  14.820000  62.155000   0.690000   0.0   0.0
+70173  2004-12-31 21:00  -3.239000  314.800000  14.583333  64.670000   1.001667   0.0   0.0
+70174  2004-12-31 22:00  -2.834333  313.716667  13.980000  60.306667   1.149333   0.0   0.0
+70175  2004-12-31 23:00  -3.638000  305.133333  13.968333  58.050000   1.297333   0.0   0.0
+
+[70176 rows x 8 columns]
+```
+
+#### Setting a boundary condition dataframe
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+met_pd = glm_sim.get_bc_pd('met')
+met_pd['AirTemp'] = met_pd['AirTemp'] * 1.5
+glm_sim.set_bc('met', met_pd)
+```
+
+### Configuring AED database files
+
+#### Read an AED database
+
+```python
+from glmpy import simulation as sim
+
+
+phyto = sim.read_aed_dbase('aed/aed_phyto_pars.csv')
+print(phyto)
+```
+
+```
+     'p_name'  'p_initial'  'p0'  'w_p'  ...  'simSiUptake'  'Si_0'  'K_Si'  'X_sicon'
+0     'phy01'        10.00  0.03   0.00  ...              0     0.3     2.5        0.4
+1     'phy02'        10.00  0.03   0.00  ...              0     0.3     2.5        0.4
+2     'green'         0.04  0.03  -0.01  ...              0     0.3     2.5        0.4
+3     'phy04'        10.00  0.03   0.00  ...              0     0.3     2.5        0.4
+4     'phy05'        10.00  0.03   0.00  ...              0     0.3     2.5        0.4
+5     'phy06'        10.00  0.03   0.00  ...              0     0.3     2.5        0.4
+6    'diatom'         8.40  0.03  -0.60  ...              0     0.3     2.5        0.4
+7    'crypto'         0.40  0.03  -0.02  ...              0     0.3     2.5        0.4
+8   'crypto2'         2.40  0.03   0.00  ...              0     0.3     2.5        0.4
+9     'phy09'        10.00  0.03   0.00  ...              0     0.3     2.5        0.4
+10    'phy10'        10.00  0.03   0.00  ...              0     0.3     2.5        0.4
+11    'phy11'        10.00  0.03   0.00  ...              0     0.3     2.5        0.4
+
+[12 rows x 48 columns]
+```
+
+#### Write an AED database
+
+```python
+from glmpy import simulation as sim
+
+
+phyto = sim.read_aed_dbase('aed/aed_phyto_pars.csv')
+sim.write_aed_dbase(phyto, 'aed/aed_phyto_pars_v2.csv')
+```
+
+```
+'p_name','phy01','phy02','green','phy04','phy05','phy06','diatom','crypto','crypto2','phy09','phy10','phy11'
+'p_initial',10.0,10.0,0.04,10.0,10.0,10.0,8.4,0.4,2.4,10.0,10.0,10.0
+'p0',0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03
+'w_p',0.0,0.0,-0.01,0.0,0.0,0.0,-0.6,-0.02,0.0,0.0,0.0,0.0
+...
+...
+...
+'simSiUptake',0,0,0,0,0,0,0,0,0,0,0,0
+'Si_0',0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3
+'K_Si',2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5
+'X_sicon',0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4
+```
+
+#### Set an AED database
+
+```python
+from glmpy import simulation as sim
+
+
+phyto = sim.read_aed_dbase('aed/aed_phyto_pars_v2.csv')
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+glm_sim.aed_dbase['aed_phyto_pars'] = phyto
+```
+
+### Validate the simulation configuration
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_file('my_sim.glmpy')
+glm_sim.validate()
+```
+
+### Return a memory independent copy of a `GLMSim`
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('warm_lake')
+glm_sim_copy = glm_sim.get_deepcopy()
+```
+
+## Retrieving output files with `GLMOutputs`
+
+### CSV outputs
+
+#### Returning CSV names
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('sparkling_lake')
+outputs = glm_sim.run()
+csv_basenames = outputs.get_csv_basenames()
+print(csv_basenames)
+```
+
+```
+['WQ_17', 'lake', 'overflow']
+```
+
+#### Return a CSV path
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('sparkling_lake')
+outputs = glm_sim.run()
+wq_path = outputs.get_csv_path('WQ_17')
+print(wq_path)
+```
+
+```
+./sparkling_lake/output/WQ_17.csv
+```
+
+#### Return a CSV dataframe
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('sparkling_lake')
+outputs = glm_sim.run()
+wq_pd = outputs.get_csv_pd('WQ_17')
+print(wq_pd)
+```
+
+```
+                    time      temp      salt
+0    1980-04-15 24:00:00  3.752815  0.000000
+1    1980-04-16 24:00:00  3.733166  0.000000
+2    1980-04-17 24:00:00  3.722207  0.000000
+3    1980-04-18 24:00:00  3.749895  0.000000
+4    1980-04-19 24:00:00  4.039198  0.000000
+..                   ...       ...       ...
+725  1982-04-10 24:00:00  4.432520  0.000127
+726  1982-04-11 24:00:00  4.336266  0.000128
+727  1982-04-12 24:00:00  4.672208  0.000128
+728  1982-04-13 24:00:00  5.054114  0.000128
+729  1982-04-14 24:00:00  5.525627  0.000128
+
+[730 rows x 3 columns]
+```
+
+### NetCDF output
+
+#### Return the NetCDF path
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('sparkling_lake')
+outputs = glm_sim.run()
+nc_path = outputs.get_netcdf_path()
+print(nc_path)
+```
+
+```
+./sparkling_lake/output/output.nc
+```
+
+#### Return the NetCDF as a `netCDF4.Dataset` object
+
+```python
+from glmpy import simulation as sim
+
+
+glm_sim = sim.GLMSim.from_example_sim('sparkling_lake')
+outputs = glm_sim.run()
+nc = outputs.get_netcdf()
+print(type(nc))
+```
+
+```
+<class 'netCDF4._netCDF4.Dataset'>
+```
+
 ## Running parallel simulations with `MultiSim`
 
-The `MultiSim` class provides an interface for simultaneously running
-multiple `GLMSim` objects across separate CPU cores. For tasks where 
-many permutations of a simulation need to be run, `MultiSim` can 
-provide a significant performance boost over running simulations 
-sequentially.
-
-### A sequential example
-
-Before getting started with `MultiSim`, consider the following example
-where 10 permutations of Sparkling Lake are run sequentially in order 
-to assess the impact of changing the light extiction coefficient (`kw`) 
-on water temperature:
+### Initialising `MultiSim`
 
 ```python
-import random
-
 from glmpy import simulation as sim
 
 
-# Set a random seed for reproducible results
-random.seed(42)
-
-#Initialise and instance of `GLMSim` using the sparkling_lake example
-glm_sim = sim.GLMSim.from_example_sim("sparkling_lake")
-
-num_sims = 10
-all_results = []
-for i in range(num_sims):
-    # Pre-run configuration:
-    # 1) Set a unique simulation name
-    # 2) Set a random kw parameter value
-    glm_sim.sim_name = f"sparkling_{i}"
-    glm_sim.set_param_value("glm", "light", "kw", random.random())
-
-    # Run the sim
-    glm_outputs = glm_sim.run()
-
-    # Post-run processing and clean-up: 
-    # 1) Calculate mean temperature
-    # 2) Get the kw value
-    # 3) Collect the results
-    # 4) Delete the outputs directory (optional)
-    wq_pd = glm_outputs.get_csv_pd("WQ_17")
-    mean_temp = wq_pd["temp"].mean()
-    kw = glm_sim.get_param_value("glm", "light", "kw")
-    results = (glm_sim.sim_name, round(kw, 3), round(mean_temp, 3))
-    glm_sim.rm_sim_dir()
-
-    all_results.append(results)
-
-print(all_results)
-```
-
-```
-[('sparkling_0', 0.639, 10.818), ('sparkling_1', 0.025, 7.333), ('sparkling_2', 0.275, 10.378), ('sparkling_3', 0.223, 10.39), ('sparkling_4', 0.736, 10.706), ('sparkling_5', 0.677, 10.792), ('sparkling_6', 0.892, 10.754), ('sparkling_7', 0.087, 9.469), ('sparkling_8', 0.422, 10.57), ('sparkling_9', 0.03, 7.631)]
-```
-
-This example can be broken into three key components: the 
-configuration, running, and post-processing of each simulation. To use
-`MultiSim` the configuration and post-processing components need to be 
-handled in a slightly different way.
-
-### Creating copies of `GLMSim` objects
-
-In the sequential example above, the same `GLMSim` object was 
-re-configured with a new `sim_name` and `kw` parameter for each run. 
-To use `MultiSim`,  a list of `GLMSim` objects—each independent in 
-memory—is required. This can easily be achieved by using `GLMSim`'s 
-`get_deepcopy()` method and then appending the newly configured 
-simulation to a list:
-
-```python
-import random
-
-from glmpy import simulation as sim
-
-
-random.seed(42)
-
-glm_sim = sim.GLMSim.from_example_sim("sparkling_lake")
+glm_sim = sim.GLMSim.from_example_sim('sparkling_lake')
 
 num_sims = 10
 glm_sims = []
-for i in range(num_sims):
-    # Create a copy of `glm_sim` in memory
+for i in range(0, num_sims):
     new_sim = glm_sim.get_deepcopy()
-
-    # Set the sim_name and kw
     new_sim.sim_name = f"sparkling_{i}"
-    new_sim.set_param_value("glm", "light", "kw", random.random())
-
-    # Append the sim to a list
     glm_sims.append(new_sim)
+
+multi_sim = sim.MultiSim(glm_sims)
 ```
 
-### Refactoring the post-processing
-
-When `MultiSim` runs, a separate Python process is spawned to run a 
-given `GLMSim` object on an available CPU core. Once that simulation
-completes, a user-definable function is then called before the process 
-is terminated. This function can be used to post-process results in a 
-way that allows the user to extract desired information before deleting 
-the output directory. A list of the function outputs is returned to the 
-user at the completion of running a `MultiSim`. This allows for a more
-efficient use of disk space when running large numbers of simulations.
-
-To define this function, refactor the four post-processing steps from 
-the sequential example into a function that takes two arguments: a 
-`GLMSim` object and a `GLMOutputs` object:
+### Running a `MultiSim`
 
 ```python
-def on_sim_end(glm_sim: sim.GLMSim, glm_outputs: sim.GLMOutputs):
-    # Collect the results then delete the outputs directory
-    wq_pd = glm_outputs.get_csv_pd("WQ_17")
-    mean_temp = wq_pd["temp"].mean()
-    kw = glm_sim.get_param_value("glm", "light", "kw")
-    results = (glm_sim.sim_name, round(kw, 3), round(mean_temp, 3))
-    glm_sim.rm_sim_dir()
+from glmpy import simulation as sim
 
-    # Return the results
-    return results
+
+glm_sim = sim.GLMSim.from_example_sim('sparkling_lake')
+
+num_sims = 10
+glm_sims = []
+for i in range(0, num_sims):
+    new_sim = glm_sim.get_deepcopy()
+    new_sim.sim_name = f"sparkling_{i}"
+    glm_sims.append(new_sim)
+
+multi_sim = sim.MultiSim(glm_sims)
+multi_sim.run(
+    write_log=True,
+    time_sim=True,
+    time_multi_sim=True
+)
 ```
 
-### Running in parallel
+### Returning the number of CPU cores
 
-To run a `MultiSim`, first initialise the object with the list of 
-`GLMSim` objects. Then call the `run()` method and provide the 
-function name to be run at the completion of each simulation. The 
-number CPU cores to use can be optionally defined. By default, this is 
-the maximum available (as returned by `MultiSim.cpu_count()`). Upon 
-completion of `run()`, a list of the function outputs is returned.
+```python
+from glmpy import simulation as sim
 
-Note, due to differences in how separate processes are spawned on 
-Windows and Unix, use the `if __name__ == '__main__':` idiom to guard 
-any code that creates and runs simulations in parallel. This ensures 
-that the underlying multiprocessing module can safely start worker 
-processes without unintentionally re-importing or re-running the main 
-script. Place all simulation setup and calls to `MultiSim.run()` inside 
-this guard.
+
+num_core = sim.MultiSim.cpu_count()
+print(num_core)
+```
+
+```
+10
+```
+
+### Defining a function to run on simulation end
 
 ```python
 import random
@@ -174,7 +666,7 @@ if __name__ == '__main__':
 
     outputs = multi_sim.run(
         on_sim_end=on_sim_end,
-        cpu_count=sim.MultiSim.cpu_count(),
+        cpu_count=5,
         write_log=True,
         time_sim=True,
         time_multi_sim=True

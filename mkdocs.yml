@@ -41,7 +41,7 @@ plugins:
     authors_file: tutorials/authors.yml
     list_length: 25
     categories: false
-    blog_toc: false
+    blog_toc: true
 
 - mkdocstrings:
     default_handler: python
@@ -86,8 +86,8 @@ nav:
     - Plots: how_to/how-to-plots.md
     - Dimensions: how_to/how-to-dimensions.md
     - Flows: how_to/how-to-flows.md
-  #- Tutorials:
-    #- tutorials/index.md
+  - Tutorials:
+    - tutorials/index.md
   - API Reference:
     - NML: nml.md
     - Simulation: simulation.md
