@@ -275,6 +275,26 @@
     
     
       <li class="md-tabs__item">
+        <a href="../../tutorials/" class="md-tabs__link">
+          
+  
+    
+  
+  Tutorials
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
         <a href="../../nml/" class="md-tabs__link">
           
   
@@ -522,6 +542,471 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#configuring-and-running-simulations-with-glmsim" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring and running simulations with GLMSim
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring and running simulations with GLMSim">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initialising-glmsim" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialising GLMSim
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Initialising GLMSim">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-the-__init__-constructor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the __init__ constructor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-the-from_file-constructor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the from_file constructor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-the-from_example_sim-constructor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the from_example_sim constructor
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-glm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running GLM
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Running GLM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-the-included-glm-binary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the included GLM binary
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-your-own-binary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using your own binary
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-an-instance-of-glmoutputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning an instance of GLMOutputs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#managing-the-simulation-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Managing the simulation directory
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Managing the simulation directory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#returning-the-simulation-directory-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning the simulation directory path
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deleting-the-simulation-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deleting the simulation directory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changing-the-simulation-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changing the simulation name
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#saving-the-simulation-to-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Saving the simulation to file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checking-the-preparation-of-input-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Checking the preparation of input files
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-model-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring model parameters
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring model parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-parameter-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a parameter value
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-parameter-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting a parameter value
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-parameters-units" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a parameter's units
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-parameter-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning parameter names
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iterating-over-all-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Iterating over all parameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-block-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning block names
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-nmlblock-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a NMLBlock object
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-nmlblock-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting a NMLBlock object
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-nml-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning NML names
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-nml-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a NML object
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-nml-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting a NML object
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-boundary-condition-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring boundary condition files
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring boundary condition files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#returning-boundary-condition-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning boundary condition names
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-boundary-condition-dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a boundary condition dataframe
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-boundary-condition-dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting a boundary condition dataframe
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-aed-database-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring AED database files
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring AED database files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read-an-aed-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Read an AED database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write-an-aed-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Write an AED database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set-an-aed-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Set an AED database
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate-the-simulation-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validate the simulation configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#return-a-memory-independent-copy-of-a-glmsim" class="md-nav__link">
+    <span class="md-ellipsis">
+      Return a memory independent copy of a GLMSim
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retrieving-output-files-with-glmoutputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Retrieving output files with GLMOutputs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Retrieving output files with GLMOutputs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#csv-outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      CSV outputs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CSV outputs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#returning-csv-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning CSV names
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#return-a-csv-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      Return a CSV path
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#return-a-csv-dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      Return a CSV dataframe
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#netcdf-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      NetCDF output
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NetCDF output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#return-the-netcdf-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      Return the NetCDF path
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#return-the-netcdf-as-a-netcdf4dataset-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Return the NetCDF as a netCDF4.Dataset object
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#running-parallel-simulations-with-multisim" class="md-nav__link">
     <span class="md-ellipsis">
       Running parallel simulations with MultiSim
@@ -532,36 +1017,36 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#a-sequential-example" class="md-nav__link">
+  <a href="#initialising-multisim" class="md-nav__link">
     <span class="md-ellipsis">
-      A sequential example
+      Initialising MultiSim
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#creating-copies-of-glmsim-objects" class="md-nav__link">
+  <a href="#running-a-multisim" class="md-nav__link">
     <span class="md-ellipsis">
-      Creating copies of GLMSim objects
+      Running a MultiSim
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#refactoring-the-post-processing" class="md-nav__link">
+  <a href="#returning-the-number-of-cpu-cores" class="md-nav__link">
     <span class="md-ellipsis">
-      Refactoring the post-processing
+      Returning the number of CPU cores
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#running-in-parallel" class="md-nav__link">
+  <a href="#defining-a-function-to-run-on-simulation-end" class="md-nav__link">
     <span class="md-ellipsis">
-      Running in parallel
+      Defining a function to run on simulation end
     </span>
   </a>
   
@@ -682,6 +1167,146 @@
     
       
         
+          
+        
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../tutorials/" class="md-nav__link ">
+              
+  
+  <span class="md-ellipsis">
+    Tutorials
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Tutorials
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_2" id="__nav_4_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Archive
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_2">
+            <span class="md-nav__icon md-icon"></span>
+            Archive
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/archive/2025/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    2025
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
       
         
       
@@ -703,10 +1328,10 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
             
   
   <span class="md-ellipsis">
@@ -717,8 +1342,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             API Reference
           </label>
@@ -861,7 +1486,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
         
           
           
@@ -878,8 +1503,8 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_5">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
             <span class="md-nav__icon md-icon"></span>
             Contributing
           </label>
@@ -919,7 +1544,7 @@
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
         
           
           
@@ -936,8 +1561,8 @@
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_6">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
             <span class="md-nav__icon md-icon"></span>
             Release Notes
           </label>
@@ -979,6 +1604,471 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#configuring-and-running-simulations-with-glmsim" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring and running simulations with GLMSim
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring and running simulations with GLMSim">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initialising-glmsim" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialising GLMSim
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Initialising GLMSim">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-the-__init__-constructor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the __init__ constructor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-the-from_file-constructor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the from_file constructor
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-the-from_example_sim-constructor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the from_example_sim constructor
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#running-glm" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running GLM
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Running GLM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-the-included-glm-binary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using the included GLM binary
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-your-own-binary" class="md-nav__link">
+    <span class="md-ellipsis">
+      Using your own binary
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-an-instance-of-glmoutputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning an instance of GLMOutputs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#managing-the-simulation-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Managing the simulation directory
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Managing the simulation directory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#returning-the-simulation-directory-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning the simulation directory path
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#deleting-the-simulation-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      Deleting the simulation directory
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#changing-the-simulation-name" class="md-nav__link">
+    <span class="md-ellipsis">
+      Changing the simulation name
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#saving-the-simulation-to-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      Saving the simulation to file
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#checking-the-preparation-of-input-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Checking the preparation of input files
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-model-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring model parameters
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring model parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-parameter-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a parameter value
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-parameter-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting a parameter value
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-parameters-units" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a parameter's units
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-parameter-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning parameter names
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iterating-over-all-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Iterating over all parameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-block-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning block names
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-nmlblock-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a NMLBlock object
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-nmlblock-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting a NMLBlock object
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-nml-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning NML names
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-nml-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a NML object
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-nml-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting a NML object
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-boundary-condition-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring boundary condition files
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring boundary condition files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#returning-boundary-condition-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning boundary condition names
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-boundary-condition-dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a boundary condition dataframe
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-boundary-condition-dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting a boundary condition dataframe
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuring-aed-database-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuring AED database files
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuring AED database files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read-an-aed-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Read an AED database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#write-an-aed-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Write an AED database
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#set-an-aed-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      Set an AED database
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validate-the-simulation-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validate the simulation configuration
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#return-a-memory-independent-copy-of-a-glmsim" class="md-nav__link">
+    <span class="md-ellipsis">
+      Return a memory independent copy of a GLMSim
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#retrieving-output-files-with-glmoutputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      Retrieving output files with GLMOutputs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Retrieving output files with GLMOutputs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#csv-outputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      CSV outputs
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CSV outputs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#returning-csv-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning CSV names
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#return-a-csv-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      Return a CSV path
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#return-a-csv-dataframe" class="md-nav__link">
+    <span class="md-ellipsis">
+      Return a CSV dataframe
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#netcdf-output" class="md-nav__link">
+    <span class="md-ellipsis">
+      NetCDF output
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="NetCDF output">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#return-the-netcdf-path" class="md-nav__link">
+    <span class="md-ellipsis">
+      Return the NetCDF path
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#return-the-netcdf-as-a-netcdf4dataset-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Return the NetCDF as a netCDF4.Dataset object
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#running-parallel-simulations-with-multisim" class="md-nav__link">
     <span class="md-ellipsis">
       Running parallel simulations with MultiSim
@@ -989,36 +2079,36 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#a-sequential-example" class="md-nav__link">
+  <a href="#initialising-multisim" class="md-nav__link">
     <span class="md-ellipsis">
-      A sequential example
+      Initialising MultiSim
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#creating-copies-of-glmsim-objects" class="md-nav__link">
+  <a href="#running-a-multisim" class="md-nav__link">
     <span class="md-ellipsis">
-      Creating copies of GLMSim objects
+      Running a MultiSim
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#refactoring-the-post-processing" class="md-nav__link">
+  <a href="#returning-the-number-of-cpu-cores" class="md-nav__link">
     <span class="md-ellipsis">
-      Refactoring the post-processing
+      Returning the number of CPU cores
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#running-in-parallel" class="md-nav__link">
+  <a href="#defining-a-function-to-run-on-simulation-end" class="md-nav__link">
     <span class="md-ellipsis">
-      Running in parallel
+      Defining a function to run on simulation end
     </span>
   </a>
   
@@ -1049,166 +2139,510 @@
 
 
 <h1 id="how-to-simulation-module">How-to: <code>simulation</code> module<a class="headerlink" href="#how-to-simulation-module" title="Permanent link">&para;</a></h1>
-<h2 id="running-parallel-simulations-with-multisim">Running parallel simulations with <code>MultiSim</code><a class="headerlink" href="#running-parallel-simulations-with-multisim" title="Permanent link">&para;</a></h2>
-<p>The <code>MultiSim</code> class provides an interface for simultaneously running
-multiple <code>GLMSim</code> objects across separate CPU cores. For tasks where 
-many permutations of a simulation need to be run, <code>MultiSim</code> can 
-provide a significant performance boost over running simulations 
-sequentially.</p>
-<h3 id="a-sequential-example">A sequential example<a class="headerlink" href="#a-sequential-example" title="Permanent link">&para;</a></h3>
-<p>Before getting started with <code>MultiSim</code>, consider the following example
-where 10 permutations of Sparkling Lake are run sequentially in order 
-to assess the impact of changing the light extiction coefficient (<code>kw</code>) 
-on water temperature:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">random</span>
+<h2 id="configuring-and-running-simulations-with-glmsim">Configuring and running simulations with <code>GLMSim</code><a class="headerlink" href="#configuring-and-running-simulations-with-glmsim" title="Permanent link">&para;</a></h2>
+<h3 id="initialising-glmsim">Initialising <code>GLMSim</code><a class="headerlink" href="#initialising-glmsim" title="Permanent link">&para;</a></h3>
+<h4 id="using-the-__init__-constructor">Using the <code>__init__</code> constructor<a class="headerlink" href="#using-the-__init__-constructor" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Set a random seed for reproducible results</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="c1">#Initialise and instance of `GLMSim` using the sparkling_lake example</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s2">&quot;sparkling_lake&quot;</span><span class="p">)</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
-</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">num_sims</span> <span class="o">=</span> <span class="mi">10</span>
-</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">all_results</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_sims</span><span class="p">):</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="c1"># Pre-run configuration:</span>
-</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>    <span class="c1"># 1) Set a unique simulation name</span>
-</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="c1"># 2) Set a random kw parameter value</span>
-</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">glm_sim</span><span class="o">.</span><span class="n">sim_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sparkling_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">glm_sim</span><span class="o">.</span><span class="n">set_param_value</span><span class="p">(</span><span class="s2">&quot;glm&quot;</span><span class="p">,</span> <span class="s2">&quot;light&quot;</span><span class="p">,</span> <span class="s2">&quot;kw&quot;</span><span class="p">,</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">())</span>
-</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>
-</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="c1"># Run the sim</span>
-</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="n">glm_outputs</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
-</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>
-</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="c1"># Post-run processing and clean-up: </span>
-</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="c1"># 1) Calculate mean temperature</span>
-</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="c1"># 2) Get the kw value</span>
-</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="c1"># 3) Collect the results</span>
-</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="c1"># 4) Delete the outputs directory (optional)</span>
-</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>    <span class="n">wq_pd</span> <span class="o">=</span> <span class="n">glm_outputs</span><span class="o">.</span><span class="n">get_csv_pd</span><span class="p">(</span><span class="s2">&quot;WQ_17&quot;</span><span class="p">)</span>
-</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>    <span class="n">mean_temp</span> <span class="o">=</span> <span class="n">wq_pd</span><span class="p">[</span><span class="s2">&quot;temp&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>    <span class="n">kw</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_param_value</span><span class="p">(</span><span class="s2">&quot;glm&quot;</span><span class="p">,</span> <span class="s2">&quot;light&quot;</span><span class="p">,</span> <span class="s2">&quot;kw&quot;</span><span class="p">)</span>
-</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>    <span class="n">results</span> <span class="o">=</span> <span class="p">(</span><span class="n">glm_sim</span><span class="o">.</span><span class="n">sim_name</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">kw</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">mean_temp</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-</span><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33" href="#__codelineno-0-33"></a>    <span class="n">glm_sim</span><span class="o">.</span><span class="n">rm_sim_dir</span><span class="p">()</span>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34" href="#__codelineno-0-34"></a>
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35" href="#__codelineno-0-35"></a>    <span class="n">all_results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
-</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36" href="#__codelineno-0-36"></a>
-</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37" href="#__codelineno-0-37"></a><span class="nb">print</span><span class="p">(</span><span class="n">all_results</span><span class="p">)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span> <span class="nn">glmpy.nml.aed_nml</span> <span class="kn">import</span> <span class="n">AEDNML</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="kn">from</span> <span class="nn">glmpy.nml.glm_nml</span> <span class="kn">import</span> <span class="n">GLMNML</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">glm_nml</span> <span class="o">=</span> <span class="n">GLMNML</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;fcr/glm3.nml&#39;</span><span class="p">)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">aed_nml</span> <span class="o">=</span> <span class="n">AEDNML</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;fcr/aed/aed.nml&#39;</span><span class="p">)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">bcs</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="s1">&#39;inflow1&#39;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;fcr/inputs/inflow1.csv&#39;</span><span class="p">),</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="s1">&#39;inflow2&#39;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;fcr/inputs/inflow2.csv&#39;</span><span class="p">),</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>    <span class="s1">&#39;met&#39;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;fcr/inputs/met.csv&#39;</span><span class="p">),</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>    <span class="s1">&#39;outflow&#39;</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;fcr/inputs/outflow.csv&#39;</span><span class="p">)</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="p">}</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a><span class="n">aed_dbase</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="s1">&#39;aed_phyto_pars&#39;</span><span class="p">:</span> <span class="n">sim</span><span class="o">.</span><span class="n">read_aed_dbase</span><span class="p">(</span><span class="s1">&#39;fcr/aed/aed_phyto_pars.csv&#39;</span><span class="p">),</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="s1">&#39;aed_zoop_pars&#39;</span><span class="p">:</span> <span class="n">sim</span><span class="o">.</span><span class="n">read_aed_dbase</span><span class="p">(</span><span class="s1">&#39;fcr/aed/aed_zoop_pars.csv&#39;</span><span class="p">)</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a><span class="p">}</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="p">(</span>
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    <span class="n">sim_name</span><span class="o">=</span><span class="s1">&#39;falling_creek_reservoir&#39;</span><span class="p">,</span>
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    <span class="n">glm_nml</span><span class="o">=</span><span class="n">glm_nml</span><span class="p">,</span>
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>    <span class="n">aed_nml</span><span class="o">=</span><span class="n">aed_nml</span><span class="p">,</span>
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>    <span class="n">bcs</span><span class="o">=</span><span class="n">bcs</span><span class="p">,</span>
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>    <span class="n">aed_dbase</span><span class="o">=</span><span class="n">aed_dbase</span>
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="p">)</span>
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>[(&#39;sparkling_0&#39;, 0.639, 10.818), (&#39;sparkling_1&#39;, 0.025, 7.333), (&#39;sparkling_2&#39;, 0.275, 10.378), (&#39;sparkling_3&#39;, 0.223, 10.39), (&#39;sparkling_4&#39;, 0.736, 10.706), (&#39;sparkling_5&#39;, 0.677, 10.792), (&#39;sparkling_6&#39;, 0.892, 10.754), (&#39;sparkling_7&#39;, 0.087, 9.469), (&#39;sparkling_8&#39;, 0.422, 10.57), (&#39;sparkling_9&#39;, 0.03, 7.631)]
+<h4 id="using-the-from_file-constructor">Using the <code>from_file</code> constructor<a class="headerlink" href="#using-the-from_file-constructor" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;falling_creek_reservoir.glmpy&#39;</span><span class="p">)</span>
 </span></code></pre></div>
-<p>This example can be broken into three key components: the 
-configuration, running, and post-processing of each simulation. To use
-<code>MultiSim</code> the configuration and post-processing components need to be 
-handled in a slightly different way.</p>
-<h3 id="creating-copies-of-glmsim-objects">Creating copies of <code>GLMSim</code> objects<a class="headerlink" href="#creating-copies-of-glmsim-objects" title="Permanent link">&para;</a></h3>
-<p>In the sequential example above, the same <code>GLMSim</code> object was 
-re-configured with a new <code>sim_name</code> and <code>kw</code> parameter for each run. 
-To use <code>MultiSim</code>,  a list of <code>GLMSim</code> objects—each independent in 
-memory—is required. This can easily be achieved by using <code>GLMSim</code>'s 
-<code>get_deepcopy()</code> method and then appending the newly configured 
-simulation to a list:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span> <span class="nn">random</span>
+<h4 id="using-the-from_example_sim-constructor">Using the <code>from_example_sim</code> constructor<a class="headerlink" href="#using-the-from_example_sim-constructor" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s2">&quot;sparkling_lake&quot;</span><span class="p">)</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">num_sims</span> <span class="o">=</span> <span class="mi">10</span>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">glm_sims</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_sims</span><span class="p">):</span>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="c1"># Create a copy of `glm_sim` in memory</span>
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="n">new_sim</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_deepcopy</span><span class="p">()</span>
-</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    <span class="c1"># Set the sim_name and kw</span>
-</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>    <span class="n">new_sim</span><span class="o">.</span><span class="n">sim_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sparkling_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>    <span class="n">new_sim</span><span class="o">.</span><span class="n">set_param_value</span><span class="p">(</span><span class="s2">&quot;glm&quot;</span><span class="p">,</span> <span class="s2">&quot;light&quot;</span><span class="p">,</span> <span class="s2">&quot;kw&quot;</span><span class="p">,</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">())</span>
-</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>
-</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>    <span class="c1"># Append the sim to a list</span>
-</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>    <span class="n">glm_sims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_sim</span><span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;falling_creek_reservoir&#39;</span><span class="p">)</span>
 </span></code></pre></div>
-<h3 id="refactoring-the-post-processing">Refactoring the post-processing<a class="headerlink" href="#refactoring-the-post-processing" title="Permanent link">&para;</a></h3>
-<p>When <code>MultiSim</code> runs, a separate Python process is spawned to run a 
-given <code>GLMSim</code> object on an available CPU core. Once that simulation
-completes, a user-definable function is then called before the process 
-is terminated. This function can be used to post-process results in a 
-way that allows the user to extract desired information before deleting 
-the output directory. A list of the function outputs is returned to the 
-user at the completion of running a <code>MultiSim</code>. This allows for a more
-efficient use of disk space when running large numbers of simulations.</p>
-<p>To define this function, refactor the four post-processing steps from 
-the sequential example into a function that takes two arguments: a 
-<code>GLMSim</code> object and a <code>GLMOutputs</code> object:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">def</span> <span class="nf">on_sim_end</span><span class="p">(</span><span class="n">glm_sim</span><span class="p">:</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="p">,</span> <span class="n">glm_outputs</span><span class="p">:</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMOutputs</span><span class="p">):</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="c1"># Collect the results then delete the outputs directory</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">wq_pd</span> <span class="o">=</span> <span class="n">glm_outputs</span><span class="o">.</span><span class="n">get_csv_pd</span><span class="p">(</span><span class="s2">&quot;WQ_17&quot;</span><span class="p">)</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">mean_temp</span> <span class="o">=</span> <span class="n">wq_pd</span><span class="p">[</span><span class="s2">&quot;temp&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">kw</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_param_value</span><span class="p">(</span><span class="s2">&quot;glm&quot;</span><span class="p">,</span> <span class="s2">&quot;light&quot;</span><span class="p">,</span> <span class="s2">&quot;kw&quot;</span><span class="p">)</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">results</span> <span class="o">=</span> <span class="p">(</span><span class="n">glm_sim</span><span class="o">.</span><span class="n">sim_name</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">kw</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">mean_temp</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">glm_sim</span><span class="o">.</span><span class="n">rm_sim_dir</span><span class="p">()</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="c1"># Return the results</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="k">return</span> <span class="n">results</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">get_example_sim_names</span><span class="p">())</span>
 </span></code></pre></div>
-<h3 id="running-in-parallel">Running in parallel<a class="headerlink" href="#running-in-parallel" title="Permanent link">&para;</a></h3>
-<p>To run a <code>MultiSim</code>, first initialise the object with the list of 
-<code>GLMSim</code> objects. Then call the <code>run()</code> method and provide the 
-function name to be run at the completion of each simulation. The 
-number CPU cores to use can be optionally defined. By default, this is 
-the maximum available (as returned by <code>MultiSim.cpu_count()</code>). Upon 
-completion of <code>run()</code>, a list of the function outputs is returned.</p>
-<p>Note, due to differences in how separate processes are spawned on 
-Windows and Unix, use the <code>if __name__ == '__main__':</code> idiom to guard 
-any code that creates and runs simulations in parallel. This ensures 
-that the underlying multiprocessing module can safely start worker 
-processes without unintentionally re-importing or re-running the main 
-script. Place all simulation setup and calls to <code>MultiSim.run()</code> inside 
-this guard.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span> <span class="nn">random</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="k">def</span> <span class="nf">on_sim_end</span><span class="p">(</span><span class="n">glm_sim</span><span class="p">:</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="p">,</span> <span class="n">glm_outputs</span><span class="p">:</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMOutputs</span><span class="p">):</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">wq_pd</span> <span class="o">=</span> <span class="n">glm_outputs</span><span class="o">.</span><span class="n">get_csv_pd</span><span class="p">(</span><span class="s2">&quot;WQ_17&quot;</span><span class="p">)</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">mean_temp</span> <span class="o">=</span> <span class="n">wq_pd</span><span class="p">[</span><span class="s2">&quot;temp&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="n">kw</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_param_value</span><span class="p">(</span><span class="s2">&quot;glm&quot;</span><span class="p">,</span> <span class="s2">&quot;light&quot;</span><span class="p">,</span> <span class="s2">&quot;kw&quot;</span><span class="p">)</span>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="n">glm_sim</span><span class="o">.</span><span class="n">rm_sim_dir</span><span class="p">()</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>    <span class="k">return</span> <span class="p">(</span><span class="n">glm_sim</span><span class="o">.</span><span class="n">sim_name</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">kw</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">mean_temp</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
-</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>    <span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s2">&quot;sparkling_lake&quot;</span><span class="p">)</span>
-</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>
-</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>    <span class="n">num_sims</span> <span class="o">=</span> <span class="mi">10</span>
-</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>    <span class="n">glm_sims</span> <span class="o">=</span> <span class="p">[]</span>
-</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_sims</span><span class="p">):</span>
-</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>        <span class="n">random_sim</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_deepcopy</span><span class="p">()</span>
-</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>        <span class="n">random_sim</span><span class="o">.</span><span class="n">sim_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sparkling_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
-</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>        <span class="n">kw</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
-</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>        <span class="n">random_sim</span><span class="o">.</span><span class="n">set_param_value</span><span class="p">(</span><span class="s2">&quot;glm&quot;</span><span class="p">,</span> <span class="s2">&quot;light&quot;</span><span class="p">,</span> <span class="s2">&quot;kw&quot;</span><span class="p">,</span> <span class="n">kw</span><span class="p">)</span>
-</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>        <span class="n">glm_sims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">random_sim</span><span class="p">)</span>
-</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>
-</span><span id="__span-4-28"><a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>    <span class="n">multi_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">MultiSim</span><span class="p">(</span><span class="n">glm_sims</span><span class="o">=</span><span class="n">glm_sims</span><span class="p">)</span>
-</span><span id="__span-4-29"><a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>
-</span><span id="__span-4-30"><a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>    <span class="n">outputs</span> <span class="o">=</span> <span class="n">multi_sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
-</span><span id="__span-4-31"><a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>        <span class="n">on_sim_end</span><span class="o">=</span><span class="n">on_sim_end</span><span class="p">,</span>
-</span><span id="__span-4-32"><a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>        <span class="n">cpu_count</span><span class="o">=</span><span class="n">sim</span><span class="o">.</span><span class="n">MultiSim</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">(),</span>
-</span><span id="__span-4-33"><a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a>        <span class="n">write_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-4-34"><a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a>        <span class="n">time_sim</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-4-35"><a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a>        <span class="n">time_multi_sim</span><span class="o">=</span><span class="kc">True</span>
-</span><span id="__span-4-36"><a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a>    <span class="p">)</span>
-</span><span id="__span-4-37"><a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>[&#39;falling_creek_reservoir&#39;, &#39;sparkling_lake&#39;, &#39;woods_lake&#39;, &#39;warm_lake&#39;, &#39;grosse_dhuenn&#39;]
 </span></code></pre></div>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>[(&#39;sparkling_0&#39;, 0.639, 10.818), (&#39;sparkling_1&#39;, 0.025, 7.333), (&#39;sparkling_2&#39;, 0.275, 10.378), (&#39;sparkling_3&#39;, 0.223, 10.39), (&#39;sparkling_4&#39;, 0.736, 10.706), (&#39;sparkling_5&#39;, 0.677, 10.792), (&#39;sparkling_6&#39;, 0.892, 10.754), (&#39;sparkling_7&#39;, 0.087, 9.469), (&#39;sparkling_8&#39;, 0.422, 10.57), (&#39;sparkling_9&#39;, 0.03, 7.631)]
+<h3 id="running-glm">Running GLM<a class="headerlink" href="#running-glm" title="Permanent link">&para;</a></h3>
+<h4 id="using-the-included-glm-binary">Using the included GLM binary<a class="headerlink" href="#using-the-included-glm-binary" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;sparkling_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">write_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">time_sim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="using-your-own-binary">Using your own binary<a class="headerlink" href="#using-your-own-binary" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;sparkling_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">write_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="n">time_sim</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="n">glm_path</span><span class="o">=</span><span class="s2">&quot;path/to/your/glm_binary&quot;</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="returning-an-instance-of-glmoutputs">Returning an instance of <code>GLMOutputs</code><a class="headerlink" href="#returning-an-instance-of-glmoutputs" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;sparkling_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="n">outputs</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span></code></pre></div>
+<h3 id="managing-the-simulation-directory">Managing the simulation directory<a class="headerlink" href="#managing-the-simulation-directory" title="Permanent link">&para;</a></h3>
+<h4 id="returning-the-simulation-directory-path">Returning the simulation directory path<a class="headerlink" href="#returning-the-simulation-directory-path" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;sparkling_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">sim_dir</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_sim_dir</span><span class="p">()</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nb">print</span><span class="p">(</span><span class="n">sim_dir</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>./sparkling_lake
+</span></code></pre></div>
+<h4 id="deleting-the-simulation-directory">Deleting the simulation directory<a class="headerlink" href="#deleting-the-simulation-directory" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;sparkling_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">rm_sim_dir</span><span class="p">()</span>
+</span></code></pre></div>
+<h4 id="changing-the-simulation-name">Changing the simulation name<a class="headerlink" href="#changing-the-simulation-name" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;sparkling_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">sim_name</span> <span class="o">=</span> <span class="s2">&quot;scenario_2&quot;</span>
+</span></code></pre></div>
+<h4 id="saving-the-simulation-to-file">Saving the simulation to file<a class="headerlink" href="#saving-the-simulation-to-file" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">set_param_value</span><span class="p">(</span><span class="s1">&#39;glm&#39;</span><span class="p">,</span> <span class="s1">&#39;light&#39;</span><span class="p">,</span> <span class="s1">&#39;kw&#39;</span><span class="p">,</span> <span class="mf">0.37</span><span class="p">)</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;warm_lake_v2.glmpy&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="checking-the-preparation-of-input-files">Checking the preparation of input files<a class="headerlink" href="#checking-the-preparation-of-input-files" title="Permanent link">&para;</a></h4>
+<p>Prepare just the NML files:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">prepare_nml</span><span class="p">()</span>
+</span></code></pre></div>
+<p>Prepare the boundary condition and database files:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">prepare_bcs_and_dbase</span><span class="p">()</span>
+</span></code></pre></div>
+<p>Prepare all input files:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">prepare_all_inputs</span><span class="p">()</span>
+</span></code></pre></div>
+<h3 id="configuring-model-parameters">Configuring model parameters<a class="headerlink" href="#configuring-model-parameters" title="Permanent link">&para;</a></h3>
+<h4 id="returning-a-parameter-value">Returning a parameter value<a class="headerlink" href="#returning-a-parameter-value" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a><span class="n">value</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_param_value</span><span class="p">(</span><span class="s2">&quot;glm&quot;</span><span class="p">,</span> <span class="s2">&quot;light&quot;</span><span class="p">,</span> <span class="s2">&quot;kw&quot;</span><span class="p">)</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>0.57
+</span></code></pre></div>
+<h4 id="setting-a-parameter-value">Setting a parameter value<a class="headerlink" href="#setting-a-parameter-value" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
+</span><span id="__span-18-4"><a id="__codelineno-18-4" name="__codelineno-18-4" href="#__codelineno-18-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-18-5"><a id="__codelineno-18-5" name="__codelineno-18-5" href="#__codelineno-18-5"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">set_param_value</span><span class="p">(</span><span class="s2">&quot;glm&quot;</span><span class="p">,</span> <span class="s2">&quot;light&quot;</span><span class="p">,</span> <span class="s2">&quot;kw&quot;</span><span class="p">,</span> <span class="mf">0.37</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="returning-a-parameters-units">Returning a parameter's units<a class="headerlink" href="#returning-a-parameters-units" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-19-1"><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-19-2"><a id="__codelineno-19-2" name="__codelineno-19-2" href="#__codelineno-19-2"></a>
+</span><span id="__span-19-3"><a id="__codelineno-19-3" name="__codelineno-19-3" href="#__codelineno-19-3"></a>
+</span><span id="__span-19-4"><a id="__codelineno-19-4" name="__codelineno-19-4" href="#__codelineno-19-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-19-5"><a id="__codelineno-19-5" name="__codelineno-19-5" href="#__codelineno-19-5"></a><span class="n">units</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_param_units</span><span class="p">(</span><span class="s2">&quot;glm&quot;</span><span class="p">,</span> <span class="s2">&quot;morphometry&quot;</span><span class="p">,</span> <span class="s2">&quot;h&quot;</span><span class="p">)</span>
+</span><span id="__span-19-6"><a id="__codelineno-19-6" name="__codelineno-19-6" href="#__codelineno-19-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>m above datum
+</span></code></pre></div>
+<h4 id="returning-parameter-names">Returning parameter names<a class="headerlink" href="#returning-parameter-names" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>
+</span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>
+</span><span id="__span-21-4"><a id="__codelineno-21-4" name="__codelineno-21-4" href="#__codelineno-21-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-21-5"><a id="__codelineno-21-5" name="__codelineno-21-5" href="#__codelineno-21-5"></a><span class="n">names</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_param_names</span><span class="p">(</span><span class="s2">&quot;glm&quot;</span><span class="p">,</span> <span class="s2">&quot;glm_setup&quot;</span><span class="p">)</span>
+</span><span id="__span-21-6"><a id="__codelineno-21-6" name="__codelineno-21-6" href="#__codelineno-21-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>[&#39;sim_name&#39;, &#39;max_layers&#39;, &#39;min_layer_vol&#39;, &#39;min_layer_thick&#39;, &#39;max_layer_thick&#39;, &#39;density_model&#39;, &#39;non_avg&#39;]
+</span></code></pre></div>
+<h4 id="iterating-over-all-parameters">Iterating over all parameters<a class="headerlink" href="#iterating-over-all-parameters" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>
+</span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>
+</span><span id="__span-23-4"><a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-23-5"><a id="__codelineno-23-5" name="__codelineno-23-5" href="#__codelineno-23-5"></a>
+</span><span id="__span-23-6"><a id="__codelineno-23-6" name="__codelineno-23-6" href="#__codelineno-23-6"></a><span class="k">for</span> <span class="n">nml_param</span> <span class="ow">in</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">iter_params</span><span class="p">():</span>
+</span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">nml_param</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">nml_param</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="returning-block-names">Returning block names<a class="headerlink" href="#returning-block-names" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>
+</span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
+</span><span id="__span-24-4"><a id="__codelineno-24-4" name="__codelineno-24-4" href="#__codelineno-24-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-24-5"><a id="__codelineno-24-5" name="__codelineno-24-5" href="#__codelineno-24-5"></a><span class="n">names</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_block_names</span><span class="p">(</span><span class="s2">&quot;glm&quot;</span><span class="p">)</span>
+</span><span id="__span-24-6"><a id="__codelineno-24-6" name="__codelineno-24-6" href="#__codelineno-24-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>[&#39;glm_setup&#39;, &#39;time&#39;, &#39;morphometry&#39;, &#39;init_profiles&#39;, &#39;mixing&#39;, &#39;wq_setup&#39;, &#39;output&#39;, &#39;light&#39;, &#39;bird_model&#39;, &#39;sediment&#39;, &#39;snowice&#39;, &#39;meteorology&#39;, &#39;inflow&#39;, &#39;outflow&#39;]
+</span></code></pre></div>
+<h4 id="returning-a-nmlblock-object">Returning a <code>NMLBlock</code> object<a class="headerlink" href="#returning-a-nmlblock-object" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>
+</span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>
+</span><span id="__span-26-4"><a id="__codelineno-26-4" name="__codelineno-26-4" href="#__codelineno-26-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="n">setup_block</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="s1">&#39;glm&#39;</span><span class="p">,</span> <span class="s1">&#39;glm_setup&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="setting-a-nmlblock-object">Setting a <code>NMLBlock</code> object<a class="headerlink" href="#setting-a-nmlblock-object" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="kn">from</span> <span class="nn">glmpy.nml</span> <span class="kn">import</span> <span class="n">glm_nml</span> 
+</span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>
+</span><span id="__span-27-4"><a id="__codelineno-27-4" name="__codelineno-27-4" href="#__codelineno-27-4"></a>
+</span><span id="__span-27-5"><a id="__codelineno-27-5" name="__codelineno-27-5" href="#__codelineno-27-5"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-27-6"><a id="__codelineno-27-6" name="__codelineno-27-6" href="#__codelineno-27-6"></a><span class="n">glm_setup</span> <span class="o">=</span> <span class="n">glm_nml</span><span class="o">.</span><span class="n">GLMSetupBlock</span><span class="p">(</span>
+</span><span id="__span-27-7"><a id="__codelineno-27-7" name="__codelineno-27-7" href="#__codelineno-27-7"></a>    <span class="n">sim_name</span><span class="o">=</span><span class="s1">&#39;warm_lake_v2&#39;</span><span class="p">,</span>
+</span><span id="__span-27-8"><a id="__codelineno-27-8" name="__codelineno-27-8" href="#__codelineno-27-8"></a>    <span class="n">max_layers</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+</span><span id="__span-27-9"><a id="__codelineno-27-9" name="__codelineno-27-9" href="#__codelineno-27-9"></a>    <span class="n">min_layer_vol</span><span class="o">=</span><span class="mf">0.025</span><span class="p">,</span>
+</span><span id="__span-27-10"><a id="__codelineno-27-10" name="__codelineno-27-10" href="#__codelineno-27-10"></a>    <span class="n">min_layer_thick</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+</span><span id="__span-27-11"><a id="__codelineno-27-11" name="__codelineno-27-11" href="#__codelineno-27-11"></a>    <span class="n">max_layer_thick</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+</span><span id="__span-27-12"><a id="__codelineno-27-12" name="__codelineno-27-12" href="#__codelineno-27-12"></a>    <span class="n">density_model</span><span class="o">=</span><span class="mi">1</span>
+</span><span id="__span-27-13"><a id="__codelineno-27-13" name="__codelineno-27-13" href="#__codelineno-27-13"></a><span class="p">)</span>
+</span><span id="__span-27-14"><a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="s1">&#39;glm&#39;</span><span class="p">,</span> <span class="s1">&#39;glm_setup&#39;</span><span class="p">,</span> <span class="n">glm_setup</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="returning-nml-names">Returning NML names<a class="headerlink" href="#returning-nml-names" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>
+</span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>
+</span><span id="__span-28-4"><a id="__codelineno-28-4" name="__codelineno-28-4" href="#__codelineno-28-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-28-5"><a id="__codelineno-28-5" name="__codelineno-28-5" href="#__codelineno-28-5"></a><span class="n">names</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_nml_names</span><span class="p">()</span>
+</span><span id="__span-28-6"><a id="__codelineno-28-6" name="__codelineno-28-6" href="#__codelineno-28-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>[&#39;glm&#39;, &#39;aed&#39;]
+</span></code></pre></div>
+<h4 id="returning-a-nml-object">Returning a <code>NML</code> object<a class="headerlink" href="#returning-a-nml-object" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>
+</span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>
+</span><span id="__span-30-4"><a id="__codelineno-30-4" name="__codelineno-30-4" href="#__codelineno-30-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="n">aed_nml</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_nml</span><span class="p">(</span><span class="s1">&#39;aed&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="setting-a-nml-object">Setting a <code>NML</code> object<a class="headerlink" href="#setting-a-nml-object" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="kn">from</span> <span class="nn">glmpy.nml.aed_nml</span> <span class="kn">import</span> <span class="n">AEDNML</span>
+</span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>
+</span><span id="__span-31-4"><a id="__codelineno-31-4" name="__codelineno-31-4" href="#__codelineno-31-4"></a>
+</span><span id="__span-31-5"><a id="__codelineno-31-5" name="__codelineno-31-5" href="#__codelineno-31-5"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-31-6"><a id="__codelineno-31-6" name="__codelineno-31-6" href="#__codelineno-31-6"></a><span class="n">aed_nml</span> <span class="o">=</span> <span class="n">AEDNML</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;warm_lake_v2/aed.nml&#39;</span><span class="p">)</span>
+</span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">set_nml</span><span class="p">(</span><span class="s1">&#39;aed&#39;</span><span class="p">,</span> <span class="n">aed_nml</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="configuring-boundary-condition-files">Configuring boundary condition files<a class="headerlink" href="#configuring-boundary-condition-files" title="Permanent link">&para;</a></h3>
+<h4 id="returning-boundary-condition-names">Returning boundary condition names<a class="headerlink" href="#returning-boundary-condition-names" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>
+</span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>
+</span><span id="__span-32-4"><a id="__codelineno-32-4" name="__codelineno-32-4" href="#__codelineno-32-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-32-5"><a id="__codelineno-32-5" name="__codelineno-32-5" href="#__codelineno-32-5"></a><span class="n">names</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_bcs_names</span><span class="p">()</span>
+</span><span id="__span-32-6"><a id="__codelineno-32-6" name="__codelineno-32-6" href="#__codelineno-32-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>[&#39;inflow1&#39;, &#39;inflow2&#39;, &#39;inflow3&#39;, &#39;inflow4&#39;, &#39;inflow5&#39;, &#39;inflow6&#39;, &#39;met&#39;, &#39;outflow&#39;]
+</span></code></pre></div>
+<h4 id="returning-a-boundary-condition-dataframe">Returning a boundary condition dataframe<a class="headerlink" href="#returning-a-boundary-condition-dataframe" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>
+</span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>
+</span><span id="__span-34-4"><a id="__codelineno-34-4" name="__codelineno-34-4" href="#__codelineno-34-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-34-5"><a id="__codelineno-34-5" name="__codelineno-34-5" href="#__codelineno-34-5"></a><span class="n">met_pd</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_bc_pd</span><span class="p">(</span><span class="s1">&#39;met&#39;</span><span class="p">)</span>
+</span><span id="__span-34-6"><a id="__codelineno-34-6" name="__codelineno-34-6" href="#__codelineno-34-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">met_pd</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-35-1"><a id="__codelineno-35-1" name="__codelineno-35-1" href="#__codelineno-35-1"></a>                   Date  ShortWave    LongWave    AirTemp     RelHum  WindSpeed  Rain  Snow
+</span><span id="__span-35-2"><a id="__codelineno-35-2" name="__codelineno-35-2" href="#__codelineno-35-2"></a>0      1997-01-01 00:00  -3.163000  265.275819  14.350000  81.397781   1.452622   0.0   0.0
+</span><span id="__span-35-3"><a id="__codelineno-35-3" name="__codelineno-35-3" href="#__codelineno-35-3"></a>1      1997-01-01 01:00  -2.724000  266.519769  14.527000  77.697012   2.123961   0.0   0.0
+</span><span id="__span-35-4"><a id="__codelineno-35-4" name="__codelineno-35-4" href="#__codelineno-35-4"></a>2      1997-01-01 02:00  -3.166000  263.252036  14.060000  81.832935   1.027210   0.0   0.0
+</span><span id="__span-35-5"><a id="__codelineno-35-5" name="__codelineno-35-5" href="#__codelineno-35-5"></a>3      1997-01-01 03:00  -2.462000  261.473311  13.803000  80.771343   1.320110   0.0   0.0
+</span><span id="__span-35-6"><a id="__codelineno-35-6" name="__codelineno-35-6" href="#__codelineno-35-6"></a>4      1997-01-01 04:00  -3.007000  257.468843  13.217000  86.001202   1.628178   0.0   0.0
+</span><span id="__span-35-7"><a id="__codelineno-35-7" name="__codelineno-35-7" href="#__codelineno-35-7"></a>...                 ...        ...         ...        ...        ...        ...   ...   ...
+</span><span id="__span-35-8"><a id="__codelineno-35-8" name="__codelineno-35-8" href="#__codelineno-35-8"></a>70171  2004-12-31 19:00  -3.189333  314.033333  15.560000  60.086667   0.446667   0.0   0.0
+</span><span id="__span-35-9"><a id="__codelineno-35-9" name="__codelineno-35-9" href="#__codelineno-35-9"></a>70172  2004-12-31 20:00  -3.441000  311.100000  14.820000  62.155000   0.690000   0.0   0.0
+</span><span id="__span-35-10"><a id="__codelineno-35-10" name="__codelineno-35-10" href="#__codelineno-35-10"></a>70173  2004-12-31 21:00  -3.239000  314.800000  14.583333  64.670000   1.001667   0.0   0.0
+</span><span id="__span-35-11"><a id="__codelineno-35-11" name="__codelineno-35-11" href="#__codelineno-35-11"></a>70174  2004-12-31 22:00  -2.834333  313.716667  13.980000  60.306667   1.149333   0.0   0.0
+</span><span id="__span-35-12"><a id="__codelineno-35-12" name="__codelineno-35-12" href="#__codelineno-35-12"></a>70175  2004-12-31 23:00  -3.638000  305.133333  13.968333  58.050000   1.297333   0.0   0.0
+</span><span id="__span-35-13"><a id="__codelineno-35-13" name="__codelineno-35-13" href="#__codelineno-35-13"></a>
+</span><span id="__span-35-14"><a id="__codelineno-35-14" name="__codelineno-35-14" href="#__codelineno-35-14"></a>[70176 rows x 8 columns]
+</span></code></pre></div>
+<h4 id="setting-a-boundary-condition-dataframe">Setting a boundary condition dataframe<a class="headerlink" href="#setting-a-boundary-condition-dataframe" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>
+</span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>
+</span><span id="__span-36-4"><a id="__codelineno-36-4" name="__codelineno-36-4" href="#__codelineno-36-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-36-5"><a id="__codelineno-36-5" name="__codelineno-36-5" href="#__codelineno-36-5"></a><span class="n">met_pd</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_bc_pd</span><span class="p">(</span><span class="s1">&#39;met&#39;</span><span class="p">)</span>
+</span><span id="__span-36-6"><a id="__codelineno-36-6" name="__codelineno-36-6" href="#__codelineno-36-6"></a><span class="n">met_pd</span><span class="p">[</span><span class="s1">&#39;AirTemp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">met_pd</span><span class="p">[</span><span class="s1">&#39;AirTemp&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1.5</span>
+</span><span id="__span-36-7"><a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">set_bc</span><span class="p">(</span><span class="s1">&#39;met&#39;</span><span class="p">,</span> <span class="n">met_pd</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="configuring-aed-database-files">Configuring AED database files<a class="headerlink" href="#configuring-aed-database-files" title="Permanent link">&para;</a></h3>
+<h4 id="read-an-aed-database">Read an AED database<a class="headerlink" href="#read-an-aed-database" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>
+</span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>
+</span><span id="__span-37-4"><a id="__codelineno-37-4" name="__codelineno-37-4" href="#__codelineno-37-4"></a><span class="n">phyto</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">read_aed_dbase</span><span class="p">(</span><span class="s1">&#39;aed/aed_phyto_pars.csv&#39;</span><span class="p">)</span>
+</span><span id="__span-37-5"><a id="__codelineno-37-5" name="__codelineno-37-5" href="#__codelineno-37-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">phyto</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-38-1"><a id="__codelineno-38-1" name="__codelineno-38-1" href="#__codelineno-38-1"></a>     &#39;p_name&#39;  &#39;p_initial&#39;  &#39;p0&#39;  &#39;w_p&#39;  ...  &#39;simSiUptake&#39;  &#39;Si_0&#39;  &#39;K_Si&#39;  &#39;X_sicon&#39;
+</span><span id="__span-38-2"><a id="__codelineno-38-2" name="__codelineno-38-2" href="#__codelineno-38-2"></a>0     &#39;phy01&#39;        10.00  0.03   0.00  ...              0     0.3     2.5        0.4
+</span><span id="__span-38-3"><a id="__codelineno-38-3" name="__codelineno-38-3" href="#__codelineno-38-3"></a>1     &#39;phy02&#39;        10.00  0.03   0.00  ...              0     0.3     2.5        0.4
+</span><span id="__span-38-4"><a id="__codelineno-38-4" name="__codelineno-38-4" href="#__codelineno-38-4"></a>2     &#39;green&#39;         0.04  0.03  -0.01  ...              0     0.3     2.5        0.4
+</span><span id="__span-38-5"><a id="__codelineno-38-5" name="__codelineno-38-5" href="#__codelineno-38-5"></a>3     &#39;phy04&#39;        10.00  0.03   0.00  ...              0     0.3     2.5        0.4
+</span><span id="__span-38-6"><a id="__codelineno-38-6" name="__codelineno-38-6" href="#__codelineno-38-6"></a>4     &#39;phy05&#39;        10.00  0.03   0.00  ...              0     0.3     2.5        0.4
+</span><span id="__span-38-7"><a id="__codelineno-38-7" name="__codelineno-38-7" href="#__codelineno-38-7"></a>5     &#39;phy06&#39;        10.00  0.03   0.00  ...              0     0.3     2.5        0.4
+</span><span id="__span-38-8"><a id="__codelineno-38-8" name="__codelineno-38-8" href="#__codelineno-38-8"></a>6    &#39;diatom&#39;         8.40  0.03  -0.60  ...              0     0.3     2.5        0.4
+</span><span id="__span-38-9"><a id="__codelineno-38-9" name="__codelineno-38-9" href="#__codelineno-38-9"></a>7    &#39;crypto&#39;         0.40  0.03  -0.02  ...              0     0.3     2.5        0.4
+</span><span id="__span-38-10"><a id="__codelineno-38-10" name="__codelineno-38-10" href="#__codelineno-38-10"></a>8   &#39;crypto2&#39;         2.40  0.03   0.00  ...              0     0.3     2.5        0.4
+</span><span id="__span-38-11"><a id="__codelineno-38-11" name="__codelineno-38-11" href="#__codelineno-38-11"></a>9     &#39;phy09&#39;        10.00  0.03   0.00  ...              0     0.3     2.5        0.4
+</span><span id="__span-38-12"><a id="__codelineno-38-12" name="__codelineno-38-12" href="#__codelineno-38-12"></a>10    &#39;phy10&#39;        10.00  0.03   0.00  ...              0     0.3     2.5        0.4
+</span><span id="__span-38-13"><a id="__codelineno-38-13" name="__codelineno-38-13" href="#__codelineno-38-13"></a>11    &#39;phy11&#39;        10.00  0.03   0.00  ...              0     0.3     2.5        0.4
+</span><span id="__span-38-14"><a id="__codelineno-38-14" name="__codelineno-38-14" href="#__codelineno-38-14"></a>
+</span><span id="__span-38-15"><a id="__codelineno-38-15" name="__codelineno-38-15" href="#__codelineno-38-15"></a>[12 rows x 48 columns]
+</span></code></pre></div>
+<h4 id="write-an-aed-database">Write an AED database<a class="headerlink" href="#write-an-aed-database" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>
+</span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a>
+</span><span id="__span-39-4"><a id="__codelineno-39-4" name="__codelineno-39-4" href="#__codelineno-39-4"></a><span class="n">phyto</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">read_aed_dbase</span><span class="p">(</span><span class="s1">&#39;aed/aed_phyto_pars.csv&#39;</span><span class="p">)</span>
+</span><span id="__span-39-5"><a id="__codelineno-39-5" name="__codelineno-39-5" href="#__codelineno-39-5"></a><span class="n">sim</span><span class="o">.</span><span class="n">write_aed_dbase</span><span class="p">(</span><span class="n">phyto</span><span class="p">,</span> <span class="s1">&#39;aed/aed_phyto_pars_v2.csv&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-40-1"><a id="__codelineno-40-1" name="__codelineno-40-1" href="#__codelineno-40-1"></a>&#39;p_name&#39;,&#39;phy01&#39;,&#39;phy02&#39;,&#39;green&#39;,&#39;phy04&#39;,&#39;phy05&#39;,&#39;phy06&#39;,&#39;diatom&#39;,&#39;crypto&#39;,&#39;crypto2&#39;,&#39;phy09&#39;,&#39;phy10&#39;,&#39;phy11&#39;
+</span><span id="__span-40-2"><a id="__codelineno-40-2" name="__codelineno-40-2" href="#__codelineno-40-2"></a>&#39;p_initial&#39;,10.0,10.0,0.04,10.0,10.0,10.0,8.4,0.4,2.4,10.0,10.0,10.0
+</span><span id="__span-40-3"><a id="__codelineno-40-3" name="__codelineno-40-3" href="#__codelineno-40-3"></a>&#39;p0&#39;,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03,0.03
+</span><span id="__span-40-4"><a id="__codelineno-40-4" name="__codelineno-40-4" href="#__codelineno-40-4"></a>&#39;w_p&#39;,0.0,0.0,-0.01,0.0,0.0,0.0,-0.6,-0.02,0.0,0.0,0.0,0.0
+</span><span id="__span-40-5"><a id="__codelineno-40-5" name="__codelineno-40-5" href="#__codelineno-40-5"></a>...
+</span><span id="__span-40-6"><a id="__codelineno-40-6" name="__codelineno-40-6" href="#__codelineno-40-6"></a>...
+</span><span id="__span-40-7"><a id="__codelineno-40-7" name="__codelineno-40-7" href="#__codelineno-40-7"></a>...
+</span><span id="__span-40-8"><a id="__codelineno-40-8" name="__codelineno-40-8" href="#__codelineno-40-8"></a>&#39;simSiUptake&#39;,0,0,0,0,0,0,0,0,0,0,0,0
+</span><span id="__span-40-9"><a id="__codelineno-40-9" name="__codelineno-40-9" href="#__codelineno-40-9"></a>&#39;Si_0&#39;,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3,0.3
+</span><span id="__span-40-10"><a id="__codelineno-40-10" name="__codelineno-40-10" href="#__codelineno-40-10"></a>&#39;K_Si&#39;,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5,2.5
+</span><span id="__span-40-11"><a id="__codelineno-40-11" name="__codelineno-40-11" href="#__codelineno-40-11"></a>&#39;X_sicon&#39;,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4,0.4
+</span></code></pre></div>
+<h4 id="set-an-aed-database">Set an AED database<a class="headerlink" href="#set-an-aed-database" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-41-1"><a id="__codelineno-41-1" name="__codelineno-41-1" href="#__codelineno-41-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-41-2"><a id="__codelineno-41-2" name="__codelineno-41-2" href="#__codelineno-41-2"></a>
+</span><span id="__span-41-3"><a id="__codelineno-41-3" name="__codelineno-41-3" href="#__codelineno-41-3"></a>
+</span><span id="__span-41-4"><a id="__codelineno-41-4" name="__codelineno-41-4" href="#__codelineno-41-4"></a><span class="n">phyto</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">read_aed_dbase</span><span class="p">(</span><span class="s1">&#39;aed/aed_phyto_pars_v2.csv&#39;</span><span class="p">)</span>
+</span><span id="__span-41-5"><a id="__codelineno-41-5" name="__codelineno-41-5" href="#__codelineno-41-5"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-41-6"><a id="__codelineno-41-6" name="__codelineno-41-6" href="#__codelineno-41-6"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">aed_dbase</span><span class="p">[</span><span class="s1">&#39;aed_phyto_pars&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phyto</span>
+</span></code></pre></div>
+<h3 id="validate-the-simulation-configuration">Validate the simulation configuration<a class="headerlink" href="#validate-the-simulation-configuration" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a>
+</span><span id="__span-42-3"><a id="__codelineno-42-3" name="__codelineno-42-3" href="#__codelineno-42-3"></a>
+</span><span id="__span-42-4"><a id="__codelineno-42-4" name="__codelineno-42-4" href="#__codelineno-42-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;my_sim.glmpy&#39;</span><span class="p">)</span>
+</span><span id="__span-42-5"><a id="__codelineno-42-5" name="__codelineno-42-5" href="#__codelineno-42-5"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+</span></code></pre></div>
+<h3 id="return-a-memory-independent-copy-of-a-glmsim">Return a memory independent copy of a <code>GLMSim</code><a class="headerlink" href="#return-a-memory-independent-copy-of-a-glmsim" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a>
+</span><span id="__span-43-3"><a id="__codelineno-43-3" name="__codelineno-43-3" href="#__codelineno-43-3"></a>
+</span><span id="__span-43-4"><a id="__codelineno-43-4" name="__codelineno-43-4" href="#__codelineno-43-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-43-5"><a id="__codelineno-43-5" name="__codelineno-43-5" href="#__codelineno-43-5"></a><span class="n">glm_sim_copy</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_deepcopy</span><span class="p">()</span>
+</span></code></pre></div>
+<h2 id="retrieving-output-files-with-glmoutputs">Retrieving output files with <code>GLMOutputs</code><a class="headerlink" href="#retrieving-output-files-with-glmoutputs" title="Permanent link">&para;</a></h2>
+<h3 id="csv-outputs">CSV outputs<a class="headerlink" href="#csv-outputs" title="Permanent link">&para;</a></h3>
+<h4 id="returning-csv-names">Returning CSV names<a class="headerlink" href="#returning-csv-names" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a>
+</span><span id="__span-44-3"><a id="__codelineno-44-3" name="__codelineno-44-3" href="#__codelineno-44-3"></a>
+</span><span id="__span-44-4"><a id="__codelineno-44-4" name="__codelineno-44-4" href="#__codelineno-44-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;sparkling_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-44-5"><a id="__codelineno-44-5" name="__codelineno-44-5" href="#__codelineno-44-5"></a><span class="n">outputs</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span><span id="__span-44-6"><a id="__codelineno-44-6" name="__codelineno-44-6" href="#__codelineno-44-6"></a><span class="n">csv_basenames</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">get_csv_basenames</span><span class="p">()</span>
+</span><span id="__span-44-7"><a id="__codelineno-44-7" name="__codelineno-44-7" href="#__codelineno-44-7"></a><span class="nb">print</span><span class="p">(</span><span class="n">csv_basenames</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>[&#39;WQ_17&#39;, &#39;lake&#39;, &#39;overflow&#39;]
+</span></code></pre></div>
+<h4 id="return-a-csv-path">Return a CSV path<a class="headerlink" href="#return-a-csv-path" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-46-2"><a id="__codelineno-46-2" name="__codelineno-46-2" href="#__codelineno-46-2"></a>
+</span><span id="__span-46-3"><a id="__codelineno-46-3" name="__codelineno-46-3" href="#__codelineno-46-3"></a>
+</span><span id="__span-46-4"><a id="__codelineno-46-4" name="__codelineno-46-4" href="#__codelineno-46-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;sparkling_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-46-5"><a id="__codelineno-46-5" name="__codelineno-46-5" href="#__codelineno-46-5"></a><span class="n">outputs</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span><span id="__span-46-6"><a id="__codelineno-46-6" name="__codelineno-46-6" href="#__codelineno-46-6"></a><span class="n">wq_path</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">get_csv_path</span><span class="p">(</span><span class="s1">&#39;WQ_17&#39;</span><span class="p">)</span>
+</span><span id="__span-46-7"><a id="__codelineno-46-7" name="__codelineno-46-7" href="#__codelineno-46-7"></a><span class="nb">print</span><span class="p">(</span><span class="n">wq_path</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>./sparkling_lake/output/WQ_17.csv
+</span></code></pre></div>
+<h4 id="return-a-csv-dataframe">Return a CSV dataframe<a class="headerlink" href="#return-a-csv-dataframe" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-48-2"><a id="__codelineno-48-2" name="__codelineno-48-2" href="#__codelineno-48-2"></a>
+</span><span id="__span-48-3"><a id="__codelineno-48-3" name="__codelineno-48-3" href="#__codelineno-48-3"></a>
+</span><span id="__span-48-4"><a id="__codelineno-48-4" name="__codelineno-48-4" href="#__codelineno-48-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;sparkling_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-48-5"><a id="__codelineno-48-5" name="__codelineno-48-5" href="#__codelineno-48-5"></a><span class="n">outputs</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span><span id="__span-48-6"><a id="__codelineno-48-6" name="__codelineno-48-6" href="#__codelineno-48-6"></a><span class="n">wq_pd</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">get_csv_pd</span><span class="p">(</span><span class="s1">&#39;WQ_17&#39;</span><span class="p">)</span>
+</span><span id="__span-48-7"><a id="__codelineno-48-7" name="__codelineno-48-7" href="#__codelineno-48-7"></a><span class="nb">print</span><span class="p">(</span><span class="n">wq_pd</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-49-1"><a id="__codelineno-49-1" name="__codelineno-49-1" href="#__codelineno-49-1"></a>                    time      temp      salt
+</span><span id="__span-49-2"><a id="__codelineno-49-2" name="__codelineno-49-2" href="#__codelineno-49-2"></a>0    1980-04-15 24:00:00  3.752815  0.000000
+</span><span id="__span-49-3"><a id="__codelineno-49-3" name="__codelineno-49-3" href="#__codelineno-49-3"></a>1    1980-04-16 24:00:00  3.733166  0.000000
+</span><span id="__span-49-4"><a id="__codelineno-49-4" name="__codelineno-49-4" href="#__codelineno-49-4"></a>2    1980-04-17 24:00:00  3.722207  0.000000
+</span><span id="__span-49-5"><a id="__codelineno-49-5" name="__codelineno-49-5" href="#__codelineno-49-5"></a>3    1980-04-18 24:00:00  3.749895  0.000000
+</span><span id="__span-49-6"><a id="__codelineno-49-6" name="__codelineno-49-6" href="#__codelineno-49-6"></a>4    1980-04-19 24:00:00  4.039198  0.000000
+</span><span id="__span-49-7"><a id="__codelineno-49-7" name="__codelineno-49-7" href="#__codelineno-49-7"></a>..                   ...       ...       ...
+</span><span id="__span-49-8"><a id="__codelineno-49-8" name="__codelineno-49-8" href="#__codelineno-49-8"></a>725  1982-04-10 24:00:00  4.432520  0.000127
+</span><span id="__span-49-9"><a id="__codelineno-49-9" name="__codelineno-49-9" href="#__codelineno-49-9"></a>726  1982-04-11 24:00:00  4.336266  0.000128
+</span><span id="__span-49-10"><a id="__codelineno-49-10" name="__codelineno-49-10" href="#__codelineno-49-10"></a>727  1982-04-12 24:00:00  4.672208  0.000128
+</span><span id="__span-49-11"><a id="__codelineno-49-11" name="__codelineno-49-11" href="#__codelineno-49-11"></a>728  1982-04-13 24:00:00  5.054114  0.000128
+</span><span id="__span-49-12"><a id="__codelineno-49-12" name="__codelineno-49-12" href="#__codelineno-49-12"></a>729  1982-04-14 24:00:00  5.525627  0.000128
+</span><span id="__span-49-13"><a id="__codelineno-49-13" name="__codelineno-49-13" href="#__codelineno-49-13"></a>
+</span><span id="__span-49-14"><a id="__codelineno-49-14" name="__codelineno-49-14" href="#__codelineno-49-14"></a>[730 rows x 3 columns]
+</span></code></pre></div>
+<h3 id="netcdf-output">NetCDF output<a class="headerlink" href="#netcdf-output" title="Permanent link">&para;</a></h3>
+<h4 id="return-the-netcdf-path">Return the NetCDF path<a class="headerlink" href="#return-the-netcdf-path" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-50-1"><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-50-2"><a id="__codelineno-50-2" name="__codelineno-50-2" href="#__codelineno-50-2"></a>
+</span><span id="__span-50-3"><a id="__codelineno-50-3" name="__codelineno-50-3" href="#__codelineno-50-3"></a>
+</span><span id="__span-50-4"><a id="__codelineno-50-4" name="__codelineno-50-4" href="#__codelineno-50-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;sparkling_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-50-5"><a id="__codelineno-50-5" name="__codelineno-50-5" href="#__codelineno-50-5"></a><span class="n">outputs</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span><span id="__span-50-6"><a id="__codelineno-50-6" name="__codelineno-50-6" href="#__codelineno-50-6"></a><span class="n">nc_path</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">get_netcdf_path</span><span class="p">()</span>
+</span><span id="__span-50-7"><a id="__codelineno-50-7" name="__codelineno-50-7" href="#__codelineno-50-7"></a><span class="nb">print</span><span class="p">(</span><span class="n">nc_path</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-51-1"><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a>./sparkling_lake/output/output.nc
+</span></code></pre></div>
+<h4 id="return-the-netcdf-as-a-netcdf4dataset-object">Return the NetCDF as a <code>netCDF4.Dataset</code> object<a class="headerlink" href="#return-the-netcdf-as-a-netcdf4dataset-object" title="Permanent link">&para;</a></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-52-1"><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-52-2"><a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a>
+</span><span id="__span-52-3"><a id="__codelineno-52-3" name="__codelineno-52-3" href="#__codelineno-52-3"></a>
+</span><span id="__span-52-4"><a id="__codelineno-52-4" name="__codelineno-52-4" href="#__codelineno-52-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;sparkling_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-52-5"><a id="__codelineno-52-5" name="__codelineno-52-5" href="#__codelineno-52-5"></a><span class="n">outputs</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span><span id="__span-52-6"><a id="__codelineno-52-6" name="__codelineno-52-6" href="#__codelineno-52-6"></a><span class="n">nc</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">get_netcdf</span><span class="p">()</span>
+</span><span id="__span-52-7"><a id="__codelineno-52-7" name="__codelineno-52-7" href="#__codelineno-52-7"></a><span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">nc</span><span class="p">))</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-53-1"><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a>&lt;class &#39;netCDF4._netCDF4.Dataset&#39;&gt;
+</span></code></pre></div>
+<h2 id="running-parallel-simulations-with-multisim">Running parallel simulations with <code>MultiSim</code><a class="headerlink" href="#running-parallel-simulations-with-multisim" title="Permanent link">&para;</a></h2>
+<h3 id="initialising-multisim">Initialising <code>MultiSim</code><a class="headerlink" href="#initialising-multisim" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-54-2"><a id="__codelineno-54-2" name="__codelineno-54-2" href="#__codelineno-54-2"></a>
+</span><span id="__span-54-3"><a id="__codelineno-54-3" name="__codelineno-54-3" href="#__codelineno-54-3"></a>
+</span><span id="__span-54-4"><a id="__codelineno-54-4" name="__codelineno-54-4" href="#__codelineno-54-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;sparkling_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-54-5"><a id="__codelineno-54-5" name="__codelineno-54-5" href="#__codelineno-54-5"></a>
+</span><span id="__span-54-6"><a id="__codelineno-54-6" name="__codelineno-54-6" href="#__codelineno-54-6"></a><span class="n">num_sims</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span id="__span-54-7"><a id="__codelineno-54-7" name="__codelineno-54-7" href="#__codelineno-54-7"></a><span class="n">glm_sims</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-54-8"><a id="__codelineno-54-8" name="__codelineno-54-8" href="#__codelineno-54-8"></a><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_sims</span><span class="p">):</span>
+</span><span id="__span-54-9"><a id="__codelineno-54-9" name="__codelineno-54-9" href="#__codelineno-54-9"></a>    <span class="n">new_sim</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_deepcopy</span><span class="p">()</span>
+</span><span id="__span-54-10"><a id="__codelineno-54-10" name="__codelineno-54-10" href="#__codelineno-54-10"></a>    <span class="n">new_sim</span><span class="o">.</span><span class="n">sim_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sparkling_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-54-11"><a id="__codelineno-54-11" name="__codelineno-54-11" href="#__codelineno-54-11"></a>    <span class="n">glm_sims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_sim</span><span class="p">)</span>
+</span><span id="__span-54-12"><a id="__codelineno-54-12" name="__codelineno-54-12" href="#__codelineno-54-12"></a>
+</span><span id="__span-54-13"><a id="__codelineno-54-13" name="__codelineno-54-13" href="#__codelineno-54-13"></a><span class="n">multi_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">MultiSim</span><span class="p">(</span><span class="n">glm_sims</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="running-a-multisim">Running a <code>MultiSim</code><a class="headerlink" href="#running-a-multisim" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-55-2"><a id="__codelineno-55-2" name="__codelineno-55-2" href="#__codelineno-55-2"></a>
+</span><span id="__span-55-3"><a id="__codelineno-55-3" name="__codelineno-55-3" href="#__codelineno-55-3"></a>
+</span><span id="__span-55-4"><a id="__codelineno-55-4" name="__codelineno-55-4" href="#__codelineno-55-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;sparkling_lake&#39;</span><span class="p">)</span>
+</span><span id="__span-55-5"><a id="__codelineno-55-5" name="__codelineno-55-5" href="#__codelineno-55-5"></a>
+</span><span id="__span-55-6"><a id="__codelineno-55-6" name="__codelineno-55-6" href="#__codelineno-55-6"></a><span class="n">num_sims</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span id="__span-55-7"><a id="__codelineno-55-7" name="__codelineno-55-7" href="#__codelineno-55-7"></a><span class="n">glm_sims</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-55-8"><a id="__codelineno-55-8" name="__codelineno-55-8" href="#__codelineno-55-8"></a><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_sims</span><span class="p">):</span>
+</span><span id="__span-55-9"><a id="__codelineno-55-9" name="__codelineno-55-9" href="#__codelineno-55-9"></a>    <span class="n">new_sim</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_deepcopy</span><span class="p">()</span>
+</span><span id="__span-55-10"><a id="__codelineno-55-10" name="__codelineno-55-10" href="#__codelineno-55-10"></a>    <span class="n">new_sim</span><span class="o">.</span><span class="n">sim_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sparkling_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-55-11"><a id="__codelineno-55-11" name="__codelineno-55-11" href="#__codelineno-55-11"></a>    <span class="n">glm_sims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_sim</span><span class="p">)</span>
+</span><span id="__span-55-12"><a id="__codelineno-55-12" name="__codelineno-55-12" href="#__codelineno-55-12"></a>
+</span><span id="__span-55-13"><a id="__codelineno-55-13" name="__codelineno-55-13" href="#__codelineno-55-13"></a><span class="n">multi_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">MultiSim</span><span class="p">(</span><span class="n">glm_sims</span><span class="p">)</span>
+</span><span id="__span-55-14"><a id="__codelineno-55-14" name="__codelineno-55-14" href="#__codelineno-55-14"></a><span class="n">multi_sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+</span><span id="__span-55-15"><a id="__codelineno-55-15" name="__codelineno-55-15" href="#__codelineno-55-15"></a>    <span class="n">write_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-55-16"><a id="__codelineno-55-16" name="__codelineno-55-16" href="#__codelineno-55-16"></a>    <span class="n">time_sim</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-55-17"><a id="__codelineno-55-17" name="__codelineno-55-17" href="#__codelineno-55-17"></a>    <span class="n">time_multi_sim</span><span class="o">=</span><span class="kc">True</span>
+</span><span id="__span-55-18"><a id="__codelineno-55-18" name="__codelineno-55-18" href="#__codelineno-55-18"></a><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="returning-the-number-of-cpu-cores">Returning the number of CPU cores<a class="headerlink" href="#returning-the-number-of-cpu-cores" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-56-1"><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-56-2"><a id="__codelineno-56-2" name="__codelineno-56-2" href="#__codelineno-56-2"></a>
+</span><span id="__span-56-3"><a id="__codelineno-56-3" name="__codelineno-56-3" href="#__codelineno-56-3"></a>
+</span><span id="__span-56-4"><a id="__codelineno-56-4" name="__codelineno-56-4" href="#__codelineno-56-4"></a><span class="n">num_core</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">MultiSim</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
+</span><span id="__span-56-5"><a id="__codelineno-56-5" name="__codelineno-56-5" href="#__codelineno-56-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">num_core</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a>10
+</span></code></pre></div>
+<h3 id="defining-a-function-to-run-on-simulation-end">Defining a function to run on simulation end<a class="headerlink" href="#defining-a-function-to-run-on-simulation-end" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-58-1"><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a><span class="kn">import</span> <span class="nn">random</span>
+</span><span id="__span-58-2"><a id="__codelineno-58-2" name="__codelineno-58-2" href="#__codelineno-58-2"></a>
+</span><span id="__span-58-3"><a id="__codelineno-58-3" name="__codelineno-58-3" href="#__codelineno-58-3"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
+</span><span id="__span-58-4"><a id="__codelineno-58-4" name="__codelineno-58-4" href="#__codelineno-58-4"></a>
+</span><span id="__span-58-5"><a id="__codelineno-58-5" name="__codelineno-58-5" href="#__codelineno-58-5"></a>
+</span><span id="__span-58-6"><a id="__codelineno-58-6" name="__codelineno-58-6" href="#__codelineno-58-6"></a><span class="k">def</span> <span class="nf">on_sim_end</span><span class="p">(</span><span class="n">glm_sim</span><span class="p">:</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="p">,</span> <span class="n">glm_outputs</span><span class="p">:</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMOutputs</span><span class="p">):</span>
+</span><span id="__span-58-7"><a id="__codelineno-58-7" name="__codelineno-58-7" href="#__codelineno-58-7"></a>    <span class="n">wq_pd</span> <span class="o">=</span> <span class="n">glm_outputs</span><span class="o">.</span><span class="n">get_csv_pd</span><span class="p">(</span><span class="s2">&quot;WQ_17&quot;</span><span class="p">)</span>
+</span><span id="__span-58-8"><a id="__codelineno-58-8" name="__codelineno-58-8" href="#__codelineno-58-8"></a>    <span class="n">mean_temp</span> <span class="o">=</span> <span class="n">wq_pd</span><span class="p">[</span><span class="s2">&quot;temp&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</span><span id="__span-58-9"><a id="__codelineno-58-9" name="__codelineno-58-9" href="#__codelineno-58-9"></a>    <span class="n">kw</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_param_value</span><span class="p">(</span><span class="s2">&quot;glm&quot;</span><span class="p">,</span> <span class="s2">&quot;light&quot;</span><span class="p">,</span> <span class="s2">&quot;kw&quot;</span><span class="p">)</span>
+</span><span id="__span-58-10"><a id="__codelineno-58-10" name="__codelineno-58-10" href="#__codelineno-58-10"></a>    <span class="n">glm_sim</span><span class="o">.</span><span class="n">rm_sim_dir</span><span class="p">()</span>
+</span><span id="__span-58-11"><a id="__codelineno-58-11" name="__codelineno-58-11" href="#__codelineno-58-11"></a>    <span class="k">return</span> <span class="p">(</span><span class="n">glm_sim</span><span class="o">.</span><span class="n">sim_name</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">kw</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="nb">round</span><span class="p">(</span><span class="n">mean_temp</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</span><span id="__span-58-12"><a id="__codelineno-58-12" name="__codelineno-58-12" href="#__codelineno-58-12"></a>
+</span><span id="__span-58-13"><a id="__codelineno-58-13" name="__codelineno-58-13" href="#__codelineno-58-13"></a>
+</span><span id="__span-58-14"><a id="__codelineno-58-14" name="__codelineno-58-14" href="#__codelineno-58-14"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span><span id="__span-58-15"><a id="__codelineno-58-15" name="__codelineno-58-15" href="#__codelineno-58-15"></a>    <span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+</span><span id="__span-58-16"><a id="__codelineno-58-16" name="__codelineno-58-16" href="#__codelineno-58-16"></a>
+</span><span id="__span-58-17"><a id="__codelineno-58-17" name="__codelineno-58-17" href="#__codelineno-58-17"></a>    <span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s2">&quot;sparkling_lake&quot;</span><span class="p">)</span>
+</span><span id="__span-58-18"><a id="__codelineno-58-18" name="__codelineno-58-18" href="#__codelineno-58-18"></a>
+</span><span id="__span-58-19"><a id="__codelineno-58-19" name="__codelineno-58-19" href="#__codelineno-58-19"></a>    <span class="n">num_sims</span> <span class="o">=</span> <span class="mi">10</span>
+</span><span id="__span-58-20"><a id="__codelineno-58-20" name="__codelineno-58-20" href="#__codelineno-58-20"></a>    <span class="n">glm_sims</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span id="__span-58-21"><a id="__codelineno-58-21" name="__codelineno-58-21" href="#__codelineno-58-21"></a>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_sims</span><span class="p">):</span>
+</span><span id="__span-58-22"><a id="__codelineno-58-22" name="__codelineno-58-22" href="#__codelineno-58-22"></a>        <span class="n">random_sim</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_deepcopy</span><span class="p">()</span>
+</span><span id="__span-58-23"><a id="__codelineno-58-23" name="__codelineno-58-23" href="#__codelineno-58-23"></a>        <span class="n">random_sim</span><span class="o">.</span><span class="n">sim_name</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;sparkling_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span>
+</span><span id="__span-58-24"><a id="__codelineno-58-24" name="__codelineno-58-24" href="#__codelineno-58-24"></a>        <span class="n">kw</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+</span><span id="__span-58-25"><a id="__codelineno-58-25" name="__codelineno-58-25" href="#__codelineno-58-25"></a>        <span class="n">random_sim</span><span class="o">.</span><span class="n">set_param_value</span><span class="p">(</span><span class="s2">&quot;glm&quot;</span><span class="p">,</span> <span class="s2">&quot;light&quot;</span><span class="p">,</span> <span class="s2">&quot;kw&quot;</span><span class="p">,</span> <span class="n">kw</span><span class="p">)</span>
+</span><span id="__span-58-26"><a id="__codelineno-58-26" name="__codelineno-58-26" href="#__codelineno-58-26"></a>        <span class="n">glm_sims</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">random_sim</span><span class="p">)</span>
+</span><span id="__span-58-27"><a id="__codelineno-58-27" name="__codelineno-58-27" href="#__codelineno-58-27"></a>
+</span><span id="__span-58-28"><a id="__codelineno-58-28" name="__codelineno-58-28" href="#__codelineno-58-28"></a>    <span class="n">multi_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">MultiSim</span><span class="p">(</span><span class="n">glm_sims</span><span class="o">=</span><span class="n">glm_sims</span><span class="p">)</span>
+</span><span id="__span-58-29"><a id="__codelineno-58-29" name="__codelineno-58-29" href="#__codelineno-58-29"></a>
+</span><span id="__span-58-30"><a id="__codelineno-58-30" name="__codelineno-58-30" href="#__codelineno-58-30"></a>    <span class="n">outputs</span> <span class="o">=</span> <span class="n">multi_sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+</span><span id="__span-58-31"><a id="__codelineno-58-31" name="__codelineno-58-31" href="#__codelineno-58-31"></a>        <span class="n">on_sim_end</span><span class="o">=</span><span class="n">on_sim_end</span><span class="p">,</span>
+</span><span id="__span-58-32"><a id="__codelineno-58-32" name="__codelineno-58-32" href="#__codelineno-58-32"></a>        <span class="n">cpu_count</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+</span><span id="__span-58-33"><a id="__codelineno-58-33" name="__codelineno-58-33" href="#__codelineno-58-33"></a>        <span class="n">write_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-58-34"><a id="__codelineno-58-34" name="__codelineno-58-34" href="#__codelineno-58-34"></a>        <span class="n">time_sim</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-58-35"><a id="__codelineno-58-35" name="__codelineno-58-35" href="#__codelineno-58-35"></a>        <span class="n">time_multi_sim</span><span class="o">=</span><span class="kc">True</span>
+</span><span id="__span-58-36"><a id="__codelineno-58-36" name="__codelineno-58-36" href="#__codelineno-58-36"></a>    <span class="p">)</span>
+</span><span id="__span-58-37"><a id="__codelineno-58-37" name="__codelineno-58-37" href="#__codelineno-58-37"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">outputs</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-59-1"><a id="__codelineno-59-1" name="__codelineno-59-1" href="#__codelineno-59-1"></a>[(&#39;sparkling_0&#39;, 0.639, 10.818), (&#39;sparkling_1&#39;, 0.025, 7.333), (&#39;sparkling_2&#39;, 0.275, 10.378), (&#39;sparkling_3&#39;, 0.223, 10.39), (&#39;sparkling_4&#39;, 0.736, 10.706), (&#39;sparkling_5&#39;, 0.677, 10.792), (&#39;sparkling_6&#39;, 0.892, 10.754), (&#39;sparkling_7&#39;, 0.087, 9.469), (&#39;sparkling_8&#39;, 0.422, 10.57), (&#39;sparkling_9&#39;, 0.03, 7.631)]
 </span></code></pre></div>
 
 
