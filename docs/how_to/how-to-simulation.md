@@ -704,7 +704,17 @@ print(type(nc))
 
 ## Running parallel simulations with `MultiSim`
 
+The `MultiSim` class lets you run multiple `GLMSim` objects across 
+separate CPU cores. 
+For optimal performance, use `MultiSim` when you have many permutations 
+of long or slow runing simulations.
+
 ### Initialising `MultiSim`
+
+`MultiSim` requires a list of `GLMSim` objects that will each be run in 
+a separate process. 
+Each `GLMSim` object must be independent in memory.
+Use `get_deepcopy` to return a memory independent copy of a `GLMSim`.
 
 ```python
 from glmpy import simulation as sim
@@ -723,6 +733,10 @@ multi_sim = sim.MultiSim(glm_sims)
 ```
 
 ### Running a `MultiSim`
+
+The `run` method starts the simulations in separate processes. 
+By default, the number of concurrent processes is equal to the number 
+of CPU cores available.
 
 ```python
 from glmpy import simulation as sim
@@ -747,6 +761,8 @@ multi_sim.run(
 
 ### Returning the number of CPU cores
 
+`cpu_count` returns the number of available CPU cores.
+
 ```python
 from glmpy import simulation as sim
 
@@ -760,6 +776,12 @@ print(num_core)
 ```
 
 ### Defining a function to run on simulation end
+
+The `on_sim_end` parameter allows you to pass a function to the `run` 
+method that will be called when each simulation completes. 
+`run` will return a list of the function outputs.
+Use `on_sim_end` if you wish to process your outputs before deleting 
+them (`rm_sim_dir`).
 
 ```python
 import random
