@@ -526,6 +526,17 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    NML
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -535,6 +546,145 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-the-nml-module-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Understanding the nml Module Structure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-nmlblock-subclasses" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with NMLBlock subclasses
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Working with NMLBlock subclasses">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initialising-nmlblock-subclasses" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialising NMLBlock subclasses
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-list-of-parameter-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a list of parameter names
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-parameter-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a parameter value
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-parameter-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting a parameter value
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-parameters-units" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a parameter's units
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-dictionary-of-parameter-names-and-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a dictionary of parameter names and values
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iterating-through-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Iterating through parameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validating-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validating parameters
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validating parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-validate-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      The validate method
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overriding-validation-with-strict" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overriding validation with strict
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1051,6 +1201,134 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#understanding-the-nml-module-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      Understanding the nml Module Structure
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#working-with-nmlblock-subclasses" class="md-nav__link">
+    <span class="md-ellipsis">
+      Working with NMLBlock subclasses
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Working with NMLBlock subclasses">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#initialising-nmlblock-subclasses" class="md-nav__link">
+    <span class="md-ellipsis">
+      Initialising NMLBlock subclasses
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-list-of-parameter-names" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a list of parameter names
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-parameter-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a parameter value
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setting-a-parameter-value" class="md-nav__link">
+    <span class="md-ellipsis">
+      Setting a parameter value
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-parameters-units" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a parameter's units
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#returning-a-dictionary-of-parameter-names-and-values" class="md-nav__link">
+    <span class="md-ellipsis">
+      Returning a dictionary of parameter names and values
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#iterating-through-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Iterating through parameters
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#validating-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      Validating parameters
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Validating parameters">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#the-validate-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      The validate method
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#overriding-validation-with-strict" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overriding validation with strict
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1069,7 +1347,229 @@
 
 
 <h1 id="how-to-nml-module">How-to: <code>nml</code> module<a class="headerlink" href="#how-to-nml-module" title="Permanent link">&para;</a></h1>
-<p>TO-DO</p>
+<h2 id="understanding-the-nml-module-structure">Understanding the <code>nml</code> Module Structure<a class="headerlink" href="#understanding-the-nml-module-structure" title="Permanent link">&para;</a></h2>
+<p>The <code>nml</code> module provides a structured, object-oriented approach to 
+working with GLM and AED configuration files. It's built with three 
+levels of abstraction:</p>
+<ol>
+<li><strong><code>NMLParam</code> objects</strong>: Individual parameters with type checking, 
+validation, and units.</li>
+<li><strong><code>NMLBlock</code> subclasses</strong>: Collections of related parameters 
+representing configuration blocks.</li>
+<li><strong><code>NML</code> subclasses</strong>: Complete configuration files containing multiple
+ blocks.</li>
+</ol>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Stores parameter 
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>value, units, and       
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>validation rules.       
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>┌────────────────┐  
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│    NMLParam    │       
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│name: &quot;sim_name&quot;│       Contains multiple related
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>│type: str       │──┐    parameters with block-level
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│value: &quot;my_sim&quot; │  │    validation rules.
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│units: None     │  │    ┌─────────────────────────┐
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>└────────────────┘  │    │ GLMSetupBlock(NMLBlock) │
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>┌────────────────┐  ├───▶│nml_name: &quot;glm&quot;          │──┐
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│    NMLParam    │  │    │block_name: &quot;glm_setup&quot;  │  │    Contains multiple
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│name: &quot;non_avg&quot; │  │    └─────────────────────────┘  │    blocks with 
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│type: bool      │──┘                                 │    cross-block 
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│value: True     │                                    │    validation.
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│units: None     │                                    │    ┌───────────────┐
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>└────────────────┘                                    │    │  GLMNML(NML)  │
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>                                                      │───▶│nml_name: &quot;glm&quot;│
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>┌────────────────┐                                    │    └───────────────┘
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│    NMLParam    │                                    │       
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│name: &quot;kw&quot;      │                                    │
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│type: float     │──┐                                 │
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>│value: 0.57     │  │                                 │
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>│units: &quot;m^{-1}&quot; │  │    ┌─────────────────────────┐  │
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>└────────────────┘  │    │   LightBlock(NMLBlock)  │  │
+</span><span id="__span-0-26"><a id="__codelineno-0-26" name="__codelineno-0-26" href="#__codelineno-0-26"></a>┌────────────────┐  ├───▶│nml_name: &quot;glm&quot;          │──┘
+</span><span id="__span-0-27"><a id="__codelineno-0-27" name="__codelineno-0-27" href="#__codelineno-0-27"></a>│    NMLParam    │  │    │block_name: &quot;light&quot;      │
+</span><span id="__span-0-28"><a id="__codelineno-0-28" name="__codelineno-0-28" href="#__codelineno-0-28"></a>│name: &quot;n_bands&quot; │  │    └─────────────────────────┘  
+</span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a>│type: int       │──┘   
+</span><span id="__span-0-30"><a id="__codelineno-0-30" name="__codelineno-0-30" href="#__codelineno-0-30"></a>│value: 2        │
+</span><span id="__span-0-31"><a id="__codelineno-0-31" name="__codelineno-0-31" href="#__codelineno-0-31"></a>│units: None     │  
+</span><span id="__span-0-32"><a id="__codelineno-0-32" name="__codelineno-0-32" href="#__codelineno-0-32"></a>└────────────────┘  
+</span></code></pre></div>
+<h2 id="working-with-nmlblock-subclasses">Working with <code>NMLBlock</code> subclasses<a class="headerlink" href="#working-with-nmlblock-subclasses" title="Permanent link">&para;</a></h2>
+<p>The <code>glm_nml</code> and <code>aed_nml</code> modules contain numerous <code>NMLBlock</code> 
+subclasses that correspond directly to parameter 'blocks' in the 
+glm.nml and aed.nml files. These classes handle parameter validation 
+and provide a consistent interface for accessing and modifying values.</p>
+<h3 id="initialising-nmlblock-subclasses">Initialising <code>NMLBlock</code> subclasses<a class="headerlink" href="#initialising-nmlblock-subclasses" title="Permanent link">&para;</a></h3>
+<p>Instances of <code>NMLBlock</code> subclasses are constructed by calling the 
+<code>__init__</code> method and providing parameter values as arguments. 
+Parameters with no value set will default to <code>None</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All GLM and AED parameter names in glm-py have been converted to 
+lower-case, e.g., <code>Fsed_oxy</code> becomes <code>fsed_oxy</code>.</p>
+</div>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">glmpy.nml</span> <span class="kn">import</span> <span class="n">glm_nml</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">glm_setup</span> <span class="o">=</span> <span class="n">glm_nml</span><span class="o">.</span><span class="n">GLMSetupBlock</span><span class="p">(</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">sim_name</span><span class="o">=</span><span class="s1">&#39;my_sim&#39;</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">max_layers</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">min_layer_vol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">min_layer_thick</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">max_layer_thick</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">density_model</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="returning-a-list-of-parameter-names">Returning a list of parameter names<a class="headerlink" href="#returning-a-list-of-parameter-names" title="Permanent link">&para;</a></h3>
+<p>A list of all parameter names in the block can be return using the 
+<code>get_param_names</code> method.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">glmpy.nml</span> <span class="kn">import</span> <span class="n">glm_nml</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">glm_setup</span> <span class="o">=</span> <span class="n">glm_nml</span><span class="o">.</span><span class="n">GLMSetupBlock</span><span class="p">(</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">sim_name</span><span class="o">=</span><span class="s1">&#39;my_sim&#39;</span><span class="p">,</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">max_layers</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">min_layer_vol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">min_layer_thick</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">max_layer_thick</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">density_model</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="p">)</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="nb">print</span><span class="p">(</span><span class="n">glm_setup</span><span class="o">.</span><span class="n">get_param_names</span><span class="p">())</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>[&#39;sim_name&#39;, &#39;max_layers&#39;, &#39;min_layer_vol&#39;, &#39;min_layer_thick&#39;, &#39;max_layer_thick&#39;, &#39;density_model&#39;, &#39;non_avg&#39;]
+</span></code></pre></div>
+<h3 id="returning-a-parameter-value">Returning a parameter value<a class="headerlink" href="#returning-a-parameter-value" title="Permanent link">&para;</a></h3>
+<p>Return a parameter value by calling <code>get_param_value</code> and providing the 
+paramter name:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span> <span class="nn">glmpy.nml</span> <span class="kn">import</span> <span class="n">glm_nml</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">glm_setup</span> <span class="o">=</span> <span class="n">glm_nml</span><span class="o">.</span><span class="n">GLMSetupBlock</span><span class="p">(</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">sim_name</span><span class="o">=</span><span class="s1">&#39;my_sim&#39;</span><span class="p">,</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">max_layers</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">min_layer_vol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">min_layer_thick</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="n">max_layer_thick</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="n">density_model</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="p">)</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="nb">print</span><span class="p">(</span><span class="n">glm_setup</span><span class="o">.</span><span class="n">get_param_value</span><span class="p">(</span><span class="s1">&#39;non_avg&#39;</span><span class="p">))</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>None
+</span></code></pre></div>
+<h3 id="setting-a-parameter-value">Setting a parameter value<a class="headerlink" href="#setting-a-parameter-value" title="Permanent link">&para;</a></h3>
+<p>Set a paramter value after initialisation by calling <code>set_param_value</code> 
+and providing the parameter name and it's value.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span> <span class="nn">glmpy.nml</span> <span class="kn">import</span> <span class="n">glm_nml</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">glm_setup</span> <span class="o">=</span> <span class="n">glm_nml</span><span class="o">.</span><span class="n">GLMSetupBlock</span><span class="p">(</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">sim_name</span><span class="o">=</span><span class="s1">&#39;my_sim&#39;</span><span class="p">,</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">max_layers</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">min_layer_vol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">min_layer_thick</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="n">max_layer_thick</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="n">density_model</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="p">)</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="n">glm_setup</span><span class="o">.</span><span class="n">set_param_value</span><span class="p">(</span><span class="s1">&#39;non_avg&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="returning-a-parameters-units">Returning a parameter's units<a class="headerlink" href="#returning-a-parameters-units" title="Permanent link">&para;</a></h3>
+<p>Return a parameter's units by calling <code>get_param_value</code> and providing 
+the paramter name:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span> <span class="nn">glmpy.nml</span> <span class="kn">import</span> <span class="n">glm_nml</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">glm_setup</span> <span class="o">=</span> <span class="n">glm_nml</span><span class="o">.</span><span class="n">GLMSetupBlock</span><span class="p">(</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">sim_name</span><span class="o">=</span><span class="s1">&#39;my_sim&#39;</span><span class="p">,</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">max_layers</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">min_layer_vol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>    <span class="n">min_layer_thick</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>    <span class="n">max_layer_thick</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="n">density_model</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="p">)</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="nb">print</span><span class="p">(</span><span class="n">glm_setup</span><span class="o">.</span><span class="n">get_param_units</span><span class="p">(</span><span class="s1">&#39;min_layer_thick&#39;</span><span class="p">))</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>m
+</span></code></pre></div>
+<h3 id="returning-a-dictionary-of-parameter-names-and-values">Returning a dictionary of parameter names and values<a class="headerlink" href="#returning-a-dictionary-of-parameter-names-and-values" title="Permanent link">&para;</a></h3>
+<p>The <code>to_dict</code> method returns an ordered dictionary of the parameter 
+names (keys) and values.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="kn">from</span> <span class="nn">glmpy.nml</span> <span class="kn">import</span> <span class="n">glm_nml</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="n">glm_setup</span> <span class="o">=</span> <span class="n">glm_nml</span><span class="o">.</span><span class="n">GLMSetupBlock</span><span class="p">(</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>    <span class="n">sim_name</span><span class="o">=</span><span class="s1">&#39;my_sim&#39;</span><span class="p">,</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">max_layers</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a>    <span class="n">min_layer_vol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a>    <span class="n">min_layer_thick</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a>    <span class="n">max_layer_thick</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a>    <span class="n">density_model</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="p">)</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="nb">print</span><span class="p">(</span><span class="n">glm_setup</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>OrderedDict([(&#39;sim_name&#39;, &#39;my_sim&#39;), (&#39;max_layers&#39;, 500), (&#39;min_layer_vol&#39;, 0.5), (&#39;min_layer_thick&#39;, 0.15), (&#39;max_layer_thick&#39;, 0.5), (&#39;density_model&#39;, 1), (&#39;non_avg&#39;, None)])
+</span></code></pre></div>
+<h3 id="iterating-through-parameters">Iterating through parameters<a class="headerlink" href="#iterating-through-parameters" title="Permanent link">&para;</a></h3>
+<p>The <code>iter_params</code> method returns a generator of the <code>NMLParam</code> objects 
+in the <code>NMLBlock</code> subclass.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span> <span class="nn">glmpy.nml</span> <span class="kn">import</span> <span class="n">glm_nml</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="n">glm_setup</span> <span class="o">=</span> <span class="n">glm_nml</span><span class="o">.</span><span class="n">GLMSetupBlock</span><span class="p">(</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>    <span class="n">sim_name</span><span class="o">=</span><span class="s1">&#39;my_sim&#39;</span><span class="p">,</span>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">max_layers</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a>    <span class="n">min_layer_vol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a>    <span class="n">min_layer_thick</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>    <span class="n">max_layer_thick</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>    <span class="n">density_model</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="p">)</span>
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a>
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="k">for</span> <span class="n">nml_param</span> <span class="ow">in</span> <span class="n">glm_setup</span><span class="o">.</span><span class="n">iter_params</span><span class="p">():</span>
+</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">nml_param</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">nml_param</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">nml_param</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>sim_name my_sim None
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>max_layers 500 None
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>min_layer_vol 0.5 m^3
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>min_layer_thick 0.15 m
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>max_layer_thick 0.5 m
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>density_model 1 None
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>non_avg None None
+</span></code></pre></div>
+<h3 id="validating-parameters">Validating parameters<a class="headerlink" href="#validating-parameters" title="Permanent link">&para;</a></h3>
+<h4 id="the-validate-method">The <code>validate</code> method<a class="headerlink" href="#the-validate-method" title="Permanent link">&para;</a></h4>
+<p>Call the <code>validate</code> method to raise errors for invalid parameter values.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span> <span class="nn">glmpy.nml</span> <span class="kn">import</span> <span class="n">glm_nml</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">glm_setup</span> <span class="o">=</span> <span class="n">glm_nml</span><span class="o">.</span><span class="n">GLMSetupBlock</span><span class="p">(</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="n">sim_name</span><span class="o">=</span><span class="mi">123456789</span><span class="p">,</span> <span class="c1">#&lt;— invalid data type</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    <span class="n">max_layers</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>    <span class="n">min_layer_vol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>    <span class="n">min_layer_thick</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a>    <span class="n">max_layer_thick</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>    <span class="n">density_model</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="p">)</span>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a><span class="n">glm_setup</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+</span></code></pre></div>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>ValueError: sim_name must be of type &lt;class &#39;str&#39;&gt;. Got type &lt;class &#39;int&#39;&gt;
+</span></code></pre></div>
+<h4 id="overriding-validation-with-strict">Overriding validation with <code>strict</code><a class="headerlink" href="#overriding-validation-with-strict" title="Permanent link">&para;</a></h4>
+<p><code>validate</code> is called when preparing a <code>GLMSim</code> to run. 
+In situations where you need to override <code>validate</code> from raising errors,
+set the <code>strict</code> attribute to <code>False</code>.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">from</span> <span class="nn">glmpy.nml</span> <span class="kn">import</span> <span class="n">glm_nml</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="n">glm_setup</span> <span class="o">=</span> <span class="n">glm_nml</span><span class="o">.</span><span class="n">GLMSetupBlock</span><span class="p">(</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    <span class="n">sim_name</span><span class="o">=</span><span class="mi">123456789</span><span class="p">,</span> <span class="c1">#&lt;— invalid data type</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>    <span class="n">max_layers</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a>    <span class="n">min_layer_vol</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a>    <span class="n">min_layer_thick</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a>    <span class="n">max_layer_thick</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a>    <span class="n">density_model</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+</span><span id="__span-15-11"><a id="__codelineno-15-11" name="__codelineno-15-11" href="#__codelineno-15-11"></a><span class="p">)</span>
+</span><span id="__span-15-12"><a id="__codelineno-15-12" name="__codelineno-15-12" href="#__codelineno-15-12"></a><span class="n">glm_setup</span><span class="o">.</span><span class="n">strict</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span id="__span-15-13"><a id="__codelineno-15-13" name="__codelineno-15-13" href="#__codelineno-15-13"></a><span class="n">glm_setup</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+</span></code></pre></div>
+<!-- ## Working with `NML` subclasses -->
 
 
 

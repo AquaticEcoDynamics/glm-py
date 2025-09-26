@@ -946,18 +946,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#return-a-csv-path" class="md-nav__link">
+  <a href="#returning-a-csv-path" class="md-nav__link">
     <span class="md-ellipsis">
-      Return a CSV path
+      Returning a CSV path
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#return-a-csv-dataframe" class="md-nav__link">
+  <a href="#returning-a-csv-dataframe" class="md-nav__link">
     <span class="md-ellipsis">
-      Return a CSV dataframe
+      Returning a CSV dataframe
     </span>
   </a>
   
@@ -979,18 +979,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#return-the-netcdf-path" class="md-nav__link">
+  <a href="#returning-the-netcdf-path" class="md-nav__link">
     <span class="md-ellipsis">
-      Return the NetCDF path
+      Returning the NetCDF path
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#return-the-netcdf-as-a-netcdf4dataset-object" class="md-nav__link">
+  <a href="#returning-the-netcdf-as-a-netcdf4dataset-object" class="md-nav__link">
     <span class="md-ellipsis">
-      Return the NetCDF as a netCDF4.Dataset object
+      Returning the NetCDF as a netCDF4.Dataset object
     </span>
   </a>
   
@@ -2008,18 +2008,18 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#return-a-csv-path" class="md-nav__link">
+  <a href="#returning-a-csv-path" class="md-nav__link">
     <span class="md-ellipsis">
-      Return a CSV path
+      Returning a CSV path
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#return-a-csv-dataframe" class="md-nav__link">
+  <a href="#returning-a-csv-dataframe" class="md-nav__link">
     <span class="md-ellipsis">
-      Return a CSV dataframe
+      Returning a CSV dataframe
     </span>
   </a>
   
@@ -2041,18 +2041,18 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#return-the-netcdf-path" class="md-nav__link">
+  <a href="#returning-the-netcdf-path" class="md-nav__link">
     <span class="md-ellipsis">
-      Return the NetCDF path
+      Returning the NetCDF path
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#return-the-netcdf-as-a-netcdf4dataset-object" class="md-nav__link">
+  <a href="#returning-the-netcdf-as-a-netcdf4dataset-object" class="md-nav__link">
     <span class="md-ellipsis">
-      Return the NetCDF as a netCDF4.Dataset object
+      Returning the NetCDF as a netCDF4.Dataset object
     </span>
   </a>
   
@@ -2142,6 +2142,13 @@
 <h2 id="configuring-and-running-simulations-with-glmsim">Configuring and running simulations with <code>GLMSim</code><a class="headerlink" href="#configuring-and-running-simulations-with-glmsim" title="Permanent link">&para;</a></h2>
 <h3 id="initialising-glmsim">Initialising <code>GLMSim</code><a class="headerlink" href="#initialising-glmsim" title="Permanent link">&para;</a></h3>
 <h4 id="using-the-__init__-constructor">Using the <code>__init__</code> constructor<a class="headerlink" href="#using-the-__init__-constructor" title="Permanent link">&para;</a></h4>
+<p>Create a new simulation from scratch by initialising <code>GLMSim</code> with a 
+simulation name (used for the directory name). You can provide 
+pre-configured <code>GLMNML</code> and <code>AEDNML</code> objects or let <code>GLMSim</code> create 
+unconfigured instances for you (then use the various 
+parameter setter methods). Optionally, add boundary conditions (<code>bcs</code>) 
+and AED databases (<code>aed_dbase</code>) as dictionaries mapping file basenames 
+to Pandas DataFrames. Use <code>read_aed_dbase</code> to load AED database CSVs.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
@@ -2173,17 +2180,23 @@
 </span><span id="__span-0-29"><a id="__codelineno-0-29" name="__codelineno-0-29" href="#__codelineno-0-29"></a><span class="p">)</span>
 </span></code></pre></div>
 <h4 id="using-the-from_file-constructor">Using the <code>from_file</code> constructor<a class="headerlink" href="#using-the-from_file-constructor" title="Permanent link">&para;</a></h4>
+<p>Load a pre-configured <code>GLMSim</code> using the <code>from_file</code> constructor.
+<code>from_file</code> reads <code>.glmpy</code> files which store the entire model 
+configuration, including boundary condition data and AED databases.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="s1">&#39;falling_creek_reservoir.glmpy&#39;</span><span class="p">)</span>
 </span></code></pre></div>
 <h4 id="using-the-from_example_sim-constructor">Using the <code>from_example_sim</code> constructor<a class="headerlink" href="#using-the-from_example_sim-constructor" title="Permanent link">&para;</a></h4>
+<p>Load a pre-configured simulation included in the glm-py package with 
+the <code>from_example_sim</code> constructor.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;falling_creek_reservoir&#39;</span><span class="p">)</span>
 </span></code></pre></div>
+<p>Valid simulation names can be returned using <code>get_example_sim_names</code>:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
@@ -2193,6 +2206,10 @@
 </span></code></pre></div>
 <h3 id="running-glm">Running GLM<a class="headerlink" href="#running-glm" title="Permanent link">&para;</a></h3>
 <h4 id="using-the-included-glm-binary">Using the included GLM binary<a class="headerlink" href="#using-the-included-glm-binary" title="Permanent link">&para;</a></h4>
+<p>Call the <code>run</code> method to run the current model configuration with GLM.
+GLM's terminal output can be suppressed (<code>quiet=True</code>) and instead 
+saved to a <code>.log</code> file (<code>write_log=True</code>). Use <code>time_sim</code> to print the 
+total runtime. </p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
@@ -2201,6 +2218,8 @@
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">write_log</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">time_sim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span></code></pre></div>
 <h4 id="using-your-own-binary">Using your own binary<a class="headerlink" href="#using-your-own-binary" title="Permanent link">&para;</a></h4>
+<p>To run the <code>GLMSim</code> with your own GLM binary, use the <code>glm_path</code> 
+parameter.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
@@ -2214,6 +2233,8 @@
 </span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="p">)</span>
 </span></code></pre></div>
 <h4 id="returning-an-instance-of-glmoutputs">Returning an instance of <code>GLMOutputs</code><a class="headerlink" href="#returning-an-instance-of-glmoutputs" title="Permanent link">&para;</a></h4>
+<p><code>run</code> returns an instancs of <code>GLMOutputs</code> that can be stored and used 
+to retrieve output files.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
@@ -2222,6 +2243,8 @@
 </span></code></pre></div>
 <h3 id="managing-the-simulation-directory">Managing the simulation directory<a class="headerlink" href="#managing-the-simulation-directory" title="Permanent link">&para;</a></h3>
 <h4 id="returning-the-simulation-directory-path">Returning the simulation directory path<a class="headerlink" href="#returning-the-simulation-directory-path" title="Permanent link">&para;</a></h4>
+<p>Determine where your similation directory is, or where it will be 
+created, with <code>get_sim_dir</code>.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;sparkling_lake&#39;</span><span class="p">)</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">sim_dir</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_sim_dir</span><span class="p">()</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="nb">print</span><span class="p">(</span><span class="n">sim_dir</span><span class="p">)</span>
@@ -2229,6 +2252,8 @@
 <div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>./sparkling_lake
 </span></code></pre></div>
 <h4 id="deleting-the-simulation-directory">Deleting the simulation directory<a class="headerlink" href="#deleting-the-simulation-directory" title="Permanent link">&para;</a></h4>
+<p>Call to <code>rm_sim_dir</code> to recursively delete all files and 
+sub-directories within the simulation directory. </p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>
@@ -2237,6 +2262,7 @@
 </span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">rm_sim_dir</span><span class="p">()</span>
 </span></code></pre></div>
 <h4 id="changing-the-simulation-name">Changing the simulation name<a class="headerlink" href="#changing-the-simulation-name" title="Permanent link">&para;</a></h4>
+<p>Set a new simulation name by updating the <code>sim_name</code> attribute. </p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>
 </span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>
@@ -2244,6 +2270,7 @@
 </span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">sim_name</span> <span class="o">=</span> <span class="s2">&quot;scenario_2&quot;</span>
 </span></code></pre></div>
 <h4 id="saving-the-simulation-to-file">Saving the simulation to file<a class="headerlink" href="#saving-the-simulation-to-file" title="Permanent link">&para;</a></h4>
+<p>A <code>GLMSim</code>'s configuration can be saved a <code>.glmpy</code> file with <code>to_file</code>.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
 </span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
@@ -2252,21 +2279,25 @@
 </span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">to_file</span><span class="p">(</span><span class="s1">&#39;warm_lake_v2.glmpy&#39;</span><span class="p">)</span>
 </span></code></pre></div>
 <h4 id="checking-the-preparation-of-input-files">Checking the preparation of input files<a class="headerlink" href="#checking-the-preparation-of-input-files" title="Permanent link">&para;</a></h4>
-<p>Prepare just the NML files:</p>
+<p>When the <code>run</code> method is called, <code>GLMSim</code> will create the simulation 
+directory and write the input files to it. You can prepare the 
+simulation directory, without running GLM, by calling the following 
+methods.</p>
+<p>Preparing just the NML files:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
 </span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>
 </span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
 </span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">prepare_nml</span><span class="p">()</span>
 </span></code></pre></div>
-<p>Prepare the boundary condition and database files:</p>
+<p>Preparing the boundary condition and database files:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>
 </span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>
 </span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a><span class="n">glm_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">GLMSim</span><span class="o">.</span><span class="n">from_example_sim</span><span class="p">(</span><span class="s1">&#39;warm_lake&#39;</span><span class="p">)</span>
 </span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">prepare_bcs_and_dbase</span><span class="p">()</span>
 </span></code></pre></div>
-<p>Prepare all input files:</p>
+<p>Preparing all input files:</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
 </span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>
@@ -2275,6 +2306,10 @@
 </span></code></pre></div>
 <h3 id="configuring-model-parameters">Configuring model parameters<a class="headerlink" href="#configuring-model-parameters" title="Permanent link">&para;</a></h3>
 <h4 id="returning-a-parameter-value">Returning a parameter value<a class="headerlink" href="#returning-a-parameter-value" title="Permanent link">&para;</a></h4>
+<p>A parameter value can be returned from the <code>GLMSim</code> object by calling 
+<code>get_param_value</code> and specifiying the NML name, block name, and 
+parameter name (see <code>get_nml_names</code>, <code>get_block_names</code>, and 
+<code>get_param_names</code>).</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
 </span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>
@@ -2285,6 +2320,8 @@
 <div class="language-text highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>0.57
 </span></code></pre></div>
 <h4 id="setting-a-parameter-value">Setting a parameter value<a class="headerlink" href="#setting-a-parameter-value" title="Permanent link">&para;</a></h4>
+<p>Set a parameter value by <code>set_param_value</code> and providing the NML name, 
+block name, parameter name, and parameter value.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a>
 </span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a>
@@ -2302,6 +2339,8 @@
 <div class="language-text highlight"><pre><span></span><code><span id="__span-20-1"><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>m above datum
 </span></code></pre></div>
 <h4 id="returning-parameter-names">Returning parameter names<a class="headerlink" href="#returning-parameter-names" title="Permanent link">&para;</a></h4>
+<p>Call <code>get_param_names</code> with a NML name and a block name to return a 
+list of all parameter names in that block.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-21-1"><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-21-2"><a id="__codelineno-21-2" name="__codelineno-21-2" href="#__codelineno-21-2"></a>
 </span><span id="__span-21-3"><a id="__codelineno-21-3" name="__codelineno-21-3" href="#__codelineno-21-3"></a>
@@ -2312,6 +2351,8 @@
 <div class="language-text highlight"><pre><span></span><code><span id="__span-22-1"><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>[&#39;sim_name&#39;, &#39;max_layers&#39;, &#39;min_layer_vol&#39;, &#39;min_layer_thick&#39;, &#39;max_layer_thick&#39;, &#39;density_model&#39;, &#39;non_avg&#39;]
 </span></code></pre></div>
 <h4 id="iterating-over-all-parameters">Iterating over all parameters<a class="headerlink" href="#iterating-over-all-parameters" title="Permanent link">&para;</a></h4>
+<p><code>iter_params</code> returns a generator for iterating though all <code>NMLParam</code> 
+objects.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-23-1"><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-23-2"><a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>
 </span><span id="__span-23-3"><a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a>
@@ -2321,6 +2362,8 @@
 </span><span id="__span-23-7"><a id="__codelineno-23-7" name="__codelineno-23-7" href="#__codelineno-23-7"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">nml_param</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">nml_param</span><span class="o">.</span><span class="n">units</span><span class="p">)</span>
 </span></code></pre></div>
 <h4 id="returning-block-names">Returning block names<a class="headerlink" href="#returning-block-names" title="Permanent link">&para;</a></h4>
+<p>The <code>get_block_names</code> method returns all the block names of a <code>NML</code> 
+subclass when provided it's name.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-24-1"><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-24-2"><a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>
 </span><span id="__span-24-3"><a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a>
@@ -2331,6 +2374,8 @@
 <div class="language-text highlight"><pre><span></span><code><span id="__span-25-1"><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>[&#39;glm_setup&#39;, &#39;time&#39;, &#39;morphometry&#39;, &#39;init_profiles&#39;, &#39;mixing&#39;, &#39;wq_setup&#39;, &#39;output&#39;, &#39;light&#39;, &#39;bird_model&#39;, &#39;sediment&#39;, &#39;snowice&#39;, &#39;meteorology&#39;, &#39;inflow&#39;, &#39;outflow&#39;]
 </span></code></pre></div>
 <h4 id="returning-a-nmlblock-object">Returning a <code>NMLBlock</code> object<a class="headerlink" href="#returning-a-nmlblock-object" title="Permanent link">&para;</a></h4>
+<p><code>get_block</code> returns an instance of a <code>NMLBlock</code> subclass when provided 
+with its name.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-26-1"><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-26-2"><a id="__codelineno-26-2" name="__codelineno-26-2" href="#__codelineno-26-2"></a>
 </span><span id="__span-26-3"><a id="__codelineno-26-3" name="__codelineno-26-3" href="#__codelineno-26-3"></a>
@@ -2338,6 +2383,8 @@
 </span><span id="__span-26-5"><a id="__codelineno-26-5" name="__codelineno-26-5" href="#__codelineno-26-5"></a><span class="n">setup_block</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_block</span><span class="p">(</span><span class="s1">&#39;glm&#39;</span><span class="p">,</span> <span class="s1">&#39;glm_setup&#39;</span><span class="p">)</span>
 </span></code></pre></div>
 <h4 id="setting-a-nmlblock-object">Setting a <code>NMLBlock</code> object<a class="headerlink" href="#setting-a-nmlblock-object" title="Permanent link">&para;</a></h4>
+<p>Call <code>set_block</code> with a NML name, block name, and <code>NMLBlock</code> object to 
+set, or override, a block.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-27-1"><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a><span class="kn">from</span> <span class="nn">glmpy.nml</span> <span class="kn">import</span> <span class="n">glm_nml</span> 
 </span><span id="__span-27-2"><a id="__codelineno-27-2" name="__codelineno-27-2" href="#__codelineno-27-2"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-27-3"><a id="__codelineno-27-3" name="__codelineno-27-3" href="#__codelineno-27-3"></a>
@@ -2354,6 +2401,7 @@
 </span><span id="__span-27-14"><a id="__codelineno-27-14" name="__codelineno-27-14" href="#__codelineno-27-14"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">set_block</span><span class="p">(</span><span class="s1">&#39;glm&#39;</span><span class="p">,</span> <span class="s1">&#39;glm_setup&#39;</span><span class="p">,</span> <span class="n">glm_setup</span><span class="p">)</span>
 </span></code></pre></div>
 <h4 id="returning-nml-names">Returning NML names<a class="headerlink" href="#returning-nml-names" title="Permanent link">&para;</a></h4>
+<p>Call <code>get_nml_names</code> to return a list of all <code>NML</code> names.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-28-1"><a id="__codelineno-28-1" name="__codelineno-28-1" href="#__codelineno-28-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-28-2"><a id="__codelineno-28-2" name="__codelineno-28-2" href="#__codelineno-28-2"></a>
 </span><span id="__span-28-3"><a id="__codelineno-28-3" name="__codelineno-28-3" href="#__codelineno-28-3"></a>
@@ -2364,6 +2412,7 @@
 <div class="language-text highlight"><pre><span></span><code><span id="__span-29-1"><a id="__codelineno-29-1" name="__codelineno-29-1" href="#__codelineno-29-1"></a>[&#39;glm&#39;, &#39;aed&#39;]
 </span></code></pre></div>
 <h4 id="returning-a-nml-object">Returning a <code>NML</code> object<a class="headerlink" href="#returning-a-nml-object" title="Permanent link">&para;</a></h4>
+<p>Return a <code>NML</code> object by calling <code>get_nml</code> with the NML name.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-30-1"><a id="__codelineno-30-1" name="__codelineno-30-1" href="#__codelineno-30-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-30-2"><a id="__codelineno-30-2" name="__codelineno-30-2" href="#__codelineno-30-2"></a>
 </span><span id="__span-30-3"><a id="__codelineno-30-3" name="__codelineno-30-3" href="#__codelineno-30-3"></a>
@@ -2371,6 +2420,8 @@
 </span><span id="__span-30-5"><a id="__codelineno-30-5" name="__codelineno-30-5" href="#__codelineno-30-5"></a><span class="n">aed_nml</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_nml</span><span class="p">(</span><span class="s1">&#39;aed&#39;</span><span class="p">)</span>
 </span></code></pre></div>
 <h4 id="setting-a-nml-object">Setting a <code>NML</code> object<a class="headerlink" href="#setting-a-nml-object" title="Permanent link">&para;</a></h4>
+<p>Set a <code>NML</code> object with <code>set_nml</code> by providing the NML name and the 
+object.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-31-1"><a id="__codelineno-31-1" name="__codelineno-31-1" href="#__codelineno-31-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-31-2"><a id="__codelineno-31-2" name="__codelineno-31-2" href="#__codelineno-31-2"></a><span class="kn">from</span> <span class="nn">glmpy.nml.aed_nml</span> <span class="kn">import</span> <span class="n">AEDNML</span>
 </span><span id="__span-31-3"><a id="__codelineno-31-3" name="__codelineno-31-3" href="#__codelineno-31-3"></a>
@@ -2380,7 +2431,16 @@
 </span><span id="__span-31-7"><a id="__codelineno-31-7" name="__codelineno-31-7" href="#__codelineno-31-7"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">set_nml</span><span class="p">(</span><span class="s1">&#39;aed&#39;</span><span class="p">,</span> <span class="n">aed_nml</span><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="configuring-boundary-condition-files">Configuring boundary condition files<a class="headerlink" href="#configuring-boundary-condition-files" title="Permanent link">&para;</a></h3>
+<p>Boundary conditions, such as inflow, outflow, and meteorological 
+data, are stored on the <code>GLMSim</code> object as Pandas DataFrames.
+Each dataframe is identified by a name that corresponds with the file 
+basename found in the relevant model parameter. 
+For example, if the <code>meteo_fl</code> parameter is set to <code>'bcs/met.csv'</code>, 
+then the name <code>'met'</code> would be used to identify the dataframe of that 
+file.</p>
 <h4 id="returning-boundary-condition-names">Returning boundary condition names<a class="headerlink" href="#returning-boundary-condition-names" title="Permanent link">&para;</a></h4>
+<p>To return all the names of boundary condition dataframes, call 
+<code>get_bcs_names</code>.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-32-1"><a id="__codelineno-32-1" name="__codelineno-32-1" href="#__codelineno-32-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-32-2"><a id="__codelineno-32-2" name="__codelineno-32-2" href="#__codelineno-32-2"></a>
 </span><span id="__span-32-3"><a id="__codelineno-32-3" name="__codelineno-32-3" href="#__codelineno-32-3"></a>
@@ -2391,6 +2451,8 @@
 <div class="language-text highlight"><pre><span></span><code><span id="__span-33-1"><a id="__codelineno-33-1" name="__codelineno-33-1" href="#__codelineno-33-1"></a>[&#39;inflow1&#39;, &#39;inflow2&#39;, &#39;inflow3&#39;, &#39;inflow4&#39;, &#39;inflow5&#39;, &#39;inflow6&#39;, &#39;met&#39;, &#39;outflow&#39;]
 </span></code></pre></div>
 <h4 id="returning-a-boundary-condition-dataframe">Returning a boundary condition dataframe<a class="headerlink" href="#returning-a-boundary-condition-dataframe" title="Permanent link">&para;</a></h4>
+<p>To return a <code>DataFrame</code>, call the <code>get_bc_pd</code> with the boundary 
+condition name.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-34-1"><a id="__codelineno-34-1" name="__codelineno-34-1" href="#__codelineno-34-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-34-2"><a id="__codelineno-34-2" name="__codelineno-34-2" href="#__codelineno-34-2"></a>
 </span><span id="__span-34-3"><a id="__codelineno-34-3" name="__codelineno-34-3" href="#__codelineno-34-3"></a>
@@ -2414,6 +2476,8 @@
 </span><span id="__span-35-14"><a id="__codelineno-35-14" name="__codelineno-35-14" href="#__codelineno-35-14"></a>[70176 rows x 8 columns]
 </span></code></pre></div>
 <h4 id="setting-a-boundary-condition-dataframe">Setting a boundary condition dataframe<a class="headerlink" href="#setting-a-boundary-condition-dataframe" title="Permanent link">&para;</a></h4>
+<p>Set/update a dataframe on the <code>GLMSim</code> object by calling <code>set_bc</code> with
+the boundary condition name and <code>DataFrame</code> object.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-36-1"><a id="__codelineno-36-1" name="__codelineno-36-1" href="#__codelineno-36-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-36-2"><a id="__codelineno-36-2" name="__codelineno-36-2" href="#__codelineno-36-2"></a>
 </span><span id="__span-36-3"><a id="__codelineno-36-3" name="__codelineno-36-3" href="#__codelineno-36-3"></a>
@@ -2423,7 +2487,13 @@
 </span><span id="__span-36-7"><a id="__codelineno-36-7" name="__codelineno-36-7" href="#__codelineno-36-7"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">set_bc</span><span class="p">(</span><span class="s1">&#39;met&#39;</span><span class="p">,</span> <span class="n">met_pd</span><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="configuring-aed-database-files">Configuring AED database files<a class="headerlink" href="#configuring-aed-database-files" title="Permanent link">&para;</a></h3>
+<p>Like boundary conditions, AED databases are stored on the <code>GLMSim</code> 
+object as Pandas <code>DataFrame</code> objects. The format of the database CSV 
+files will require you to use the <code>read_aed_dbase</code> and <code>read_aed_dbase</code> 
+functions to parse them.</p>
 <h4 id="read-an-aed-database">Read an AED database<a class="headerlink" href="#read-an-aed-database" title="Permanent link">&para;</a></h4>
+<p>To read an AED database and return a Pandas <code>DataFrame</code>, use the 
+<code>simulation</code> module's <code>read_aed_dbase</code> method.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-37-1"><a id="__codelineno-37-1" name="__codelineno-37-1" href="#__codelineno-37-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-37-2"><a id="__codelineno-37-2" name="__codelineno-37-2" href="#__codelineno-37-2"></a>
 </span><span id="__span-37-3"><a id="__codelineno-37-3" name="__codelineno-37-3" href="#__codelineno-37-3"></a>
@@ -2447,6 +2517,8 @@
 </span><span id="__span-38-15"><a id="__codelineno-38-15" name="__codelineno-38-15" href="#__codelineno-38-15"></a>[12 rows x 48 columns]
 </span></code></pre></div>
 <h4 id="write-an-aed-database">Write an AED database<a class="headerlink" href="#write-an-aed-database" title="Permanent link">&para;</a></h4>
+<p>To write Pandas <code>DataFrame</code> of an AED database, use the <code>simulation</code> 
+module's <code>write_aed_dbase</code> method.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-39-1"><a id="__codelineno-39-1" name="__codelineno-39-1" href="#__codelineno-39-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-39-2"><a id="__codelineno-39-2" name="__codelineno-39-2" href="#__codelineno-39-2"></a>
 </span><span id="__span-39-3"><a id="__codelineno-39-3" name="__codelineno-39-3" href="#__codelineno-39-3"></a>
@@ -2474,6 +2546,9 @@
 </span><span id="__span-41-6"><a id="__codelineno-41-6" name="__codelineno-41-6" href="#__codelineno-41-6"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">aed_dbase</span><span class="p">[</span><span class="s1">&#39;aed_phyto_pars&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phyto</span>
 </span></code></pre></div>
 <h3 id="validate-the-simulation-configuration">Validate the simulation configuration<a class="headerlink" href="#validate-the-simulation-configuration" title="Permanent link">&para;</a></h3>
+<p>Call the <code>validate</code> method to raise errors arising from a misconfigured 
+<code>GLMSim</code>. <code>validate</code> will call the respective <code>validate</code> methods of
+the <code>NML</code>, <code>NMLBlock</code>, and <code>NMLParam</code> objects.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-42-1"><a id="__codelineno-42-1" name="__codelineno-42-1" href="#__codelineno-42-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-42-2"><a id="__codelineno-42-2" name="__codelineno-42-2" href="#__codelineno-42-2"></a>
 </span><span id="__span-42-3"><a id="__codelineno-42-3" name="__codelineno-42-3" href="#__codelineno-42-3"></a>
@@ -2481,6 +2556,8 @@
 </span><span id="__span-42-5"><a id="__codelineno-42-5" name="__codelineno-42-5" href="#__codelineno-42-5"></a><span class="n">glm_sim</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
 </span></code></pre></div>
 <h3 id="return-a-memory-independent-copy-of-a-glmsim">Return a memory independent copy of a <code>GLMSim</code><a class="headerlink" href="#return-a-memory-independent-copy-of-a-glmsim" title="Permanent link">&para;</a></h3>
+<p><code>get_deepcopy</code> copies the entire <code>GLMSim</code> object in memory. 
+Use when creating multiple permutations of a <code>GLMSim</code> for <code>MultiSim</code>.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-43-1"><a id="__codelineno-43-1" name="__codelineno-43-1" href="#__codelineno-43-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-43-2"><a id="__codelineno-43-2" name="__codelineno-43-2" href="#__codelineno-43-2"></a>
 </span><span id="__span-43-3"><a id="__codelineno-43-3" name="__codelineno-43-3" href="#__codelineno-43-3"></a>
@@ -2488,8 +2565,14 @@
 </span><span id="__span-43-5"><a id="__codelineno-43-5" name="__codelineno-43-5" href="#__codelineno-43-5"></a><span class="n">glm_sim_copy</span> <span class="o">=</span> <span class="n">glm_sim</span><span class="o">.</span><span class="n">get_deepcopy</span><span class="p">()</span>
 </span></code></pre></div>
 <h2 id="retrieving-output-files-with-glmoutputs">Retrieving output files with <code>GLMOutputs</code><a class="headerlink" href="#retrieving-output-files-with-glmoutputs" title="Permanent link">&para;</a></h2>
+<p>The <code>GLMOutputs</code> class provides a simple way to retrieve GLM's output 
+files without interacting with the file system. Users should not need 
+to initialise an instance of <code>GLMOutputs</code> themselves—the <code>run</code> method 
+of <code>GLMSim</code> will return an instance for you.</p>
 <h3 id="csv-outputs">CSV outputs<a class="headerlink" href="#csv-outputs" title="Permanent link">&para;</a></h3>
 <h4 id="returning-csv-names">Returning CSV names<a class="headerlink" href="#returning-csv-names" title="Permanent link">&para;</a></h4>
+<p><code>get_csv_basenames</code> returns a list of all the CSV file basenames 
+generated by GLM.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-44-1"><a id="__codelineno-44-1" name="__codelineno-44-1" href="#__codelineno-44-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-44-2"><a id="__codelineno-44-2" name="__codelineno-44-2" href="#__codelineno-44-2"></a>
 </span><span id="__span-44-3"><a id="__codelineno-44-3" name="__codelineno-44-3" href="#__codelineno-44-3"></a>
@@ -2500,7 +2583,9 @@
 </span></code></pre></div>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-45-1"><a id="__codelineno-45-1" name="__codelineno-45-1" href="#__codelineno-45-1"></a>[&#39;WQ_17&#39;, &#39;lake&#39;, &#39;overflow&#39;]
 </span></code></pre></div>
-<h4 id="return-a-csv-path">Return a CSV path<a class="headerlink" href="#return-a-csv-path" title="Permanent link">&para;</a></h4>
+<h4 id="returning-a-csv-path">Returning a CSV path<a class="headerlink" href="#returning-a-csv-path" title="Permanent link">&para;</a></h4>
+<p>When provided with a CSV basename, <code>get_csv_path</code> returns the file's 
+path.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-46-1"><a id="__codelineno-46-1" name="__codelineno-46-1" href="#__codelineno-46-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-46-2"><a id="__codelineno-46-2" name="__codelineno-46-2" href="#__codelineno-46-2"></a>
 </span><span id="__span-46-3"><a id="__codelineno-46-3" name="__codelineno-46-3" href="#__codelineno-46-3"></a>
@@ -2511,7 +2596,9 @@
 </span></code></pre></div>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-47-1"><a id="__codelineno-47-1" name="__codelineno-47-1" href="#__codelineno-47-1"></a>./sparkling_lake/output/WQ_17.csv
 </span></code></pre></div>
-<h4 id="return-a-csv-dataframe">Return a CSV dataframe<a class="headerlink" href="#return-a-csv-dataframe" title="Permanent link">&para;</a></h4>
+<h4 id="returning-a-csv-dataframe">Returning a CSV dataframe<a class="headerlink" href="#returning-a-csv-dataframe" title="Permanent link">&para;</a></h4>
+<p>Call <code>get_csv_pd</code> with an output CSV basename to return a Pandas 
+<code>DataFrame</code> object of the file.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-48-1"><a id="__codelineno-48-1" name="__codelineno-48-1" href="#__codelineno-48-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-48-2"><a id="__codelineno-48-2" name="__codelineno-48-2" href="#__codelineno-48-2"></a>
 </span><span id="__span-48-3"><a id="__codelineno-48-3" name="__codelineno-48-3" href="#__codelineno-48-3"></a>
@@ -2536,7 +2623,8 @@
 </span><span id="__span-49-14"><a id="__codelineno-49-14" name="__codelineno-49-14" href="#__codelineno-49-14"></a>[730 rows x 3 columns]
 </span></code></pre></div>
 <h3 id="netcdf-output">NetCDF output<a class="headerlink" href="#netcdf-output" title="Permanent link">&para;</a></h3>
-<h4 id="return-the-netcdf-path">Return the NetCDF path<a class="headerlink" href="#return-the-netcdf-path" title="Permanent link">&para;</a></h4>
+<h4 id="returning-the-netcdf-path">Returning the NetCDF path<a class="headerlink" href="#returning-the-netcdf-path" title="Permanent link">&para;</a></h4>
+<p>Calling <code>get_netcdf_path</code> will return the output NetCDF file path.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-50-1"><a id="__codelineno-50-1" name="__codelineno-50-1" href="#__codelineno-50-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-50-2"><a id="__codelineno-50-2" name="__codelineno-50-2" href="#__codelineno-50-2"></a>
 </span><span id="__span-50-3"><a id="__codelineno-50-3" name="__codelineno-50-3" href="#__codelineno-50-3"></a>
@@ -2547,7 +2635,9 @@
 </span></code></pre></div>
 <div class="language-text highlight"><pre><span></span><code><span id="__span-51-1"><a id="__codelineno-51-1" name="__codelineno-51-1" href="#__codelineno-51-1"></a>./sparkling_lake/output/output.nc
 </span></code></pre></div>
-<h4 id="return-the-netcdf-as-a-netcdf4dataset-object">Return the NetCDF as a <code>netCDF4.Dataset</code> object<a class="headerlink" href="#return-the-netcdf-as-a-netcdf4dataset-object" title="Permanent link">&para;</a></h4>
+<h4 id="returning-the-netcdf-as-a-netcdf4dataset-object">Returning the NetCDF as a <code>netCDF4.Dataset</code> object<a class="headerlink" href="#returning-the-netcdf-as-a-netcdf4dataset-object" title="Permanent link">&para;</a></h4>
+<p><code>get_netcdf</code> reads and returns the output NetCDF file as a 
+<code>netCDF4.Dataset</code> object.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-52-1"><a id="__codelineno-52-1" name="__codelineno-52-1" href="#__codelineno-52-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-52-2"><a id="__codelineno-52-2" name="__codelineno-52-2" href="#__codelineno-52-2"></a>
 </span><span id="__span-52-3"><a id="__codelineno-52-3" name="__codelineno-52-3" href="#__codelineno-52-3"></a>
@@ -2559,7 +2649,15 @@
 <div class="language-text highlight"><pre><span></span><code><span id="__span-53-1"><a id="__codelineno-53-1" name="__codelineno-53-1" href="#__codelineno-53-1"></a>&lt;class &#39;netCDF4._netCDF4.Dataset&#39;&gt;
 </span></code></pre></div>
 <h2 id="running-parallel-simulations-with-multisim">Running parallel simulations with <code>MultiSim</code><a class="headerlink" href="#running-parallel-simulations-with-multisim" title="Permanent link">&para;</a></h2>
+<p>The <code>MultiSim</code> class lets you run multiple <code>GLMSim</code> objects across 
+separate CPU cores. 
+For optimal performance, use <code>MultiSim</code> when you have many permutations 
+of long or slow runing simulations.</p>
 <h3 id="initialising-multisim">Initialising <code>MultiSim</code><a class="headerlink" href="#initialising-multisim" title="Permanent link">&para;</a></h3>
+<p><code>MultiSim</code> requires a list of <code>GLMSim</code> objects that will each be run in 
+a separate process. 
+Each <code>GLMSim</code> object must be independent in memory.
+Use <code>get_deepcopy</code> to return a memory independent copy of a <code>GLMSim</code>.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-54-1"><a id="__codelineno-54-1" name="__codelineno-54-1" href="#__codelineno-54-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-54-2"><a id="__codelineno-54-2" name="__codelineno-54-2" href="#__codelineno-54-2"></a>
 </span><span id="__span-54-3"><a id="__codelineno-54-3" name="__codelineno-54-3" href="#__codelineno-54-3"></a>
@@ -2575,6 +2673,9 @@
 </span><span id="__span-54-13"><a id="__codelineno-54-13" name="__codelineno-54-13" href="#__codelineno-54-13"></a><span class="n">multi_sim</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">MultiSim</span><span class="p">(</span><span class="n">glm_sims</span><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="running-a-multisim">Running a <code>MultiSim</code><a class="headerlink" href="#running-a-multisim" title="Permanent link">&para;</a></h3>
+<p>The <code>run</code> method starts the simulations in separate processes. 
+By default, the number of concurrent processes is equal to the number 
+of CPU cores available.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-55-1"><a id="__codelineno-55-1" name="__codelineno-55-1" href="#__codelineno-55-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-55-2"><a id="__codelineno-55-2" name="__codelineno-55-2" href="#__codelineno-55-2"></a>
 </span><span id="__span-55-3"><a id="__codelineno-55-3" name="__codelineno-55-3" href="#__codelineno-55-3"></a>
@@ -2595,6 +2696,7 @@
 </span><span id="__span-55-18"><a id="__codelineno-55-18" name="__codelineno-55-18" href="#__codelineno-55-18"></a><span class="p">)</span>
 </span></code></pre></div>
 <h3 id="returning-the-number-of-cpu-cores">Returning the number of CPU cores<a class="headerlink" href="#returning-the-number-of-cpu-cores" title="Permanent link">&para;</a></h3>
+<p><code>cpu_count</code> returns the number of available CPU cores.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-56-1"><a id="__codelineno-56-1" name="__codelineno-56-1" href="#__codelineno-56-1"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
 </span><span id="__span-56-2"><a id="__codelineno-56-2" name="__codelineno-56-2" href="#__codelineno-56-2"></a>
 </span><span id="__span-56-3"><a id="__codelineno-56-3" name="__codelineno-56-3" href="#__codelineno-56-3"></a>
@@ -2604,6 +2706,11 @@
 <div class="language-text highlight"><pre><span></span><code><span id="__span-57-1"><a id="__codelineno-57-1" name="__codelineno-57-1" href="#__codelineno-57-1"></a>10
 </span></code></pre></div>
 <h3 id="defining-a-function-to-run-on-simulation-end">Defining a function to run on simulation end<a class="headerlink" href="#defining-a-function-to-run-on-simulation-end" title="Permanent link">&para;</a></h3>
+<p>The <code>on_sim_end</code> parameter allows you to pass a function to the <code>run</code> 
+method that will be called when each simulation completes. 
+<code>run</code> will return a list of the function outputs.
+Use <code>on_sim_end</code> if you wish to process your outputs before deleting 
+them (<code>rm_sim_dir</code>).</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-58-1"><a id="__codelineno-58-1" name="__codelineno-58-1" href="#__codelineno-58-1"></a><span class="kn">import</span> <span class="nn">random</span>
 </span><span id="__span-58-2"><a id="__codelineno-58-2" name="__codelineno-58-2" href="#__codelineno-58-2"></a>
 </span><span id="__span-58-3"><a id="__codelineno-58-3" name="__codelineno-58-3" href="#__codelineno-58-3"></a><span class="kn">from</span> <span class="nn">glmpy</span> <span class="kn">import</span> <span class="n">simulation</span> <span class="k">as</span> <span class="n">sim</span>
