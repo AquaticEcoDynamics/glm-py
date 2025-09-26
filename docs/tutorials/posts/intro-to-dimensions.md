@@ -28,8 +28,8 @@ volumes (`get_volumes()`).
 
 ### `InvertedTruncatedPyramid`
 
-![Graphical representation of the InvertedTruncatedPyramid](../img/InvertedTruncatedPyramid-light.png#only-light)
-![Graphical representation of the InvertedTruncatedPyramid](../img/InvertedTruncatedPyramid-dark.png#only-dark)
+![Graphical representation of the InvertedTruncatedPyramid](../../img/tutorials/intro-to-dimensions/InvertedTruncatedPyramid-light.png#only-light)
+![Graphical representation of the InvertedTruncatedPyramid](../../img/tutorials/intro-to-dimensions/InvertedTruncatedPyramid-dark.png#only-dark)
 
 `InvertedTruncatedPyramid` is initialised with the waterbody's surface length, 
 surface width, depth, and slide slope. The base length and base width are 
@@ -53,8 +53,8 @@ wb = dimensions.InvertedTruncatedPyramid(
 
 ### `InvertedTruncatedCone`
 
-![Graphical representation of the InvertedTruncatedCone](../img/InvertedTruncatedCone-light.png#only-light)
-![Graphical representation of the InvertedTruncatedCone](../img/InvertedTruncatedCone-dark.png#only-dark)
+![Graphical representation of the InvertedTruncatedCone](../../img/tutorials/intro-to-dimensions/InvertedTruncatedCone-light.png#only-light)
+![Graphical representation of the InvertedTruncatedCone](../../img/tutorials/intro-to-dimensions/InvertedTruncatedCone-dark.png#only-dark)
 
 `InvertedTruncatedCone` is initialised with the waterbody's surface radius, 
 height, and side slope. Like `InvertedTruncatedPyramid`, `num_vals` must be 

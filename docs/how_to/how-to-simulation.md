@@ -5,6 +5,14 @@
 ### Initialising `GLMSim`
 
 #### Using the `__init__` constructor
+ 
+Create a new simulation from scratch by initialising `GLMSim` with a 
+simulation name (used for the directory name). You can provide 
+pre-configured `GLMNML` and `AEDNML` objects or let `GLMSim` create 
+unconfigured instances for you (then use the various 
+parameter setter methods). Optionally, add boundary conditions (`bcs`) 
+and AED databases (`aed_dbase`) as dictionaries mapping file basenames 
+to Pandas DataFrames. Use `read_aed_dbase` to load AED database CSVs.
 
 ```python
 import pandas as pd
@@ -40,6 +48,10 @@ glm_sim = sim.GLMSim(
 
 #### Using the `from_file` constructor 
 
+Load a pre-configured `GLMSim` using the `from_file` constructor.
+`from_file` reads `.glmpy` files which store the entire model 
+configuration, including boundary condition data and AED databases.
+
 ```python 
 from glmpy import simulation as sim
 
@@ -49,12 +61,17 @@ glm_sim = sim.GLMSim.from_file('falling_creek_reservoir.glmpy')
 
 #### Using the `from_example_sim` constructor
 
+Load a pre-configured simulation included in the glm-py package with 
+the `from_example_sim` constructor.
+
 ```python
 from glmpy import simulation as sim
 
 
 glm_sim = sim.GLMSim.from_example_sim('falling_creek_reservoir')
 ```
+
+Valid simulation names can be returned using `get_example_sim_names`:
 
 ```python
 from glmpy import simulation as sim
@@ -71,6 +88,11 @@ print(sim.GLMSim.get_example_sim_names())
 
 #### Using the included GLM binary
 
+Call the `run` method to run the current model configuration with GLM.
+GLM's terminal output can be suppressed (`quiet=True`) and instead 
+saved to a `.log` file (`write_log=True`). Use `time_sim` to print the 
+total runtime. 
+
 ```python
 from glmpy import simulation as sim
 
@@ -81,6 +103,9 @@ glm_sim.run(write_log=True, quiet=True, time_sim=True)
 ```
 
 #### Using your own binary
+
+To run the `GLMSim` with your own GLM binary, use the `glm_path` 
+parameter.
 
 ```python
 from glmpy import simulation as sim
@@ -98,6 +123,9 @@ glm_sim.run(
 
 #### Returning an instance of `GLMOutputs`
 
+`run` returns an instancs of `GLMOutputs` that can be stored and used 
+to retrieve output files.
+
 ```python
 from glmpy import simulation as sim
 
@@ -109,6 +137,9 @@ outputs = glm_sim.run()
 ### Managing the simulation directory
 
 #### Returning the simulation directory path
+
+Determine where your similation directory is, or where it will be 
+created, with `get_sim_dir`.
 
 ```python
 glm_sim = sim.GLMSim.from_example_sim('sparkling_lake')
@@ -122,6 +153,9 @@ print(sim_dir)
 
 #### Deleting the simulation directory
 
+Call to `rm_sim_dir` to recursively delete all files and 
+sub-directories within the simulation directory. 
+
 ```python
 from glmpy import simulation as sim
 
@@ -133,6 +167,8 @@ glm_sim.rm_sim_dir()
 
 #### Changing the simulation name
 
+Set a new simulation name by updating the `sim_name` attribute. 
+
 ```python
 from glmpy import simulation as sim
 
@@ -142,6 +178,8 @@ glm_sim.sim_name = "scenario_2"
 ```
 
 #### Saving the simulation to file
+
+A `GLMSim`'s configuration can be saved a `.glmpy` file with `to_file`.
 
 ```python 
 from glmpy import simulation as sim
@@ -154,7 +192,12 @@ glm_sim.to_file('warm_lake_v2.glmpy')
 
 #### Checking the preparation of input files
 
-Prepare just the NML files:
+When the `run` method is called, `GLMSim` will create the simulation 
+directory and write the input files to it. You can prepare the 
+simulation directory, without running GLM, by calling the following 
+methods.
+
+Preparing just the NML files:
 
 ```python
 from glmpy import simulation as sim
@@ -164,7 +207,7 @@ glm_sim = sim.GLMSim.from_example_sim('warm_lake')
 glm_sim.prepare_nml()
 ```
 
-Prepare the boundary condition and database files:
+Preparing the boundary condition and database files:
 
 ```python 
 from glmpy import simulation as sim
@@ -174,7 +217,7 @@ glm_sim = sim.GLMSim.from_example_sim('warm_lake')
 glm_sim.prepare_bcs_and_dbase()
 ```
 
-Prepare all input files:
+Preparing all input files:
 
 ```python
 from glmpy import simulation as sim
@@ -187,6 +230,11 @@ glm_sim.prepare_all_inputs()
 ### Configuring model parameters
 
 #### Returning a parameter value
+
+A parameter value can be returned from the `GLMSim` object by calling 
+`get_param_value` and specifiying the NML name, block name, and 
+parameter name (see `get_nml_names`, `get_block_names`, and 
+`get_param_names`).
 
 ```python
 from glmpy import simulation as sim
@@ -202,6 +250,9 @@ print(value)
 ```
 
 #### Setting a parameter value
+
+Set a parameter value by `set_param_value` and providing the NML name, 
+block name, parameter name, and parameter value.
 
 ```python
 from glmpy import simulation as sim
@@ -228,6 +279,9 @@ m above datum
 
 #### Returning parameter names
 
+Call `get_param_names` with a NML name and a block name to return a 
+list of all parameter names in that block.
+
 ```python
 from glmpy import simulation as sim
 
@@ -243,6 +297,9 @@ print(names)
 
 #### Iterating over all parameters
 
+`iter_params` returns a generator for iterating though all `NMLParam` 
+objects.
+
 ```python
 from glmpy import simulation as sim
 
@@ -254,6 +311,9 @@ for nml_param in glm_sim.iter_params():
 ```
 
 #### Returning block names
+
+The `get_block_names` method returns all the block names of a `NML` 
+subclass when provided it's name.
 
 ```python
 from glmpy import simulation as sim
@@ -270,6 +330,9 @@ print(names)
 
 #### Returning a `NMLBlock` object
 
+`get_block` returns an instance of a `NMLBlock` subclass when provided 
+with its name.
+
 ```python
 from glmpy import simulation as sim
 
@@ -279,6 +342,9 @@ setup_block = glm_sim.get_block('glm', 'glm_setup')
 ```
 
 #### Setting a `NMLBlock` object
+
+Call `set_block` with a NML name, block name, and `NMLBlock` object to 
+set, or override, a block.
 
 ```python
 from glmpy.nml import glm_nml 
@@ -299,6 +365,8 @@ glm_sim.set_block('glm', 'glm_setup', glm_setup)
 
 #### Returning NML names
 
+Call `get_nml_names` to return a list of all `NML` names.
+
 ```python
 from glmpy import simulation as sim
 
@@ -314,6 +382,8 @@ print(names)
 
 #### Returning a `NML` object
 
+Return a `NML` object by calling `get_nml` with the NML name.
+
 ```python
 from glmpy import simulation as sim
 
@@ -323,6 +393,9 @@ aed_nml = glm_sim.get_nml('aed')
 ```
 
 #### Setting a `NML` object
+
+Set a `NML` object with `set_nml` by providing the NML name and the 
+object.
 
 ```python
 from glmpy import simulation as sim
@@ -336,7 +409,18 @@ glm_sim.set_nml('aed', aed_nml)
 
 ### Configuring boundary condition files
 
+Boundary conditions, such as inflow, outflow, and meteorological 
+data, are stored on the `GLMSim` object as Pandas DataFrames.
+Each dataframe is identified by a name that corresponds with the file 
+basename found in the relevant model parameter. 
+For example, if the `meteo_fl` parameter is set to `'bcs/met.csv'`, 
+then the name `'met'` would be used to identify the dataframe of that 
+file.
+
 #### Returning boundary condition names
+
+To return all the names of boundary condition dataframes, call 
+`get_bcs_names`.
 
 ```python
 from glmpy import simulation as sim
@@ -352,6 +436,9 @@ print(names)
 ```
 
 #### Returning a boundary condition dataframe
+
+To return a `DataFrame`, call the `get_bc_pd` with the boundary 
+condition name.
 
 ```python
 from glmpy import simulation as sim
@@ -381,6 +468,9 @@ print(met_pd)
 
 #### Setting a boundary condition dataframe
 
+Set/update a dataframe on the `GLMSim` object by calling `set_bc` with
+the boundary condition name and `DataFrame` object.
+
 ```python
 from glmpy import simulation as sim
 
@@ -393,7 +483,15 @@ glm_sim.set_bc('met', met_pd)
 
 ### Configuring AED database files
 
+Like boundary conditions, AED databases are stored on the `GLMSim` 
+object as Pandas `DataFrame` objects. The format of the database CSV 
+files will require you to use the `read_aed_dbase` and `read_aed_dbase` 
+functions to parse them.
+
 #### Read an AED database
+
+To read an AED database and return a Pandas `DataFrame`, use the 
+`simulation` module's `read_aed_dbase` method.
 
 ```python
 from glmpy import simulation as sim
@@ -422,6 +520,9 @@ print(phyto)
 ```
 
 #### Write an AED database
+
+To write Pandas `DataFrame` of an AED database, use the `simulation` 
+module's `write_aed_dbase` method.
 
 ```python
 from glmpy import simulation as sim
@@ -458,6 +559,10 @@ glm_sim.aed_dbase['aed_phyto_pars'] = phyto
 
 ### Validate the simulation configuration
 
+Call the `validate` method to raise errors arising from a misconfigured 
+`GLMSim`. `validate` will call the respective `validate` methods of
+the `NML`, `NMLBlock`, and `NMLParam` objects.
+
 ```python
 from glmpy import simulation as sim
 
@@ -467,6 +572,9 @@ glm_sim.validate()
 ```
 
 ### Return a memory independent copy of a `GLMSim`
+
+`get_deepcopy` copies the entire `GLMSim` object in memory. 
+Use when creating multiple permutations of a `GLMSim` for `MultiSim`.
 
 ```python
 from glmpy import simulation as sim
@@ -478,9 +586,17 @@ glm_sim_copy = glm_sim.get_deepcopy()
 
 ## Retrieving output files with `GLMOutputs`
 
+The `GLMOutputs` class provides a simple way to retrieve GLM's output 
+files without interacting with the file system. Users should not need 
+to initialise an instance of `GLMOutputs` themselves—the `run` method 
+of `GLMSim` will return an instance for you.
+
 ### CSV outputs
 
 #### Returning CSV names
+
+`get_csv_basenames` returns a list of all the CSV file basenames 
+generated by GLM.
 
 ```python
 from glmpy import simulation as sim
@@ -496,7 +612,10 @@ print(csv_basenames)
 ['WQ_17', 'lake', 'overflow']
 ```
 
-#### Return a CSV path
+#### Returning a CSV path
+
+When provided with a CSV basename, `get_csv_path` returns the file's 
+path.
 
 ```python
 from glmpy import simulation as sim
@@ -512,7 +631,10 @@ print(wq_path)
 ./sparkling_lake/output/WQ_17.csv
 ```
 
-#### Return a CSV dataframe
+#### Returning a CSV dataframe
+
+Call `get_csv_pd` with an output CSV basename to return a Pandas 
+`DataFrame` object of the file.
 
 ```python
 from glmpy import simulation as sim
@@ -543,7 +665,9 @@ print(wq_pd)
 
 ### NetCDF output
 
-#### Return the NetCDF path
+#### Returning the NetCDF path
+
+Calling `get_netcdf_path` will return the output NetCDF file path.
 
 ```python
 from glmpy import simulation as sim
@@ -559,7 +683,10 @@ print(nc_path)
 ./sparkling_lake/output/output.nc
 ```
 
-#### Return the NetCDF as a `netCDF4.Dataset` object
+#### Returning the NetCDF as a `netCDF4.Dataset` object
+
+`get_netcdf` reads and returns the output NetCDF file as a 
+`netCDF4.Dataset` object.
 
 ```python
 from glmpy import simulation as sim
@@ -577,7 +704,17 @@ print(type(nc))
 
 ## Running parallel simulations with `MultiSim`
 
+The `MultiSim` class lets you run multiple `GLMSim` objects across 
+separate CPU cores. 
+For optimal performance, use `MultiSim` when you have many permutations 
+of long or slow runing simulations.
+
 ### Initialising `MultiSim`
+
+`MultiSim` requires a list of `GLMSim` objects that will each be run in 
+a separate process. 
+Each `GLMSim` object must be independent in memory.
+Use `get_deepcopy` to return a memory independent copy of a `GLMSim`.
 
 ```python
 from glmpy import simulation as sim
@@ -596,6 +733,10 @@ multi_sim = sim.MultiSim(glm_sims)
 ```
 
 ### Running a `MultiSim`
+
+The `run` method starts the simulations in separate processes. 
+By default, the number of concurrent processes is equal to the number 
+of CPU cores available.
 
 ```python
 from glmpy import simulation as sim
@@ -620,6 +761,8 @@ multi_sim.run(
 
 ### Returning the number of CPU cores
 
+`cpu_count` returns the number of available CPU cores.
+
 ```python
 from glmpy import simulation as sim
 
@@ -633,6 +776,12 @@ print(num_core)
 ```
 
 ### Defining a function to run on simulation end
+
+The `on_sim_end` parameter allows you to pass a function to the `run` 
+method that will be called when each simulation completes. 
+`run` will return a list of the function outputs.
+Use `on_sim_end` if you wish to process your outputs before deleting 
+them (`rm_sim_dir`).
 
 ```python
 import random
