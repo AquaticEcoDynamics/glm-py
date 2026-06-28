@@ -1,3 +1,4 @@
+from collections import OrderedDict
 import io
 import os
 import csv
@@ -15,9 +16,7 @@ from typing import Any, Callable, Dict, List, Union
 import pandas as pd
 import netCDF4
 
-from glmpy.nml.aed_nml import AEDNML
-from glmpy.nml.glm_nml import GLMNML
-from glmpy.nml.nml import NML, NMLBlock, NMLDict
+from glmpy.nml.nml import NMLWriter
 
 GLM_VERSION = "3.3.3"
 
@@ -57,8 +56,8 @@ def run_glm(
     Parameters
     ----------
     sim_dir_path : str
-        Path to the simulation directory that contains the `glm3.nml` 
-        file. 
+        Path to the simulation directory that contains the `glm3.nml`
+        file.
     sim_name : str
         Name of the simulation.
     write_log : bool
@@ -194,8 +193,8 @@ class GLMSim:
     def __init__(
         self,
         sim_name: str,
-        glm_nml: GLMNML = GLMNML(),
-        aed_nml: AEDNML = AEDNML(),
+        glm_nml: OrderedDict = OrderedDict(),
+        aed_nml: OrderedDict = OrderedDict(),
         bcs: Dict[str, pd.DataFrame] = {},
         aed_dbase: Dict[str, pd.DataFrame] = {},
         sim_dir_path: str = ".",
@@ -206,10 +205,10 @@ class GLMSim:
         sim_name : str
             The simulation name. Updates the `sim_name` parameter of
             the `glm_setup` block.
-        glm_nml : GLMNML
-            The `GLMNML` object of GLM model parameters.
-        aed_nml : AEDNML
-            The `aed_nml` object of AED model parameters.
+        glm_nml : OrderedDict
+            An ordered dictionary of the GLM model parameters.
+        aed_nml : OrderedDict
+            An ordered dictionary of the AED model parameters.
         bcs : Dict[str, pd.DataFrame]
             Dictionary of boundary condition dataframes. The keys are
             the basename (without extension) of the boundary condition
@@ -225,9 +224,11 @@ class GLMSim:
             Path to where the simulation directory should be created.
             Default is the current working directory.
         """
-        self.nml: NMLDict[str, NML] = NMLDict()
-        self.nml[glm_nml.nml_name] = glm_nml
-        self.nml[aed_nml.nml_name] = aed_nml
+        self.nml: OrderedDict = OrderedDict()
+        self.nml['glm'] = glm_nml
+        self.nml['aed'] = aed_nml
+        self.bcs_fl_vars = ['meteo_fl', 'inflow_fl', 'outflow_fl']
+        self.dbase_fl_vars = ['dbase']
 
         self.sim_name = sim_name
 
@@ -286,8 +287,8 @@ class GLMSim:
             )
         with zipfile.ZipFile(glmpy_path, "r") as zipf:
             sim_json = json.loads(zipf.read("glm_sim.json").decode("utf-8"))
-            glm_nml = GLMNML.from_dict(sim_json["nml"]["glm"])
-            aed_nml = AEDNML.from_dict(sim_json["nml"]["aed"])
+            glm_nml = OrderedDict(**sim_json["nml"]["glm"])
+            aed_nml = OrderedDict(**sim_json["nml"]["aed"])
             bcs = {}
             for fname in sim_json["bcs"]:
                 bc_pd = pd.read_csv(zipf.open(fname + ".csv"))
@@ -327,10 +328,7 @@ class GLMSim:
             "sim_dir_path": self.sim_dir_path,
             "bcs": list(self.bcs.keys()),
             "aed_dbase": list(self.aed_dbase.keys()),
-            "nml": {
-                "glm": self.nml["glm"].to_dict(),
-                "aed": self.nml["aed"].to_dict(),
-            },
+            "nml": self.nml,
         }
         with zipfile.ZipFile(glmpy_path, "w") as zipf:
             zipf.writestr("glm_sim.json", json.dumps(sim_json, indent=2))
@@ -350,11 +348,10 @@ class GLMSim:
         Writes the boundary condition and datase files to the simulation
         directory. Creates the directory if it doesn't already exist.
         """
-        for nml_param in self.iter_params():
-            name = nml_param.name
-            is_dbase_fl = nml_param.is_dbase_fl
-            is_bcs_fl = nml_param.is_bcs_fl
-            fl_paths = nml_param.value
+        for _, _, param_name, param_value in self.iter_params():
+            is_bcs_fl = True if param_name in self.bcs_fl_vars else False
+            is_dbase_fl = True if param_name in self.dbase_fl_vars else False
+            fl_paths = param_value
 
             if not (is_bcs_fl or is_dbase_fl) or fl_paths is None:
                 continue
@@ -371,7 +368,7 @@ class GLMSim:
                 if is_bcs_fl:
                     if fl not in self.bcs.keys():
                         raise KeyError(
-                            f"The boundary condition file parameter {name} is "
+                            f"The boundary condition file parameter {param_name} is "
                             f"currently set to {fl_paths}. {fl} was not found "
                             "found in the keys of the bcs dictionary "
                             "attribute."
@@ -381,7 +378,7 @@ class GLMSim:
                 if is_dbase_fl:
                     if fl not in self.aed_dbase.keys():
                         raise KeyError(
-                            f"The AED dbase parameter {name} is currently set "
+                            f"The AED dbase parameter {param_name} is currently set "
                             f"to {fl_paths}. {fl} was not found in the keys "
                             "of the aed_dbase dictionary attribute."
                         )
@@ -395,26 +392,27 @@ class GLMSim:
         Writes the NML files to the simulation directory. Creates the
         directory if it doesn't already exist.
         """
-        for nml_obj in self.nml.values():
-            if nml_obj.is_none_nml():
+        for nml_name, nml_dict in self.nml.items():
+            if not bool(nml_dict):
                 continue
-            nml_name = nml_obj.nml_name
             if nml_name == "glm":
                 output_path = os.path.join(self.get_sim_dir(), "glm3.nml")
                 os.makedirs(os.path.dirname(output_path), exist_ok=True)
-                self.nml[nml_name].to_nml(output_path)
+                nml_writer = NMLWriter(nml_dict)
+                nml_writer.to_nml(output_path)
             elif nml_name == "aed":
                 wq_nml_file = self.get_param_value(
                     "glm", "wq_setup", "wq_nml_file"
                 )
                 if wq_nml_file is not None:
-                    path = os.path.join(self.get_sim_dir(), wq_nml_file)
-                    os.makedirs(os.path.dirname(path), exist_ok=True)
-                    self.nml[nml_name].to_nml(path)
+                    output_path = os.path.join(self.get_sim_dir(), wq_nml_file)
+                    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                    nml_writer = NMLWriter(nml_dict)
+                    nml_writer.to_nml(output_path)
             else:
-                self.nml[nml_name].to_nml(
-                    os.path.join(self.get_sim_dir(), f"{nml_name}.nml")
-                )
+                output_path = os.path.join(self.get_sim_dir(), f"{nml_name}.nml")
+                nml_writer = NMLWriter(nml_dict)
+                nml_writer.to_nml(output_path)
 
     def prepare_all_inputs(self):
         """
@@ -491,9 +489,16 @@ class GLMSim:
         self.set_param_value("glm", "glm_setup", "sim_name", self.sim_name)
 
     def iter_params(self):
-        """Iterate over all `NMLParam` objects."""
-        for nml in self.nml.values():
-            yield from nml.iter_params()
+        """
+        Iterate over all NML parameters.
+
+        Yields a tuple containing (nml_name, block_name, param_name, param_value)
+        """
+        for nml_name, nml_dict in self.nml.items():
+            for block_name, block_dict in nml_dict.items():
+                for param_name, param_value in block_dict.items():
+                    yield nml_name, block_name, param_name, param_value
+
 
     def set_param_value(
         self, nml_name: str, block_name: str, param_name: str, value: Any
@@ -514,7 +519,7 @@ class GLMSim:
         value : Any
             The parameter value to set.
         """
-        self.nml[nml_name].set_param_value(block_name, param_name, value)
+        self.nml[nml_name][block_name][param_name] = value
 
     def get_param_value(
         self, nml_name: str, block_name: str, param_name: str
@@ -533,29 +538,9 @@ class GLMSim:
         param_name : str
             The name of the parameter to return the value for.
         """
-        value = self.nml[nml_name].get_param_value(block_name, param_name)
-        return value
+        return self.nml[nml_name][block_name][param_name]
 
-    def get_param_units(
-        self, nml_name: str, block_name: str, param_name: str
-    ) -> Union[str, None]:
-        """
-        Get a parameter's units.
-
-        Returns the `units` attribute of a `NMLParam` instance.
-
-        Parameters
-        ----------
-        nml_name : str
-            The NML name.
-        block_name : str
-            The block name.
-        param_name : str
-            The name of the parameter to return the value for.
-        """
-        return self.nml[nml_name].get_param_units(block_name, param_name)
-
-    def set_block(self, nml_name: str, block_name: str, block: NMLBlock):
+    def set_block(self, nml_name: str, block_name: str, block_dict: OrderedDict):
         """
         Set a NML Block.
 
@@ -567,12 +552,12 @@ class GLMSim:
             The NML name.
         block_name : str
             The block name.
-        block : NMLBlock
+        block_dict : OrderedDict
             The block to set.
         """
-        self.nml[nml_name].set_block(block_name, block)
+        self.nml[nml_name][block_name] = block_dict
 
-    def get_block(self, nml_name: str, block_name: str) -> NMLBlock:
+    def get_block(self, nml_name: str, block_name: str) -> OrderedDict:
         """
         Get a NML Block.
 
@@ -587,7 +572,7 @@ class GLMSim:
         """
         return self.nml[nml_name].blocks[block_name]
 
-    def set_nml(self, nml_name: str, nml: NML):
+    def set_nml(self, nml_name: str, nml_dict: OrderedDict):
         """
         Set NML.
 
@@ -597,12 +582,12 @@ class GLMSim:
         ----------
         nml_name : str
             The NML name.
-        nml : NML
+        nml_dict : OrderedDict
             The NML to set.
         """
-        self.nml[nml_name] = nml
+        self.nml[nml_name] = nml_dict
 
-    def get_nml(self, nml_name: str) -> NML:
+    def get_nml(self, nml_name: str) -> OrderedDict:
         """
         Get a NML.
 
@@ -629,7 +614,7 @@ class GLMSim:
         block_name : str
             The block name.
         """
-        return self.nml[nml_name].get_param_names(block_name)
+        return self.nml[nml_name][block_name].keys()
 
     def get_block_names(self, nml_name: str) -> List[str]:
         """
@@ -643,7 +628,7 @@ class GLMSim:
         nml_name : str
             The NML name.
         """
-        return self.nml[nml_name].get_block_names()
+        return self.nml[nml_name].keys()
 
     def get_nml_names(self) -> List[str]:
         """
@@ -693,7 +678,7 @@ class GLMSim:
         """
         Validate the simulation inputs.
         """
-        self.nml.validate()
+        pass
 
     def get_deepcopy(self) -> "GLMSim":
         """
@@ -742,12 +727,12 @@ class GLMOutputs:
         sim_dir_path : str
             Path to the simulation directory.
         out_dir : str
-            Directory name containing the GLM output files. Set this to 
-            equal the `out_dir` parameter in the `output` block of the 
+            Directory name containing the GLM output files. Set this to
+            equal the `out_dir` parameter in the `output` block of the
             `glm` NML.
         out_fn : str
-            Filename of the main NetCDF output file. Set this to equal 
-            the `out_dir` parameter in the `output` block of the `glm` 
+            Filename of the main NetCDF output file. Set this to equal
+            the `out_dir` parameter in the `output` block of the `glm`
             NML.
         sim_name : str
             Name of the simulation.

@@ -3,7 +3,7 @@ import json
 from abc import ABC, abstractmethod
 from collections import OrderedDict
 from datetime import datetime
-from typing import (Any, Callable, Generic, List, Protocol, Type, TypeVar, 
+from typing import (Any, Callable, Generic, List, Protocol, Type, TypeVar,
                     Union)
 
 import f90nml
@@ -915,7 +915,7 @@ class NMLReader:
             )
         self._nml_path = value
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> OrderedDict:
         """
         Return a dictionary of the NML file.
         """
@@ -926,7 +926,7 @@ class NMLReader:
             with open(self.nml_path) as file:
                 nml = f90nml.read(file)
                 nml = nml.todict()
-        return nml
+        return OrderedDict(nml)
 
     def to_nml_obj(self, nml_cls: Type[T_NML]) -> T_NML:
         """
