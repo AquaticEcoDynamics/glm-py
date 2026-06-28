@@ -55,13 +55,13 @@ jobs:
       - name: Compile GLM for aarch64
         run: |
           docker run --platform linux/arm64/v8 --rm -v $(pwd)/glm:/glm quay.io/pypa/manylinux2014_aarch64 /bin/bash -c "\
-            git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git && \
+            git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git /glm-aed && \
             yum update -y && \
             yum install epel-release -y && \
             yum install -y netcdf-devel gd gd-devel gcc-gfortran && \
-            cd glm-aed/glm-source/GLM && \
+            cd /glm-aed/glm-source/GLM && \
             git switch v4alpha && \
-            cd glm-aed/glm-source/ && \ 
+            cd /glm-aed/glm-source/ && \ 
             mkdir binaries && \
             ./build_glm.sh && \
             cp /glm-aed/glm-source/binaries/glm_latest/glm /glm/ && \
@@ -96,13 +96,13 @@ jobs:
       - name: Compile GLM for x86_64
         run: |
           docker run --rm -v $(pwd)/glm:/glm quay.io/pypa/manylinux2014_x86_64 /bin/bash -c "\
-              git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git && \
+              git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git /glm-aed && \
               yum install epel-release -y && \
               yum update -y && \
               yum install -y netcdf netcdf-devel gd gd-devel gcc-gfortran libjpeg-turbo hdf5 hdf5-devel libaec libaec-devel libXpm glibc libpng-1.5.13-8.el7.i686 && \
-              cd glm-aed/glm-source/GLM && \
+              cd /glm-aed/glm-source/GLM && \
               git switch v4alpha && \
-              cd glm-aed/glm-source/ && \
+              cd /glm-aed/glm-source/ && \
               mkdir binaries && \
               ./build_glm.sh
               cp /glm-aed/glm-source/binaries/glm_latest/glm /glm/ && \
@@ -141,21 +141,21 @@ jobs:
           brew install gd
           brew install pipx
           pipx ensurepath
-          git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git
+          git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git /glm-aed
       
       - name: Compile GLM for ARM64
         env:
           CPATH: /opt/homebrew/include:$CPATH
           LIBRARY_PATH: /opt/homebrew/lib:$LIBRARY_PATH
         run: |
-          cd $GITHUB_WORKSPACE/glm-aed/glm-source/GLM
+          cd /glm-aed/glm-source/GLM
           git switch v4alpha
-          cd glm-aed/glm-source/
+          cd /glm-aed/glm-source/
           ./build_glm.sh
           MOSDIR=`grep 'SOFTWARE LICENSE AGREEMENT FOR ' '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | awk -F 'macOS ' '{print $NF}' | tr -d '\\' | tr ' ' '_'`
           cd $GITHUB_WORKSPACE
           mkdir $GITHUB_WORKSPACE/glmpy/bin/
-          cp $GITHUB_WORKSPACE/glm-aed/glm-source/binaries/macos/${MOSDIR}/glm_latest/glm $GITHUB_WORKSPACE/glmpy/bin/
+          cp /glm-aed/glm-source/binaries/macos/${MOSDIR}/glm_latest/glm $GITHUB_WORKSPACE/glmpy/bin/
             
       - name: Build wheels for ARM64
         uses: pypa/cibuildwheel@v2.16.2
