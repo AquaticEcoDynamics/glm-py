@@ -63,6 +63,7 @@ jobs:
             git switch v4alpha && \
             cd /glm-aed/glm-source/ && \ 
             mkdir binaries && \
+            mkdir binaries/glm_latest && \
             ./build_glm.sh && \
             cp /glm-aed/glm-source/binaries/glm_latest/glm /glm/ && \
             cp /usr/lib64/{libgd.so.2,libjpeg.so.62,libnetcdf.so.7,libhdf5.so.8,libhdf5_hl.so.8,libsz.so.2,libaec.so.0,libXpm.so.4,libdl.so.2,libc.so.6,libm.so.6,libpng15.so.15} /glm/"
@@ -104,6 +105,7 @@ jobs:
               git switch v4alpha && \
               cd /glm-aed/glm-source/ && \
               mkdir binaries && \
+              mkdir binaries/glm_latest && \
               ./build_glm.sh
               cp /glm-aed/glm-source/binaries/glm_latest/glm /glm/ && \
               cp /usr/lib64/{libgd.so.2,libjpeg.so.62,libnetcdf.so.7,libhdf5.so.8,libhdf5_hl.so.8,libsz.so.2,libaec.so.0,libXpm.so.4,libdl.so.2,libc.so.6,libm.so.6,libpng15.so.15} /glm/"
@@ -141,21 +143,21 @@ jobs:
           brew install gd
           brew install pipx
           pipx ensurepath
-          git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git /glm-aed
+          git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git "$GITHUB_WORKSPACE/glm-aed"
       
       - name: Compile GLM for ARM64
         env:
           CPATH: /opt/homebrew/include:$CPATH
           LIBRARY_PATH: /opt/homebrew/lib:$LIBRARY_PATH
         run: |
-          cd /glm-aed/glm-source/GLM
+          cd $GITHUB_WORKSPACE/glm-aed/glm-source/GLM
           git switch v4alpha
-          cd /glm-aed/glm-source/
+          cd $GITHUB_WORKSPACE/glm-aed/glm-source/
           ./build_glm.sh
           MOSDIR=`grep 'SOFTWARE LICENSE AGREEMENT FOR ' '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | awk -F 'macOS ' '{print $NF}' | tr -d '\\' | tr ' ' '_'`
           cd $GITHUB_WORKSPACE
           mkdir $GITHUB_WORKSPACE/glmpy/bin/
-          cp /glm-aed/glm-source/binaries/macos/${MOSDIR}/glm_latest/glm $GITHUB_WORKSPACE/glmpy/bin/
+          cp $GITHUB_WORKSPACE/glm-aed/glm-source/binaries/macos/${MOSDIR}/glm_latest/glm $GITHUB_WORKSPACE/glmpy/bin/
             
       - name: Build wheels for ARM64
         uses: pypa/cibuildwheel@v2.16.2
