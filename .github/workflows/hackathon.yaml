@@ -61,7 +61,7 @@ jobs:
             yum install -y netcdf-devel gd gd-devel gcc-gfortran && \
             cd glm-aed/glm-source/GLM && \
             git switch v4alpha && \
-            cd .. && \ && \
+            cd glm-aed/glm-source/ && \ 
             mkdir binaries && \
             ./build_glm.sh && \
             cp /glm-aed/glm-source/binaries/glm_latest/glm /glm/ && \
@@ -102,7 +102,7 @@ jobs:
               yum install -y netcdf netcdf-devel gd gd-devel gcc-gfortran libjpeg-turbo hdf5 hdf5-devel libaec libaec-devel libXpm glibc libpng-1.5.13-8.el7.i686 && \
               cd glm-aed/glm-source/GLM && \
               git switch v4alpha && \
-              cd .. && \
+              cd glm-aed/glm-source/ && \
               mkdir binaries && \
               ./build_glm.sh
               cp /glm-aed/glm-source/binaries/glm_latest/glm /glm/ && \
@@ -150,7 +150,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/glm-aed/glm-source/GLM
           git switch v4alpha
-          cd ..
+          cd glm-aed/glm-source/
           ./build_glm.sh
           MOSDIR=`grep 'SOFTWARE LICENSE AGREEMENT FOR ' '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | awk -F 'macOS ' '{print $NF}' | tr -d '\\' | tr ' ' '_'`
           cd $GITHUB_WORKSPACE
