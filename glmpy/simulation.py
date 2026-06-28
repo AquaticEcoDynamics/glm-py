@@ -18,7 +18,7 @@ import netCDF4
 
 from glmpy.nml.nml import NMLWriter
 
-GLM_VERSION = "3.3.3"
+GLM_VERSION = "4.0.0"
 
 
 def glmpy_glm_path() -> Union[str, None]:
@@ -56,7 +56,7 @@ def run_glm(
     Parameters
     ----------
     sim_dir_path : str
-        Path to the simulation directory that contains the `glm3.nml`
+        Path to the simulation directory that contains the `glm.nml`
         file.
     sim_name : str
         Name of the simulation.
@@ -75,9 +75,9 @@ def run_glm(
         raise NotADirectoryError(
             f"'{sim_dir_path}' is not an existing directory."
         )
-    if not os.path.isfile(os.path.join(sim_dir_path, "glm3.nml")):
+    if not os.path.isfile(os.path.join(sim_dir_path, "glm.nml")):
         raise FileNotFoundError(
-            f"The glm3.nml file was not found in {sim_dir_path}."
+            f"The glm.nml file was not found in {sim_dir_path}."
         )
     if glm_path is None:
         glm_path = glmpy_glm_path()
@@ -94,7 +94,7 @@ def run_glm(
             )
     else:
         glm_path = os.path.abspath(glm_path)
-    run_command = f'{glm_path} --nml "glm3.nml"'
+    run_command = f'{glm_path} --nml "glm.nml"'
     target = None
     if quiet:
         target = open(os.devnull, "w")
@@ -396,7 +396,7 @@ class GLMSim:
             if not bool(nml_dict):
                 continue
             if nml_name == "glm":
-                output_path = os.path.join(self.get_sim_dir(), "glm3.nml")
+                output_path = os.path.join(self.get_sim_dir(), "glm.nml")
                 os.makedirs(os.path.dirname(output_path), exist_ok=True)
                 nml_writer = NMLWriter(nml_dict)
                 nml_writer.to_nml(output_path)

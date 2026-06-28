@@ -64,3 +64,6 @@ parentdir_prefix = "glmpy-"
 
 [tool.cibuildwheel]
 skip = "*musllinux*"
+
+[tool.uv]
+package = false
