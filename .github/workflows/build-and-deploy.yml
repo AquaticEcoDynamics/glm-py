@@ -54,16 +54,17 @@ jobs:
 
       - name: Compile GLM for aarch64
         run: |
-          docker run --platform linux/arm64/v8 --rm -v $(pwd)/glm:/glm quay.io/pypa/manylinux2014_aarch64 /bin/bash -c "\
-            git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git && \
-            yum update -y && \
-            yum install epel-release -y && \
-            yum install -y netcdf-devel gd gd-devel gcc-gfortran && \
-            cd glm-aed/glm-source && \
-            mkdir binaries && \
-            ./build_glm.sh && \
-            cp /glm-aed/glm-source/binaries/glm_latest/glm /glm/ && \
-            cp /usr/lib64/{libgd.so.2,libjpeg.so.62,libnetcdf.so.7,libhdf5.so.8,libhdf5_hl.so.8,libsz.so.2,libaec.so.0,libXpm.so.4,libdl.so.2,libc.so.6,libm.so.6,libpng15.so.15} /glm/"
+          docker run --platform linux/arm64/v8 --rm -v $(pwd)/glm:/glm quay.io/pypa/manylinux2014_aarch64 /bin/bash -c '
+            set -e
+            git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git /glm-aed
+            yum update -y
+            yum install epel-release -y
+            yum install -y netcdf-devel gd gd-devel gcc-gfortran
+            cd /glm-aed/glm-source
+            mkdir -p binaries
+            ./build_glm.sh
+            cp /glm-aed/glm-source/binaries/glm_latest/glm /glm/
+            cp /usr/lib64/{libgd.so.2,libjpeg.so.62,libnetcdf.so.7,libhdf5.so.8,libhdf5_hl.so.8,libsz.so.2,libaec.so.0,libXpm.so.4,libdl.so.2,libc.so.6,libm.so.6,libpng15.so.15} /glm/'
           mkdir -p glmpy/bin
           sudo mv glm/glm glmpy/bin/
           sudo chmod +x glmpy/bin/*
