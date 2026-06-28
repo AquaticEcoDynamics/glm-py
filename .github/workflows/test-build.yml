@@ -181,7 +181,7 @@ jobs:
           brew install gd
           brew install pipx
           pipx ensurepath
-          git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git
+          git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git "$GITHUB_WORKSPACE/glm-aed"
       
       - name: Compile GLM for ARM64
         env:
