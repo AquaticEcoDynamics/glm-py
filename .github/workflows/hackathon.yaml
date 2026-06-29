@@ -74,10 +74,9 @@ jobs:
           export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm
       
       - name: Build wheels for aarch64
-        uses: pypa/cibuildwheel@v2.16.2
+        uses: pypa/cibuildwheel@v2.17.0
         env:
           CIBW_BUILD: 'cp39-* cp310-* cp311-* cp312-* pp39-* pp310-*'
-          CIBW_SKIP: 'cp38-* pp38-*'
           CIBW_ARCHS_LINUX: 'aarch64'
           CIBW_MANYLINUX_AARCH64_IMAGE: quay.io/pypa/manylinux_2_34_aarch64
           CIBW_ENVIRONMENT: "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm"
@@ -100,6 +99,9 @@ jobs:
         run: |
           docker run --rm -v $(pwd)/glm:/glm quay.io/pypa/manylinux_2_34_x86_64 /bin/bash -c "\
               git clone https://github.com/AquaticEcoDynamics/AED_Tools && \
+            export CFLAGS="-fPIC ${CFLAGS}" && \
+            export FFLAGS="-fPIC ${FFLAGS}" && \
+            export FCFLAGS="-fPIC ${FCFLAGS}" && \
             yum update -y && \
             yum install epel-release -y && \
             yum install -y netcdf-devel gd gd-devel gcc-gfortran && \
@@ -118,10 +120,9 @@ jobs:
           export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm
       
       - name: Build wheels for x86_64
-        uses: pypa/cibuildwheel@v2.16.2
+        uses: pypa/cibuildwheel@v2.17.0
         env:
           CIBW_BUILD: 'cp39-* cp310-* cp311-* cp312-* pp39-* pp310-*'
-          CIBW_SKIP: 'cp38-* pp38-*'
           CIBW_ARCHS_LINUX: 'x86_64'
           CIBW_MANYLINUX_X86_64_IMAGE: quay.io/pypa/manylinux_2_34_x86_64
           CIBW_ENVIRONMENT: "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm"
