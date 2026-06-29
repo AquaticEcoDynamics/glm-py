@@ -54,7 +54,7 @@ jobs:
 
       - name: Compile GLM for aarch64
         run: |
-          docker run --platform linux/arm64/v8 --rm -v $(pwd)/glm:/glm quay.io/pypa/manylinux2014_aarch64 /bin/bash -c "\
+          docker run --platform linux/arm64/v8 --rm -v $(pwd)/glm:/glm quay.io/pypa/manylinux_2_34_aarch64  /bin/bash -c "\
             git clone https://github.com/AquaticEcoDynamics/AED_Tools && \
             yum update -y && \
             yum install epel-release -y && \
@@ -64,6 +64,7 @@ jobs:
             cd GLM && \
             git switch v4alpha && \
             cd .. && \
+            mkdir -p binaries/glm_latest
             ./build_glm.sh && \
             cp binaries/glm_latest/glm /glm/ && \
             cp /usr/lib64/{libgd.so.2,libjpeg.so.62,libnetcdf.so.7,libhdf5.so.8,libhdf5_hl.so.8,libsz.so.2,libaec.so.0,libXpm.so.4,libdl.so.2,libc.so.6,libm.so.6,libpng15.so.15} /glm/"
