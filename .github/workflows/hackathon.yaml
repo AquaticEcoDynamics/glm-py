@@ -78,7 +78,6 @@ jobs:
         env:
           CIBW_BUILD: 'cp39-* cp310-* cp311-* cp312-* pp39-* pp310-*'
           CIBW_ARCHS_LINUX: 'aarch64'
-          CIBW_MANYLINUX_AARCH64_IMAGE: quay.io/pypa/manylinux_2_34_aarch64
           CIBW_ENVIRONMENT: "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm"
       
       - name: Upload aarch64 wheels artifact
@@ -98,7 +97,7 @@ jobs:
       - name: Compile GLM for x86_64
         run: |
           docker run --rm -v $(pwd)/glm:/glm quay.io/pypa/manylinux_2_34_x86_64 /bin/bash -c "\
-              git clone https://github.com/AquaticEcoDynamics/AED_Tools && \
+            git clone https://github.com/AquaticEcoDynamics/AED_Tools && \
             export CFLAGS="-fPIC ${CFLAGS}" && \
             export FFLAGS="-fPIC ${FFLAGS}" && \
             export FCFLAGS="-fPIC ${FCFLAGS}" && \
@@ -124,7 +123,6 @@ jobs:
         env:
           CIBW_BUILD: 'cp39-* cp310-* cp311-* cp312-* pp39-* pp310-*'
           CIBW_ARCHS_LINUX: 'x86_64'
-          CIBW_MANYLINUX_X86_64_IMAGE: quay.io/pypa/manylinux_2_34_x86_64
           CIBW_ENVIRONMENT: "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm"
 
       - name: Upload x86_64 wheels artifact
