@@ -98,9 +98,9 @@ jobs:
         run: |
           docker run --rm -v $(pwd)/glm:/glm quay.io/pypa/manylinux_2_34_x86_64 /bin/bash -c "\
             git clone https://github.com/AquaticEcoDynamics/AED_Tools && \
-            export CFLAGS="-fPIC ${CFLAGS}" && \
-            export FFLAGS="-fPIC ${FFLAGS}" && \
-            export FCFLAGS="-fPIC ${FCFLAGS}" && \
+            export CFLAGS='-fPIC ${CFLAGS}' && \
+            export FFLAGS='-fPIC ${FFLAGS}' && \
+            export FCFLAGS='-fPIC ${FCFLAGS}' && \
             yum update -y && \
             yum install epel-release -y && \
             yum install -y netcdf-devel gd gd-devel gcc-gfortran && \
@@ -112,7 +112,7 @@ jobs:
             mkdir -p binaries/glm_latest
             ./build_glm.sh && \
             cp binaries/glm_latest/glm /glm/ && \
-            cp /usr/lib64/{libgd.so.3,libjpeg.so.62,libnetcdf.so.19,libhdf5.so.200,libhdf5_hl.so.200,libsz.so.2,libaec.so.0,libXpm.so.4,libdl.so.2,libc.so.6,libm.so.6,libpng16.so.16} /glm/"
+            cp /usr/lib64/{libgd.so.3,libjpeg.so.62,libnetcdf.so.19,libhdf5.so.200,libhdf5_hl.so.200,libsz.so.2,libaec.so.0,libXpm.so.4,libpng16.so.16} /glm/"
           mkdir -p glmpy/bin
           sudo mv glm/glm glmpy/bin/
           sudo chmod +x glmpy/bin/*
