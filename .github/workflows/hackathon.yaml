@@ -14,9 +14,9 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Setup Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
-        python-version: 3.9 
+        python-version: 3.9
 
     - name: Install dependencies
       run: |
@@ -26,7 +26,6 @@ jobs:
     - name: Build package
       shell: bash
       run: |
-        BASE_URL="https://raw.githubusercontent.com/AquaticEcoDynamics/glm-aed/main/binaries/"
         mkdir -p glmpy/bin
         python -m build --sdist
 
@@ -45,16 +44,16 @@ jobs:
         uses: actions/checkout@v4
       
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@v3
         with:
           platforms: all
 
       - name: Set up Docker buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@v3
 
       - name: Compile GLM for aarch64
         run: |
-          docker run --platform linux/arm64/v8 --rm -v $(pwd)/glm:/glm quay.io/pypa/manylinux_2_34_aarch64  /bin/bash -c "\
+          docker run --platform linux/arm64/v8 --rm -v $(pwd)/glm:/glm quay.io/pypa/manylinux_2_28_aarch64  /bin/bash -c "\
             git clone https://github.com/AquaticEcoDynamics/AED_Tools && \
             yum update -y && \
             yum install epel-release -y && \
@@ -64,7 +63,13 @@ jobs:
             cd GLM && \
             git switch v4alpha && \
             cd .. && \
-            mkdir -p binaries/glm_latest
+            cd libaed-water && \
+            git switch v4alpha && \
+            cd .. && \
+            cd libaed-api && \
+            git switch v4alpha && \
+            cd .. && \
+            mkdir -p binaries/glm_latest && \
             ./build_glm.sh && \
             cp binaries/glm_latest/glm /glm/ && \
             cp /usr/lib64/{libgd.so.3,libjpeg.so.62,libnetcdf.so.19,libhdf5.so.200,libhdf5_hl.so.200,libsz.so.2,libaec.so.0,libXpm.so.4,libpng16.so.16} /glm/"
@@ -78,13 +83,13 @@ jobs:
         env:
           CIBW_BUILD: 'cp39-* cp310-* cp311-* cp312-* pp39-* pp310-*'
           CIBW_ARCHS_LINUX: 'aarch64'
-          CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_34
+          CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_28
           CIBW_ENVIRONMENT: "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm"
       
       - name: Upload aarch64 wheels artifact
         uses: actions/upload-artifact@v4
         with:
-          name: wheels-manylinux2-34-aarch64
+          name: wheels-manylinux-2-28-aarch64
           path: ./wheelhouse/*.whl
 
   # build-wheels-manylinux-x86_64:
