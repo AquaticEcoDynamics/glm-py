@@ -72,7 +72,7 @@ jobs:
             mkdir -p binaries/glm_latest && \
             ./build_glm.sh && \
             cp binaries/glm_latest/glm /glm/ && \
-            cp /usr/lib64/{libgd.so.3,libjpeg.so.62,libnetcdf.so.19,libhdf5.so.200,libhdf5_hl.so.200,libsz.so.2,libaec.so.0,libXpm.so.4,libpng16.so.16} /glm/"
+            ldd /glm/glm | grep -oE '/[^ ]+\.so[^ ]*' | sort -u | xargs -I '{}' cp -vL '{}' /glm/"
           mkdir -p glmpy/bin
           sudo mv glm/glm glmpy/bin/
           sudo chmod +x glmpy/bin/*
