@@ -92,88 +92,96 @@ jobs:
           name: wheels-manylinux-2-28-aarch64
           path: ./wheelhouse/*.whl
 
-  # build-wheels-manylinux-x86_64:
-  #   name: Build wheels on manylinux for x86_64
-  #   runs-on: ubuntu-22.04
+  build-wheels-manylinux-x86_64:
+    name: Build wheels on manylinux for x86_64
+    runs-on: ubuntu-22.04
 
-  #   steps:
-  #     - name: Check out code
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
 
-  #     - name: Compile GLM for x86_64
-  #       run: |
-  #         docker run --rm -v $(pwd)/glm:/glm quay.io/pypa/manylinux_2_34_x86_64 /bin/bash -c "\
-  #           git clone https://github.com/AquaticEcoDynamics/AED_Tools && \
-  #           yum update -y && \
-  #           yum install epel-release -y && \
-  #           yum install -y netcdf-devel gd gd-devel gcc-gfortran && \
-  #           cd AED_Tools/ && \
-  #           ./fetch_sources.sh all && \
-  #           cd GLM && \
-  #           git switch v4alpha && \
-  #           cd .. && \
-  #           mkdir -p binaries/glm_latest
-  #           ./build_glm.sh && \
-  #           cp binaries/glm_latest/glm /glm/ && \
-  #           cp /usr/lib64/{libgd.so.3,libjpeg.so.62,libnetcdf.so.19,libhdf5.so.200,libhdf5_hl.so.200,libsz.so.2,libaec.so.0,libXpm.so.4,libpng16.so.16} /glm/"
-  #         mkdir -p glmpy/bin
-  #         sudo mv glm/glm glmpy/bin/
-  #         sudo chmod +x glmpy/bin/*
-  #         export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm
-      
-  #     - name: Build wheels for x86_64
-  #       uses: pypa/cibuildwheel@v2.17.0
-  #       env:
-  #         CIBW_BUILD: 'cp39-* cp310-* cp311-* cp312-* pp39-* pp310-*'
-  #         CIBW_ARCHS_LINUX: 'x86_64'
-  #         CIBW_ENVIRONMENT: "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm"
+      - name: Compile GLM for x86_64
+        run: |
+          docker run --rm -v $(pwd)/glm:/glm quay.io/pypa/manylinux_2_28_x86_64 /bin/bash -c "\
+            git clone https://github.com/AquaticEcoDynamics/AED_Tools && \
+            yum update -y && \
+            yum install epel-release -y && \
+            yum install -y netcdf-devel gd gd-devel gcc-gfortran && \
+            cd AED_Tools/ && \
+            ./fetch_sources.sh all && \
+            cd GLM && \
+            git switch ch4-sync && \
+            cd .. && \
+            cd libaed-water && \
+            git switch ch4-sync && \
+            cd .. && \
+            cd libaed-api && \
+            git switch ch4-sync && \
+            cd .. && \
+            mkdir -p binaries/glm_latest && \
+            ./build_glm.sh && \
+            cp binaries/glm_latest/glm /glm/ && \
+            ldd /glm/glm | grep -oE '/[^ ]+\.so[^ ]*' | sort -u | xargs -I '{}' cp -vL '{}' /glm/"
+          mkdir -p glmpy/bin
+          sudo mv glm/glm glmpy/bin/
+          sudo chmod +x glmpy/bin/*
+          export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm
 
-  #     - name: Upload x86_64 wheels artifact
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: wheels-manylinux-2-34-x86_64
-  #         path: ./wheelhouse/*.whl
+      - name: Build wheels for x86_64
+        uses: pypa/cibuildwheel@v2.17.0
+        env:
+          CIBW_BUILD: 'cp39-* cp310-* cp311-* cp312-* pp39-* pp310-*'
+          CIBW_ARCHS_LINUX: 'x86_64'
+          CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
+          CIBW_ENVIRONMENT: "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm"
 
-  # build-wheels-macos-arm64:
-  #   name: Build wheels on MacOS for ARM64
-  #   runs-on: macos-14
+      - name: Upload x86_64 wheels artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-manylinux-2-28-x86_64
+          path: ./wheelhouse/*.whl
 
-  #   steps:
-  #     - name: Check out code
-  #       uses: actions/checkout@v4
+  build-wheels-macos-arm64:
+    name: Build wheels on MacOS for ARM64
+    runs-on: macos-14
 
-  #     - name: Install packages and setup
-  #       run: |
-  #         brew reinstall gcc
-  #         brew install netcdf
-  #         brew install gd
-  #         brew install pipx
-  #         pipx ensurepath
-  #         git clone --recursive https://github.com/AquaticEcoDynamics/glm-aed.git "$GITHUB_WORKSPACE/glm-aed"
-      
-  #     - name: Compile GLM for ARM64
-  #       env:
-  #         CPATH: /opt/homebrew/include:$CPATH
-  #         LIBRARY_PATH: /opt/homebrew/lib:$LIBRARY_PATH
-  #       run: |
-  #         cd $GITHUB_WORKSPACE/glm-aed/glm-source/GLM
-  #         git switch v4alpha
-  #         cd $GITHUB_WORKSPACE/glm-aed/glm-source/
-  #         ./build_glm.sh
-  #         MOSDIR=`grep 'SOFTWARE LICENSE AGREEMENT FOR ' '/System/Library/CoreServices/Setup Assistant.app/Contents/Resources/en.lproj/OSXSoftwareLicense.rtf' | awk -F 'macOS ' '{print $NF}' | tr -d '\\' | tr ' ' '_'`
-  #         cd $GITHUB_WORKSPACE
-  #         mkdir $GITHUB_WORKSPACE/glmpy/bin/
-  #         cp $GITHUB_WORKSPACE/glm-aed/glm-source/binaries/macos/${MOSDIR}/glm_latest/glm $GITHUB_WORKSPACE/glmpy/bin/
-            
-  #     - name: Build wheels for ARM64
-  #       uses: pypa/cibuildwheel@v2.16.2
-  #       env:
-  #         CIBW_BUILD: 'cp39-* cp310-* cp311-* cp312-* pp39-* pp310-*'
-  #         CIBW_ARCHS_MACOS: 'arm64'
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
 
-  #     - name: Upload ARM64 wheels artifact
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: wheels-macos-arm64
-  #         path: ./wheelhouse/*.whl
+      - name: Install packages and setup
+        run: |
+          brew reinstall gcc
+          brew install netcdf
+          brew install gd
+          git clone https://github.com/AquaticEcoDynamics/AED_Tools "$GITHUB_WORKSPACE/AED_Tools"
+
+      - name: Compile GLM for ARM64
+        env:
+          CPATH: /opt/homebrew/include:$CPATH
+          LIBRARY_PATH: /opt/homebrew/lib:$LIBRARY_PATH
+        run: |
+          cd $GITHUB_WORKSPACE/AED_Tools
+          ./fetch_sources.sh all
+          cd GLM && git switch ch4-sync && cd ..
+          cd libaed-water && git switch ch4-sync && cd ..
+          cd libaed-api && git switch ch4-sync && cd ..
+          ./build_glm.sh
+          cd $GITHUB_WORKSPACE
+          mkdir -p $GITHUB_WORKSPACE/glmpy/bin/
+          GLM_BIN=$(find $GITHUB_WORKSPACE/AED_Tools/binaries -type f -name glm -path '*glm_latest*' | head -n1)
+          echo "Found GLM binary at: $GLM_BIN"
+          cp "$GLM_BIN" $GITHUB_WORKSPACE/glmpy/bin/
+
+      - name: Build wheels for ARM64
+        uses: pypa/cibuildwheel@v2.17.0
+        env:
+          CIBW_BUILD: 'cp39-* cp310-* cp311-* cp312-* pp39-* pp310-*'
+          CIBW_ARCHS_MACOS: 'arm64'
+
+      - name: Upload ARM64 wheels artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wheels-macos-arm64
+          path: ./wheelhouse/*.whl
  
