@@ -61,13 +61,13 @@ jobs:
             cd AED_Tools/ && \
             ./fetch_sources.sh all && \
             cd GLM && \
-            git switch v4alpha && \
+            git switch ch4-sync && \
             cd .. && \
             cd libaed-water && \
-            git switch v4alpha && \
+            git switch ch4-sync && \
             cd .. && \
             cd libaed-api && \
-            git switch v4alpha && \
+            git switch ch4-sync && \
             cd .. && \
             mkdir -p binaries/glm_latest && \
             ./build_glm.sh && \
