@@ -38,11 +38,11 @@ jobs:
   build-wheels-manylinux-aarch64:
     name: Build wheels on manylinux for aarch64
     runs-on: ubuntu-22.04
-    
+
     steps:
       - name: Check out code
         uses: actions/checkout@v4
-      
+
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
         with:
@@ -58,17 +58,6 @@ jobs:
             yum update -y && \
             yum install epel-release -y && \
             yum install -y netcdf-devel gd gd-devel gcc-gfortran && \
-            cd AED_Tools/ && \
-            ./fetch_sources.sh all && \
-            cd GLM && \
-            git switch ch4-sync && \
-            cd .. && \
-            cd libaed-water && \
-            git switch ch4-sync && \
-            cd .. && \
-            cd libaed-api && \
-            git switch ch4-sync && \
-            cd .. && \
             mkdir -p binaries/glm_latest && \
             ./build_glm.sh && \
             cp binaries/glm_latest/glm /glm/ && \
@@ -77,7 +66,7 @@ jobs:
           sudo mv glm/glm glmpy/bin/
           sudo chmod +x glmpy/bin/*
           export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm
-      
+
       - name: Build wheels for aarch64
         uses: pypa/cibuildwheel@v2.17.0
         env:
@@ -85,7 +74,7 @@ jobs:
           CIBW_ARCHS_LINUX: 'aarch64'
           CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_28
           CIBW_ENVIRONMENT: "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$(pwd)/glm"
-      
+
       - name: Upload aarch64 wheels artifact
         uses: actions/upload-artifact@v4
         with:
@@ -107,17 +96,6 @@ jobs:
             yum update -y && \
             yum install epel-release -y && \
             yum install -y netcdf-devel gd gd-devel gcc-gfortran && \
-            cd AED_Tools/ && \
-            ./fetch_sources.sh all && \
-            cd GLM && \
-            git switch ch4-sync && \
-            cd .. && \
-            cd libaed-water && \
-            git switch ch4-sync && \
-            cd .. && \
-            cd libaed-api && \
-            git switch ch4-sync && \
-            cd .. && \
             mkdir -p binaries/glm_latest && \
             ./build_glm.sh && \
             cp binaries/glm_latest/glm /glm/ && \
@@ -163,9 +141,6 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE/AED_Tools
           ./fetch_sources.sh all
-          cd GLM && git switch ch4-sync && cd ..
-          cd libaed-water && git switch ch4-sync && cd ..
-          cd libaed-api && git switch ch4-sync && cd ..
           ./build_glm.sh
           cd $GITHUB_WORKSPACE
           mkdir -p $GITHUB_WORKSPACE/glmpy/bin/
@@ -184,4 +159,3 @@ jobs:
         with:
           name: wheels-macos-arm64
           path: ./wheelhouse/*.whl
- 
