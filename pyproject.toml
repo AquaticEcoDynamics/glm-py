@@ -1,7 +1,7 @@
 # pyproject.toml
 
 [build-system]
-requires = ["setuptools<75", "versioneer[toml]", "cibuildwheel[toml]"]
+requires = ["setuptools>=77.0", "versioneer[toml]", "cibuildwheel[toml]"]
 build-backend = "setuptools.build_meta"
 
 [project]
