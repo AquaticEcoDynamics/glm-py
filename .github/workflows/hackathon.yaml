@@ -58,6 +58,7 @@ jobs:
             yum update -y && \
             yum install epel-release -y && \
             yum install -y netcdf-devel gd gd-devel gcc-gfortran && \
+            cd AED_Tools/ && \
             mkdir -p binaries/glm_latest && \
             ./build_glm.sh && \
             cp binaries/glm_latest/glm /glm/ && \
@@ -96,6 +97,7 @@ jobs:
             yum update -y && \
             yum install epel-release -y && \
             yum install -y netcdf-devel gd gd-devel gcc-gfortran && \
+            cd AED_Tools/ && \
             mkdir -p binaries/glm_latest && \
             ./build_glm.sh && \
             cp binaries/glm_latest/glm /glm/ && \
