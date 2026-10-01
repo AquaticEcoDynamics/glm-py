@@ -1,6 +1,7 @@
 # dev files
 dev
 dev.py
+dev.png
 *.DS_Store
 
 */__pycache__
@@ -21,6 +22,3 @@ sparkling.nml
 site*/
 
 notebooks/glmpy-demo/inputs
-
-
-

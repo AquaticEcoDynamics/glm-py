@@ -1,10 +1,9 @@
 from datetime import datetime, timedelta
 from typing import List
 
+import xarray as xr
 import numpy as np
 import pandas as pd
-import netCDF4
-import numpy.ma as ma
 import matplotlib.dates as mdates
 from matplotlib.axes import Axes
 from matplotlib.image import AxesImage
@@ -51,9 +50,9 @@ class WQPlotter:
         """
         self._wq_csv_path = wq_csv_path
         self.wq_pd = pd.read_csv(self.wq_csv_path)
-        time = list(self.wq_pd["time"])
-        time = [t.split(" ")[0] for t in time]
-        self.wq_pd["time"] = time
+        time = list(self.wq_pd['time'])
+        time = [t.split(' ')[0] for t in time]
+        self.wq_pd['time'] = time
 
     def get_var_names(self) -> List[str]:
         """
@@ -65,8 +64,8 @@ class WQPlotter:
             List of variable names.
         """
         var_names = list(self.wq_pd.columns.values)
-        if "time" in var_names:
-            var_names.remove("time")
+        if 'time' in var_names:
+            var_names.remove('time')
         return var_names
 
     def plot_var(self, ax: Axes, var_name: str, param_dict: dict = {}):
@@ -94,17 +93,16 @@ class WQPlotter:
         """
         if var_name not in self.get_var_names():
             raise ValueError(
-                f"{var_name} is not a valid variable. See "
-                "`get_var_names()`."
+                f'{var_name} is not a valid variable. See `get_var_names()`.'
             )
         out = ax.plot(
-            mdates.date2num(self.wq_pd["time"]),
+            mdates.date2num(self.wq_pd['time']),
             self.wq_pd[var_name],
             **param_dict,
         )
-        ax.xaxis.set_major_formatter(mdates.DateFormatter("%d/%m/%y"))
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%d/%m/%y'))
         ax.set_ylabel(var_name)
-        ax.set_xlabel("Date")
+        ax.set_xlabel('Date')
 
         return out
 
@@ -133,7 +131,7 @@ class LakePlotter:
             Path to the lake CSV file.
         """
         self.lake_csv_path = lake_csv_path
-        self._date_formatter = mdates.DateFormatter("%d/%m/%y")
+        self._date_formatter = mdates.DateFormatter('%d/%m/%y')
 
     @property
     def lake_csv_path(self) -> str:
@@ -149,12 +147,12 @@ class LakePlotter:
         """
         self._lake_csv_path = lake_csv_path
         self.lake_pd = pd.read_csv(self.lake_csv_path)
-        time = list(self.lake_pd["time"])
+        time = list(self.lake_pd['time'])
         time = [
-            datetime.strptime(t.split(" ")[0], "%Y-%m-%d") + timedelta(days=1)
+            datetime.strptime(t.split(' ')[0], '%Y-%m-%d') + timedelta(days=1)
             for t in time
         ]
-        self.lake_pd["time"] = time
+        self.lake_pd['time'] = time
 
     def _set_param_dict_defaults(self, param_dict: dict, defaults_dict: dict):
         """Sets default `param_dict` kwargs for plotting."""
@@ -182,15 +180,15 @@ class LakePlotter:
         out : List[Line2D]
             A list of lines representing the plotted data.
         """
-        self._set_param_dict_defaults(param_dict, {"color": "#1f77b4"})
+        self._set_param_dict_defaults(param_dict, {'color': '#1f77b4'})
         out = ax.plot(
-            mdates.date2num(self.lake_pd["time"]),
-            self.lake_pd["Volume"],
+            mdates.date2num(self.lake_pd['time']),
+            self.lake_pd['Volume'],
             **param_dict,
         )
         ax.xaxis.set_major_formatter(self._date_formatter)
-        ax.set_ylabel("Lake volume ($\mathregular{m}^{3}$)")
-        ax.set_xlabel("Date")
+        ax.set_ylabel(r'Lake volume ($\mathregular{m}^{3}$)')
+        ax.set_xlabel('Date')
 
         return out
 
@@ -216,15 +214,15 @@ class LakePlotter:
         out : List[Line2D]
             A list of lines representing the plotted data.
         """
-        self._set_param_dict_defaults(param_dict, {"color": "#1f77b4"})
+        self._set_param_dict_defaults(param_dict, {'color': '#1f77b4'})
         out = ax.plot(
-            mdates.date2num(self.lake_pd["time"]),
-            self.lake_pd["Lake Level"],
+            mdates.date2num(self.lake_pd['time']),
+            self.lake_pd['Lake Level'],
             **param_dict,
         )
         ax.xaxis.set_major_formatter(self._date_formatter)
-        ax.set_ylabel("Lake surface height (m)")
-        ax.set_xlabel("Date")
+        ax.set_ylabel('Lake surface height (m)')
+        ax.set_xlabel('Date')
 
         return out
 
@@ -249,15 +247,15 @@ class LakePlotter:
         out : List[Line2D]
             A list of lines representing the plotted data.
         """
-        self._set_param_dict_defaults(param_dict, {"color": "#1f77b4"})
+        self._set_param_dict_defaults(param_dict, {'color': '#1f77b4'})
         out = ax.plot(
-            mdates.date2num(self.lake_pd["time"]),
-            self.lake_pd["Surface Area"],
+            mdates.date2num(self.lake_pd['time']),
+            self.lake_pd['Surface Area'],
             **param_dict,
         )
         ax.xaxis.set_major_formatter(self._date_formatter)
-        ax.set_ylabel("Lake surface area ($\mathregular{m}^{2}$)")
-        ax.set_xlabel("Date")
+        ax.set_ylabel(r'Lake surface area ($\mathregular{m}^{2}$)')
+        ax.set_xlabel('Date')
 
         return out
 
@@ -284,25 +282,25 @@ class LakePlotter:
         out : List[Line2D]
             A list of lines representing the plotted data.
         """
-        self._set_param_dict_defaults(param_dict, {"color": "#1f77b4"})
-        self.lake_pd["water_balance"] = (
-            self.lake_pd["Rain"]
-            + self.lake_pd["Snowfall"]
-            + self.lake_pd["Local Runoff"]
-            + self.lake_pd["Tot Inflow Vol"]
-            + self.lake_pd["Evaporation"]
-            - self.lake_pd["Tot Outflow Vol"]
+        self._set_param_dict_defaults(param_dict, {'color': '#1f77b4'})
+        self.lake_pd['water_balance'] = (
+            self.lake_pd['Rain']
+            + self.lake_pd['Snowfall']
+            + self.lake_pd['Local Runoff']
+            + self.lake_pd['Tot Inflow Vol']
+            + self.lake_pd['Evaporation']
+            - self.lake_pd['Tot Outflow Vol']
         )
         out = ax.plot(
-            mdates.date2num(self.lake_pd["time"]),
-            self.lake_pd["water_balance"],
+            mdates.date2num(self.lake_pd['time']),
+            self.lake_pd['water_balance'],
             **param_dict,
         )
         ax.xaxis.set_major_formatter(self._date_formatter)
         ax.set_ylabel(
-            "Total flux ($\mathregular{m}^{3}$ $\mathregular{day}^{-1}$)"
+            r'Total flux ($\mathregular{m}^{3}$ $\mathregular{day}^{-1}$)'
         )
-        ax.set_xlabel("Date")
+        ax.set_xlabel('Date')
 
         return out
 
@@ -365,43 +363,43 @@ class LakePlotter:
             snowfall_param_dict,
         ]
         default_params = [
-            {"color": "#1f77b4", "label": "Total inflow"},
-            {"color": "#d62728", "label": "Total outflow"},
-            {"color": "#9467bd", "label": "Overflow"},
-            {"color": "#ff7f0e", "label": "Evaporation"},
-            {"color": "#2ca02c", "label": "Rain"},
-            {"color": "#17becf", "label": "Local runoff"},
-            {"color": "#7f7f7f", "label": "Snowfall"},
+            {'color': '#1f77b4', 'label': 'Total inflow'},
+            {'color': '#d62728', 'label': 'Total outflow'},
+            {'color': '#9467bd', 'label': 'Overflow'},
+            {'color': '#ff7f0e', 'label': 'Evaporation'},
+            {'color': '#2ca02c', 'label': 'Rain'},
+            {'color': '#17becf', 'label': 'Local runoff'},
+            {'color': '#7f7f7f', 'label': 'Snowfall'},
         ]
         for i in range(len(param_dicts)):
             self._set_param_dict_defaults(param_dicts[i], default_params[i])
         out = []
         components = [
-            ("Tot Inflow Vol", inflow_param_dict),
-            ("Tot Outflow Vol", outflow_param_dict),
-            ("Overflow Vol", overflow_param_dict),
-            ("Evaporation", evaporation_param_dict),
-            ("Rain", rain_param_dict),
-            ("Local Runoff", runoff_param_dict),
-            ("Snowfall", snowfall_param_dict),
+            ('Tot Inflow Vol', inflow_param_dict),
+            ('Tot Outflow Vol', outflow_param_dict),
+            ('Overflow Vol', overflow_param_dict),
+            ('Evaporation', evaporation_param_dict),
+            ('Rain', rain_param_dict),
+            ('Local Runoff', runoff_param_dict),
+            ('Snowfall', snowfall_param_dict),
         ]
         for column_name, param_dict in components:
-            if column_name == "Tot Outflow Vol":
+            if column_name == 'Tot Outflow Vol':
                 (out_component,) = ax.plot(
-                    mdates.date2num(self.lake_pd["time"]),
+                    mdates.date2num(self.lake_pd['time']),
                     -self.lake_pd[column_name],
                     **param_dict,
                 )
             else:
                 (out_component,) = ax.plot(
-                    mdates.date2num(self.lake_pd["time"]),
+                    mdates.date2num(self.lake_pd['time']),
                     self.lake_pd[column_name],
                     **param_dict,
                 )
             out.append(out_component)
         ax.xaxis.set_major_formatter(self._date_formatter)
-        ax.set_ylabel("Flux ($\mathregular{m}^{3}$ $\mathregular{day}^{-1}$)")
-        ax.set_xlabel("Date")
+        ax.set_ylabel(r'Flux ($\mathregular{m}^{3}$ $\mathregular{day}^{-1}$)')
+        ax.set_xlabel('Date')
         return out
 
     def plot_heat_balance_comps(
@@ -448,30 +446,30 @@ class LakePlotter:
             sensible_heat_param_dict,
         ]
         default_params = [
-            {"color": "#ff7f0e", "label": "Mean longwave radiation"},
-            {"color": "#1f77b4", "label": "Mean shortwave radiation"},
-            {"color": "#d62728", "label": "Mean latent heat"},
-            {"color": "#2ca02c", "label": "Mean sensible heat"},
+            {'color': '#ff7f0e', 'label': 'Mean longwave radiation'},
+            {'color': '#1f77b4', 'label': 'Mean shortwave radiation'},
+            {'color': '#d62728', 'label': 'Mean latent heat'},
+            {'color': '#2ca02c', 'label': 'Mean sensible heat'},
         ]
         for i in range(len(param_dicts)):
             self._set_param_dict_defaults(param_dicts[i], default_params[i])
         out = []
         components = [
-            ("Daily Qlw", longwave_param_dict),
-            ("Daily Qsw", shortwave_param_dict),
-            ("Daily Qe", latent_heat_param_dict),
-            ("Daily Qh", sensible_heat_param_dict),
+            ('Daily Qlw', longwave_param_dict),
+            ('Daily Qsw', shortwave_param_dict),
+            ('Daily Qe', latent_heat_param_dict),
+            ('Daily Qh', sensible_heat_param_dict),
         ]
         for column_name, param_dict in components:
             (out_component,) = ax.plot(
-                mdates.date2num(self.lake_pd["time"]),
+                mdates.date2num(self.lake_pd['time']),
                 self.lake_pd[column_name],
                 **param_dict,
             )
             out.append(out_component)
         ax.xaxis.set_major_formatter(self._date_formatter)
-        ax.set_ylabel("Heat flux ($\mathregular{W}$/$\mathregular{m}^{2}$)")
-        ax.set_xlabel("Date")
+        ax.set_ylabel(r'Heat flux ($\mathregular{W}$/$\mathregular{m}^{2}$)')
+        ax.set_xlabel('Date')
         return out
 
     def plot_surface_temp(
@@ -496,15 +494,15 @@ class LakePlotter:
         out : List[Line2D]
             A list of lines representing the plotted data.
         """
-        self._set_param_dict_defaults(param_dict, {"color": "#1f77b4"})
+        self._set_param_dict_defaults(param_dict, {'color': '#1f77b4'})
         out = ax.plot(
-            mdates.date2num(self.lake_pd["time"]),
-            self.lake_pd["Surface Temp"],
+            mdates.date2num(self.lake_pd['time']),
+            self.lake_pd['Surface Temp'],
             **param_dict,
         )
         ax.xaxis.set_major_formatter(self._date_formatter)
-        ax.set_ylabel("Lake surface temperature (°C)")
-        ax.set_xlabel("Date")
+        ax.set_ylabel('Lake surface temperature (°C)')
+        ax.set_xlabel('Date')
         return out
 
     def plot_temp(
@@ -536,27 +534,27 @@ class LakePlotter:
             A list of lines representing the plotted data.
         """
         self._set_param_dict_defaults(
-            min_temp_param_dict, {"color": "#1f77b4", "label": "Minimum"}
+            min_temp_param_dict, {'color': '#1f77b4', 'label': 'Minimum'}
         )
         self._set_param_dict_defaults(
-            max_temp_param_dict, {"color": "#d62728", "label": "Maximum"}
+            max_temp_param_dict, {'color': '#d62728', 'label': 'Maximum'}
         )
         out = []
         components = [
-            ("Min Temp", min_temp_param_dict),
-            ("Max Temp", max_temp_param_dict),
+            ('Min Temp', min_temp_param_dict),
+            ('Max Temp', max_temp_param_dict),
         ]
         for column_name, param_dict in components:
             if param_dict is not None:
                 (out_component,) = ax.plot(
-                    mdates.date2num(self.lake_pd["time"]),
+                    mdates.date2num(self.lake_pd['time']),
                     self.lake_pd[column_name],
                     **param_dict,
                 )
                 out.append(out_component)
         ax.xaxis.set_major_formatter(self._date_formatter)
-        ax.set_ylabel("Lake temperature (°C)")
-        ax.set_xlabel("Date")
+        ax.set_ylabel('Lake temperature (°C)')
+        ax.set_xlabel('Date')
         return out
 
 
@@ -568,7 +566,7 @@ class NCPlotter:
 
     Attributes
     ----------
-    glm_nc_path : str
+    nc_path : str
         Path to the output NetCDF file.
     resolution : float
         Resolution of the depth range (m).
@@ -582,7 +580,7 @@ class NCPlotter:
 
     def __init__(
         self,
-        glm_nc_path: str,
+        nc_path: str,
         resolution: float = 0.1,
         ice_height: bool = False,
         white_ice_height: bool = False,
@@ -593,7 +591,7 @@ class NCPlotter:
 
         Parameters
         ----------
-        glm_nc_path : str
+        nc_path : str
             Path to the output NetCDF file.
         resolution : float
             Resolution of the depth range (m).
@@ -608,25 +606,48 @@ class NCPlotter:
         self.ice_height = ice_height
         self.white_ice_height = white_ice_height
         self.snow_height = snow_height
-        self.glm_nc_path = glm_nc_path
+        self.nc_path = nc_path
 
     @property
-    def glm_nc_path(self):
-        return self._glm_nc_path
+    def nc_path(self):
+        return self._nc_path
 
-    @glm_nc_path.setter
-    def glm_nc_path(self, glm_nc_path: str):
+    @nc_path.setter
+    def nc_path(self, nc_path: str):
         """
         Path to the GLM NetCDF file.
         """
-        self._glm_nc_path = glm_nc_path
-        nc = netCDF4.Dataset(self.glm_nc_path, "r", format="NETCDF4")
-        self._num_layers = nc.variables["NS"][:]
-        self._layer_heights = nc.variables["z"][:]
-        self._time = nc.variables["time"][:].data
+        self._nc_path = nc_path
+        nc = xr.open_dataset(self.nc_path)
+        self._num_layers = nc['NS'].values
+        self._max_num_layers = np.nanmax(self._num_layers)
+        self._layer_heights = nc['z'].values[
+            :, 0 : self._max_num_layers + 1, 0, 0
+        ]
+        self._time = nc['time'].values
         self._start_datetime = nc.start_time
-        self._surface_height = self._get_surface_height()
-        self._max_depth = max(self._surface_height)
+        self._n_timesteps = len(self._time)
+        self._timesteps = np.arange(self._n_timesteps)
+
+        # height is measured from bottom up so the top layer is the water surface
+        self._surface_heights = self._layer_heights[
+            self._timesteps, self._num_layers - 1
+        ]
+        self._max_height = self._surface_heights.max()
+
+        # TO-DO: Incorporate ice and snow height
+        # sum = np.zeros(shape=self._n_timesteps)
+        # if self.ice_height:
+        #     ice_height = nc["blue_ice_thickness"].values
+        #     sum += ice_height
+        # if self.white_ice_height:
+        #     white_ice_height = nc["white_ice_thickness"].values
+        #     sum += white_ice_height
+        # if self.snow_height:
+        #     snow_height = nc["snow_thickness"].values
+        #     sum += snow_height
+        # self._surface_heights = self._surface_heights - sum
+
         nc.close()
 
     def _set_default_plot_params(self, param_dict: dict, defaults_dict: dict):
@@ -635,133 +656,103 @@ class NCPlotter:
             if k not in param_dict:
                 param_dict[k] = v
 
-    def _get_plt_date_nums(self) -> np.ndarray:
-        """Returns an array of matplotlib dates"""
-        start_datetime = datetime.strptime(
-            self._start_datetime, "%Y-%m-%d %H:%M:%S"
-        )
-        x_dates = [start_datetime + timedelta(hours=x) for x in self._time]
-        x_dates = mdates.date2num(x_dates)
-
-        return x_dates
-
-    def _get_surface_height(self) -> ma.MaskedArray:
-        """
-        Returns a 1D array of the lake surface height at each timestep.
-        """
-
-        surface_height = ma.empty(self._num_layers.shape)
-        for i in range(0, len(self._num_layers)):
-            surface_height[i] = self._layer_heights[
-                i, self._num_layers[i] - 1, 0, 0
-            ]
-
-        sum = ma.zeros(shape=self._time.shape)
-        nc = netCDF4.Dataset(self._glm_nc_path, "r", format="NETCDF4")
-        if self.ice_height:
-            ice_height = nc.variables["blue_ice_thickness"][:]
-            sum += ice_height
-
-        if self.white_ice_height:
-            white_ice_height = nc.variables["white_ice_thickness"][:]
-            sum += white_ice_height
-        if self.snow_height:
-            snow_height = nc.variables["snow_thickness"][:]
-            sum += snow_height
-        nc.close()
-        surface_height = surface_height - sum
-
-        return surface_height
-
-    def _reproj_depth(
+    def plot_var(
         self,
-        var: ma.MaskedArray,
-        reference: str,
-        layer_heights: ma.MaskedArray,
-        surface_height: ma.MaskedArray,
-        plot_depths: np.ndarray,
-    ) -> np.ndarray:
-        mid_layer_heights = ma.concatenate(
-            [
-                [layer_heights[0] / 2],
-                layer_heights[0 : len(layer_heights) - 1]
-                + (np.diff(layer_heights) / 2),
-            ]
-        )
-        last_height = (
-            ma.masked_all((1))
-            if ma.is_masked(layer_heights[-1])
-            else ma.array([layer_heights[-1]])
-        )
-        last_var = (
-            ma.masked_all((1))
-            if ma.is_masked(var[-1])
-            else ma.array([var[-1, 0, 0]])
-        )
-        mid_layer_heights = ma.concatenate(
-            [ma.array([0]), mid_layer_heights, last_height]
-        )
-        var = ma.concatenate([ma.array(var[0, 0]), var[:, 0, 0], last_var])
-        valid_mask = ~ma.getmaskarray(mid_layer_heights) & ~ma.getmaskarray(
-            var
-        )
-        mid_layer_heights = mid_layer_heights[valid_mask]
-        var = var[valid_mask]
-        reproj_var = np.interp(plot_depths, mid_layer_heights, var)
-        if reference == "bottom":
-            reproj_var[plot_depths > surface_height] = np.nan
-        else:
-            reproj_var[plot_depths < 0] = np.nan
+        ax: Axes,
+        var_name: str,
+        at_height: float,
+        reference: str = 'bottom',
+        param_dict: dict = {},
+    ) -> List[Line2D]:
+        """
+        Line plot of a variable.
 
-        return reproj_var
+        Plots a variable -- at a specified depth -- to a matplotlib Axes object.
 
-    def _get_reproj_var(self, var_name: str, reference: str) -> np.ndarray:
-        nc = netCDF4.Dataset(self._glm_nc_path, "r", format="NETCDF4")
-        var = nc.variables[var_name][:]
-        nc.close()
+        Parameters
+        ----------
+        ax : Axes
+            The matplotlib Axes object to plot on.
+        var_name : str
+            Name of the variable to plot. To list valid variables, see
+            the `get_var_names()` method.
+        reference : str, optional
+            Reference frame for depth, either `'bottom'` or
+            `'surface'`. Default is "bottom".
+        param_dict : dict, optional
+            Dictionary of keyword arguments to customise the `plot`
+            method. Default is `{}`.
 
-        depth_range = np.arange(0, self._max_depth, self.resolution)
-        max_num_layers = max(self._num_layers) + 1
-        layer_heights = self._layer_heights[:, 0:max_num_layers, :, :]
-        var = var[:, 0:max_num_layers, :, :]
-
-        timesteps = layer_heights.shape[0]
-        num_reproj_depths = len(depth_range)
-        reproj_var = np.ma.empty((timesteps, num_reproj_depths))
-        reproj_var[:] = np.nan
-
-        if reference == "bottom":
-            plot_depth_range = depth_range
-
-        for i in range(0, timesteps):
-            if reference == "surface":
-                plot_depth_range = self._surface_height[i] - depth_range
-
-            reproj_var[i, :] = self._reproj_depth(
-                var=var[i, :],
-                reference=reference,
-                layer_heights=layer_heights[i, :, 0, 0],
-                surface_height=self._surface_height[i],
-                plot_depths=plot_depth_range,
+        Returns
+        -------
+        out : List[Line2D]
+            List of line objects.
+        """
+        if var_name not in self.get_var_names():
+            raise ValueError(
+                f'{var_name} is not a valid variable name. Valid variables '
+                'are those returned by get_var_names().'
+            )
+        if at_height > self._max_height:
+            raise ValueError(
+                f'The specified plotting height of {at_height} m exceeds '
+                f'the maximum height of {round(self._max_height, 2)} m.'
             )
 
-        if reference == "bottom":
-            reproj_var = np.rot90(reproj_var, 1)
-        else:
-            reproj_var = np.rot90(reproj_var, -1)
-            reproj_var = np.flip(reproj_var, 1)
+        nc = xr.open_dataset(self.nc_path)
+        var_vals = nc.variables[var_name].values[
+            :, 0 : self._max_num_layers + 1, 0, 0
+        ]
+        nc.close()
 
-        return reproj_var
+        # the centre of a layer is `(layer_{n-1} + layer_{n}) / 2`
+        layer_bottoms = np.concatenate(
+            [np.zeros((self._n_timesteps, 1)), self._layer_heights[:, :-1]],
+            axis=1,
+        )
+        layer_centres = (layer_bottoms + self._layer_heights) / 2
+        var_heights = np.concatenate(
+            [np.zeros((self._n_timesteps, 1)), layer_centres], axis=1
+        )
+        var_vals = np.concatenate([var_vals[:, 0:1], var_vals], axis=1)
+
+        series = np.full(self._n_timesteps, np.nan)
+
+        for i in range(self._n_timesteps):
+            n = self._num_layers[i]
+            if reference == 'bottom':
+                plot_height = at_height
+            else:
+                plot_height = self._surface_heights[i] - at_height
+            if 0.0 <= plot_height <= self._surface_heights[i]:
+                series[i] = np.interp(
+                    plot_height, var_heights[i, : n + 1], var_vals[i, : n + 1]
+                )
+
+        x_dates = mdates.date2num(self._time)
+        self._set_default_plot_params(param_dict, {'color': 'black'})
+        out = ax.plot(x_dates, series, **param_dict)
+        locator = mdates.AutoDateLocator()
+        date_formatter = mdates.DateFormatter('%d/%m/%y')
+        ax.set_xticks(x_dates)
+        ax.xaxis.set_major_locator(locator)
+        ax.xaxis.set_major_formatter(date_formatter)
+        ax.set_ylabel(
+            f'{self.get_long_name(var_name)} ({self.get_units(var_name)})'
+        )
+        ax.set_xlabel('Date')
+        param_dict.clear()
+        return out
 
     def plot_profile(
         self,
         ax: Axes,
         var_name: str,
-        reference: str = "bottom",
+        reference: str = 'bottom',
         param_dict: dict = {},
     ) -> AxesImage:
         """
-        Raster plot of a variable profile.
+        Raster plot of a variable's profile.
 
         Plots a variable for all depths and timesteps to a matplotlib
         Axes object.
@@ -772,7 +763,7 @@ class NCPlotter:
             The matplotlib Axes object to plot on.
         var_name : str
             Name of the variable to plot. To list valid variables, see
-            the `get_profile_var_names()` method.
+            the `get_var_names()` method.
         reference : str, optional
             Reference frame for depth, either `'bottom'` or
             `'surface'`. Default is "bottom".
@@ -785,36 +776,86 @@ class NCPlotter:
         out : AxesImage
             The plotted image object.
         """
-        if reference != "surface" and reference != "bottom":
+        if reference != 'surface' and reference != 'bottom':
             raise ValueError(
                 "reference must be either 'surface' or 'bottom'. Got "
                 f"'{reference}'."
             )
-        if var_name not in self.get_profile_var_names():
+        if var_name not in self.get_var_names():
             raise ValueError(
-                f"{var_name} is not a valid variable name. Valid variables "
-                "are those returned by get_profile_var_names()."
+                f'{var_name} is not a valid variable name. Valid variables '
+                'are those returned by get_var_names().'
             )
 
-        reproj_var = self._get_reproj_var(var_name, reference)
-        x_dates = self._get_plt_date_nums()
+        nc = xr.open_dataset(self.nc_path)
+        var_vals = nc.variables[var_name].values[
+            :, 0 : self._max_num_layers + 1, 0, 0
+        ]
+        nc.close()
+
+        height_grid = np.arange(0, self._max_height, self.resolution)
+
+        # the centre of a layer is `(bottom + top) / 2`
+        layer_bottoms = np.concatenate(
+            [np.zeros((self._n_timesteps, 1)), self._layer_heights[:, :-1]],
+            axis=1,
+        )
+        layer_centres = (layer_bottoms + self._layer_heights) / 2
+        var_heights = np.concatenate(
+            [np.zeros((self._n_timesteps, 1)), layer_centres], axis=1
+        )
+        var_vals = np.concatenate([var_vals[:, 0:1], var_vals], axis=1)
+
+        # a height_grid for each timestep
+        if reference == 'bottom':  # plot_heights is height up from the bed
+            plot_heights = np.broadcast_to(
+                height_grid, (self._n_timesteps, len(height_grid))
+            )
+        else:  # plot_heights is distance down from the surface
+            plot_heights = (
+                self._surface_heights[:, np.newaxis]
+                - height_grid[np.newaxis, :]
+            )
+
+        reproj_var = np.full((self._n_timesteps, len(height_grid)), np.nan)
+        for i in range(self._n_timesteps):
+            n = self._num_layers[i]
+            reproj_var[i, :] = np.interp(
+                plot_heights[i], var_heights[i, : n + 1], var_vals[i, : n + 1]
+            )
+
+        # set everything outside the water column to nan
+        outside_water = (plot_heights < 0) | (
+            plot_heights > self._surface_heights[:, np.newaxis]
+        )
+        reproj_var[outside_water] = np.nan
+
+        if reference == 'bottom':
+            reproj_var = np.rot90(reproj_var, 1)
+            y_min, y_max = (0, self._max_height)
+        else:
+            reproj_var = np.rot90(reproj_var, -1)
+            reproj_var = np.flip(reproj_var, 1)
+            y_min, y_max = (self._max_height, 0)
+
+        x_dates = mdates.date2num(self._time)
         self._set_default_plot_params(
             param_dict,
             {
-                "interpolation": "bilinear",
-                "aspect": "auto",
-                "cmap": "Spectral_r",
-                "extent": [x_dates[0], x_dates[-1], self._max_depth, 0],
+                'interpolation': 'bilinear',
+                'aspect': 'auto',
+                'cmap': 'Spectral_r',
+                'extent': [x_dates[0], x_dates[-1], y_min, y_max],
             },
         )
         out = ax.imshow(reproj_var, **param_dict)
         locator = mdates.AutoDateLocator()
-        date_formatter = mdates.DateFormatter("%d/%m/%y")
+        date_formatter = mdates.DateFormatter('%d/%m/%y')
         ax.set_xticks(x_dates)
         ax.xaxis.set_major_locator(locator)
         ax.xaxis.set_major_formatter(date_formatter)
-        ax.set_ylabel("Depth (m)")
-        ax.set_xlabel("Date")
+        ax.set_ylabel('Water column height (m)')
+        ax.set_xlabel('Date')
         param_dict.clear()
         return out
 
@@ -847,45 +888,46 @@ class NCPlotter:
 
         if var_name not in self.get_zone_var_names():
             raise ValueError(
-                f"{var_name} is not a valid variable name. Valid variables "
-                "are those returned by get_zone_var_names()."
+                f'{var_name} is not a valid variable name. Valid variables '
+                'are those returned by get_zone_var_names().'
             )
-        nc = netCDF4.Dataset(self._glm_nc_path, "r", format="NETCDF4")
-        data = nc.variables[var_name][:]
+        nc = xr.open_dataset(self.nc_path)
+        var_vals = nc.variables[var_name].values[:, :, 0, 0]
         nc.close()
-        n_zones = data.shape[1]
+        n_zones = var_vals.shape[1]
         if zone < 1 or zone > n_zones:
             raise ValueError(
-                f"Invalid zone number. Zone must be 0 < zone <= {n_zones}"
+                f'Invalid zone number. Zone must be 0 < zone <= {n_zones}'
             )
-        x_dates = self._get_plt_date_nums()
-        out = ax.plot(x_dates, data[:, zone - 1, 0, 0], **param_dict)
+        x_dates = mdates.date2num(self._time)
+        out = ax.plot(x_dates, var_vals[:, zone - 1], **param_dict)
         locator = mdates.AutoDateLocator()
-        date_formatter = mdates.DateFormatter("%d/%m/%y")
+        date_formatter = mdates.DateFormatter('%d/%m/%y')
         ax.set_xticks(x_dates)
         ax.xaxis.set_major_locator(locator)
         ax.xaxis.set_major_formatter(date_formatter)
-        ax.set_xlabel("Date")
+        ax.set_xlabel('Date')
         ax.yaxis.set_label_text(
-            f"{self.get_long_name(var_name)} ({self.get_units(var_name)})"
+            f'{self.get_long_name(var_name)} ({self.get_units(var_name)})'
         )
         return out
 
-    def get_profile_var_names(self) -> List[str]:
+    def get_var_names(self) -> List[str]:
         """
-        Gets a list of variable names plottable with `plot_profile()`.
+        Gets a list of variable names plottable with `plot_var() or
+        `plot_profile()`.
 
         Returns
         -------
         var_names : List[str]
             Names of plottable variables.
         """
-        var_shape = self._layer_heights.shape
-        nc = netCDF4.Dataset(self._glm_nc_path, "r", format="NETCDF4")
+        nc = xr.open_dataset(self.nc_path)
+        var_shape = nc['z'].shape
         var_names = []
         for key in nc.variables.keys():
-            if nc.variables[key].shape == var_shape:
-                var_names.append(key)
+            if nc[key].shape == var_shape:
+                var_names.append(str(key))
         nc.close()
         return var_names
 
@@ -898,10 +940,10 @@ class NCPlotter:
         var_names : List[str]
             Names of plottable variables.
         """
-        nc = netCDF4.Dataset(self.glm_nc_path, "r", format="NETCDF4")
+        nc = xr.open_dataset(self.nc_path)
         var_names = []
         for key in nc.variables.keys():
-            if key.endswith("_Z"):
+            if isinstance(key, str) and key.endswith('_Z'):
                 var_names.append(key)
         nc.close()
         return var_names
@@ -920,8 +962,8 @@ class NCPlotter:
         unit : str
             Units of the variable.
         """
-        nc = netCDF4.Dataset(self.glm_nc_path, "r", format="NETCDF4")
-        units = nc.variables[var_name].units
+        nc = xr.open_dataset(self.nc_path)
+        units = nc.variables[var_name].attrs['units']
         nc.close()
         return units
 
@@ -939,8 +981,9 @@ class NCPlotter:
         long_name : str
             Long name description of the variable.
         """
-        nc = netCDF4.Dataset(self.glm_nc_path, "r", format="NETCDF4")
-        long_name = nc.variables[var_name].long_name
+        nc = xr.open_dataset(self.nc_path)
+        long_name = nc.variables[var_name].attrs['long_name']
+        long_name = long_name[0].upper() + long_name[1:] if long_name else ''
         nc.close()
         return long_name
 
@@ -953,5 +996,16 @@ class NCPlotter:
         start: datetime
             Start time of the GLM simulation.
         """
-        start = datetime.strptime(self._start_datetime, "%Y-%m-%d %H:%M:%S")
+        start = datetime.strptime(self._start_datetime, '%Y-%m-%d %H:%M:%S')
         return start
+
+    def get_max_height(self) -> float:
+        """
+        Get the maximum water column height for the entire simulation.
+
+        Returns
+        -------
+        max_height : float
+            Maximum water column height
+        """
+        return float(self._max_height)
