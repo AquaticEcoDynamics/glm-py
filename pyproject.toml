@@ -1,7 +1,7 @@
 # pyproject.toml
 
 [build-system]
-requires = ["setuptools>=61.0.0", "versioneer[toml]", "cibuildwheel[toml]"]
+requires = ["setuptools>=77.0.0", "versioneer[toml]", "cibuildwheel[toml]"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -10,7 +10,7 @@ dynamic = ["version"]
 description = "Python API for the General Lake Model (GLM)."
 readme = "README.md"
 authors = []
-license = { file = "LICENSE" }
+license = "GPL-3.0-or-later"
 classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
