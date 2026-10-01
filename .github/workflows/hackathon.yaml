@@ -60,6 +60,7 @@ jobs:
             yum install -y netcdf-devel gd gd-devel gcc-gfortran && \
             cd AED_Tools/ && \
             mkdir -p binaries/glm_latest && \
+            ./fetch_sources.sh all && \
             ./build_glm.sh && \
             cp binaries/glm_latest/glm /glm/ && \
             ldd /glm/glm | grep -oE '/[^ ]+\.so[^ ]*' | sort -u | xargs -I '{}' cp -vL '{}' /glm/"
@@ -99,6 +100,7 @@ jobs:
             yum install -y netcdf-devel gd gd-devel gcc-gfortran && \
             cd AED_Tools/ && \
             mkdir -p binaries/glm_latest && \
+            ./fetch_sources.sh all && \
             ./build_glm.sh && \
             cp binaries/glm_latest/glm /glm/ && \
             ldd /glm/glm | grep -oE '/[^ ]+\.so[^ ]*' | sort -u | xargs -I '{}' cp -vL '{}' /glm/"

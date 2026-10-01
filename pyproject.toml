@@ -10,7 +10,7 @@ dynamic = ["version"]
 description = "Python API for the General Lake Model (GLM)."
 readme = "README.md"
 authors = []
-license = { file = "LICENSE" }
+license = "GPL-3.0-or-later"
 classifiers = [
   "Programming Language :: Python",
   "Programming Language :: Python :: 3",
