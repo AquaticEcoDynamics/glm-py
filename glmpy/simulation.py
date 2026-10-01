@@ -16,7 +16,7 @@ from typing import Any, Callable, Dict, List, Union
 import pandas as pd
 import netCDF4
 
-from glmpy.nml.nml import NMLWriter
+from glmpy.nml import NMLWriter
 
 GLM_VERSION = "4.0.0"
 
@@ -570,7 +570,7 @@ class GLMSim:
         block_name : str
             The block name.
         """
-        return self.nml[nml_name].blocks[block_name]
+        return self.nml[nml_name][block_name]
 
     def set_nml(self, nml_name: str, nml_dict: OrderedDict):
         """
