@@ -1,0 +1,101 @@
+[project]
+site_url = "https://aquaticecodynamics.github.io"
+site_name = "glm-py"
+site_description = "Documentation for the glm-py Python package."
+site_author = "gilesknight"
+repo_url = "https://github.com/AquaticEcoDynamics/glm-py"
+repo_name = "AquaticEcoDynamics/glm-py"
+nav = [
+  { "Home" = "index.md" },
+  { "Install" = "installation.md" },
+  { "How to" = [
+      "how-to/simulation.md",
+      "how-to/plots.md",
+      "how-to/nml.md"
+  ]},
+  { "Tutorials" = "tutorials.md"},
+  { "API Reference" = [
+      "api-reference/dimensions.md",
+      "api-reference/flows.md",
+      "api-reference/nml.md",
+      "api-reference/plots.md",
+      "api-reference/simulation.md"
+  ]},
+  { "Contributing" = "contributing.md"},
+  { "Release Notes" = "release-notes.md"},
+]
+extra_css = ["css/extra.css"]
+
+[project.theme]
+variant = "classic"
+language = "en"
+features = [
+  "announce.dismiss",
+  # "content.action.edit",
+  # "content.action.view",
+  "content.code.annotate",
+  "content.code.copy",
+  "content.code.select",
+  "content.footnote.tooltips",
+  "content.tabs.link",
+  "content.tooltips",
+  # "header.autohide",
+  # "navigation.expand",
+  "navigation.footer",
+  "navigation.indexes",
+  "navigation.instant",
+  "navigation.instant.prefetch",
+  # "navigation.instant.progress",
+  "navigation.path",
+  # "navigation.prune",
+  "navigation.sections",
+  "navigation.tabs",
+  # "navigation.tabs.sticky",
+  "navigation.top",
+  "navigation.tracking",
+  "search.highlight",
+  # "toc.follow",
+  # "toc.integrate",
+]
+logo = "img/logo/glmpy-white-stencil.png"
+
+[project.markdown_extensions]
+abbr = {}
+admonition = {}
+attr_list = {}
+def_list = {}
+footnotes = {}
+md_in_html = {}
+toc.permalink = true
+pymdownx.arithmatex.generic = true
+pymdownx.betterem = {}
+pymdownx.caret = {}
+pymdownx.details = {}
+pymdownx.emoji.emoji_generator = "zensical.extensions.emoji.to_svg"
+pymdownx.emoji.emoji_index = "zensical.extensions.emoji.twemoji"
+pymdownx.highlight.anchor_linenums = true
+pymdownx.highlight.line_spans = "__span"
+pymdownx.highlight.pygments_lang_class = true
+pymdownx.inlinehilite = {}
+pymdownx.keys = {}
+pymdownx.magiclink = {}
+pymdownx.mark = {}
+pymdownx.smartsymbols = {}
+# pymdownx.snippets.base_path = "includes"
+pymdownx.superfences.custom_fences = [
+  { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" },
+]
+pymdownx.tabbed.alternate_style = true
+pymdownx.tabbed.combine_header_slug = true
+pymdownx.tasklist.custom_checkbox = true
+pymdownx.tilde = {}
+
+[project.plugins.tags]
+
+[project.plugins.glightbox]
+enabled = true
+
+[project.plugins.mkdocs-video]
+enabled = true
+is_video = true
+video_loop = true

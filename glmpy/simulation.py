@@ -189,12 +189,131 @@ def write_aed_dbase(dbase_pd: pd.DataFrame, dbase_path: str) -> None:
             writer.writerow(row)
 
 
+
+class GLMOutputs:
+    """
+    Return GLM output files.
+
+    Initialised at the completion of a GLM simulation to record the
+    paths of output files. Provides methods to return the data in
+    these files.
+
+    Attributes
+    ----------
+    sim_name : str
+        Name of the simulation.
+    """
+    def __init__(
+        self,
+        sim_dir_path: str,
+        out_dir: str = "output",
+        out_fn: str = "output",
+        sim_name: str = "simulation",
+    ):
+        """
+        Parameters
+        ----------
+        sim_dir_path : str
+            Path to the simulation directory.
+        out_dir : str
+            Directory name containing the GLM output files. Set this to
+            equal the `out_dir` parameter in the `output` block of the
+            `glm` NML.
+        out_fn : str
+            Filename of the main NetCDF output file. Set this to equal
+            the `out_dir` parameter in the `output` block of the `glm`
+            NML.
+        sim_name : str
+            Name of the simulation.
+        """
+        self.sim_name = sim_name
+        self._outputs_path = os.path.join(sim_dir_path, out_dir)
+        files = os.listdir(self._outputs_path)
+
+        self._csv_files = {}
+        for file in files:
+            if file.endswith(".csv"):
+                self._csv_files[os.path.splitext(file)[0]] = os.path.join(
+                    self._outputs_path, file
+                )
+        if not out_fn.endswith(".nc"):
+            out_fn = out_fn + ".nc"
+        if out_fn in files:
+            self.nc_path = os.path.join(self._outputs_path, out_fn)
+        else:
+            self.nc_path = None
+
+    def get_csv_basenames(self) -> List[str]:
+        """
+        Returns a list of CSV basenames in the outputs directory.
+        """
+        return sorted(list(self._csv_files.keys()))
+
+    def get_csv_path(self, csv_basename: str) -> str:
+        """
+        Returns the full file path of a CSV in the outputs directory.
+
+        Parameters
+        ----------
+        csv_basename : str
+            The basename of a CSV in the outputs directory. To see
+            possible basenames, use `get_csv_basenames()`.
+        """
+        return self._csv_files[csv_basename]
+
+    def get_csv_pd(self, csv_basename: str) -> pd.DataFrame:
+        """
+        Returns a Pandas DataFrame of a CSV in the outputs directory.
+
+        Parameters
+        ----------
+        csv_basename : str
+            The basename of a CSV in the outputs directory. To see
+            possible basenames, use `get_csv_basenames()`.
+        """
+        return pd.read_csv(self.get_csv_path(csv_basename))
+
+    def get_netcdf_path(self) -> str:
+        """
+        Returns the path of the netCDF output file.
+        """
+        if self.nc_path is None:
+            raise FileNotFoundError(
+                f"No output netCDF file found in {self._outputs_path}"
+            )
+        return self.nc_path
+
+    def get_netcdf(self) -> netCDF4.Dataset:
+        """
+        Returns a `netCDF4.Dataset` instance of the netCDF output file.
+        """
+        output_nc = netCDF4.Dataset(
+            self.get_netcdf_path(), "r", format="NETCDF4"
+        )
+        return output_nc
+
+    def zip_csv_outputs(self) -> str:
+        """
+        Creates a zipfile of csv GLM outputs (csv outputs only).
+
+        Use this if you do not need a netCDF file of GLM outputs.
+        """
+        zip_name = f"{self.sim_name}_csv_outputs.zip"
+        with zipfile.ZipFile(
+            os.path.join(self._outputs_path, zip_name), "w"
+        ) as z:
+            for csv_path in self._csv_files.values():
+                if os.path.exists(csv_path):
+                    z.write(csv_path)
+
+        return os.path.join(self._outputs_path, zip_name)
+
 class GLMSim:
     def __init__(
         self,
         sim_name: str,
-        glm_nml: OrderedDict = OrderedDict(),
-        aed_nml: OrderedDict = OrderedDict(),
+        glm_nml: Union[dict, OrderedDict] = OrderedDict(),
+        aed_nml: Union[dict, OrderedDict] = OrderedDict(),
         bcs: Dict[str, pd.DataFrame] = {},
         aed_dbase: Dict[str, pd.DataFrame] = {},
         sim_dir_path: str = ".",
@@ -205,9 +324,9 @@ class GLMSim:
         sim_name : str
             The simulation name. Updates the `sim_name` parameter of
             the `glm_setup` block.
-        glm_nml : OrderedDict
+        glm_nml : Union[dict, OrderedDict]
             An ordered dictionary of the GLM model parameters.
-        aed_nml : OrderedDict
+        aed_nml : Union[dict, OrderedDict]
             An ordered dictionary of the AED model parameters.
         bcs : Dict[str, pd.DataFrame]
             Dictionary of boundary condition dataframes. The keys are
@@ -225,8 +344,8 @@ class GLMSim:
             Default is the current working directory.
         """
         self.nml: OrderedDict = OrderedDict()
-        self.nml['glm'] = glm_nml
-        self.nml['aed'] = aed_nml
+        self.nml['glm'] = GLMSim.to_ordered_dict(glm_nml)
+        self.nml['aed'] = GLMSim.to_ordered_dict(aed_nml)
         self.bcs_fl_vars = ['meteo_fl', 'inflow_fl', 'outflow_fl']
         self.dbase_fl_vars = ['dbase']
 
@@ -287,8 +406,10 @@ class GLMSim:
             )
         with zipfile.ZipFile(glmpy_path, "r") as zipf:
             sim_json = json.loads(zipf.read("glm_sim.json").decode("utf-8"))
-            glm_nml = OrderedDict(**sim_json["nml"]["glm"])
-            aed_nml = OrderedDict(**sim_json["nml"]["aed"])
+            glm_nml = GLMSim.to_ordered_dict(sim_json["nml"]["glm"])
+            aed_nml = GLMSim.to_ordered_dict(sim_json["nml"]["aed"])
+            # glm_nml = OrderedDict(**sim_json["nml"]["glm"])
+            # aed_nml = OrderedDict(**sim_json["nml"]["aed"])
             bcs = {}
             for fname in sim_json["bcs"]:
                 bc_pd = pd.read_csv(zipf.open(fname + ".csv"))
@@ -435,7 +556,7 @@ class GLMSim:
         quiet: bool = False,
         time_sim: bool = False,
         glm_path: Union[str, None] = None,
-    ):
+    ) -> GLMOutputs:
         """
         Run the GLM simulation.
 
@@ -540,7 +661,7 @@ class GLMSim:
         """
         return self.nml[nml_name][block_name][param_name]
 
-    def set_block(self, nml_name: str, block_name: str, block_dict: OrderedDict):
+    def set_block(self, nml_name: str, block_name: str, block_dict: Union[dict, OrderedDict]):
         """
         Set a NML Block.
 
@@ -552,9 +673,10 @@ class GLMSim:
             The NML name.
         block_name : str
             The block name.
-        block_dict : OrderedDict
+        block_dict : Union[dict, OrderedDict]
             The block to set.
         """
+        block_dict = GLMSim.to_ordered_dict(block_dict)
         self.nml[nml_name][block_name] = block_dict
 
     def get_block(self, nml_name: str, block_name: str) -> OrderedDict:
@@ -572,7 +694,7 @@ class GLMSim:
         """
         return self.nml[nml_name][block_name]
 
-    def set_nml(self, nml_name: str, nml_dict: OrderedDict):
+    def set_nml(self, nml_name: str, nml_dict: Union[dict, OrderedDict]):
         """
         Set NML.
 
@@ -582,9 +704,10 @@ class GLMSim:
         ----------
         nml_name : str
             The NML name.
-        nml_dict : OrderedDict
+        nml_dict : Union[dict, OrderedDict]
             The NML to set.
         """
+        nml_dict = GLMSim.to_ordered_dict(nml_dict)
         self.nml[nml_name] = nml_dict
 
     def get_nml(self, nml_name: str) -> OrderedDict:
@@ -628,7 +751,7 @@ class GLMSim:
         nml_name : str
             The NML name.
         """
-        return self.nml[nml_name].keys()
+        return list(self.nml[nml_name].keys())
 
     def get_nml_names(self) -> List[str]:
         """
@@ -700,124 +823,18 @@ class GLMSim:
         """
         return os.path.join(self.sim_dir_path, self.sim_name)
 
-
-class GLMOutputs:
-    """
-    Return GLM output files.
-
-    Initialised at the completion of a GLM simulation to record the
-    paths of output files. Provides methods to return the data in
-    these files.
-
-    Attributes
-    ----------
-    sim_name : str
-        Name of the simulation.
-    """
-    def __init__(
-        self,
-        sim_dir_path: str,
-        out_dir: str = "output",
-        out_fn: str = "output",
-        sim_name: str = "simulation",
-    ):
-        """
-        Parameters
-        ----------
-        sim_dir_path : str
-            Path to the simulation directory.
-        out_dir : str
-            Directory name containing the GLM output files. Set this to
-            equal the `out_dir` parameter in the `output` block of the
-            `glm` NML.
-        out_fn : str
-            Filename of the main NetCDF output file. Set this to equal
-            the `out_dir` parameter in the `output` block of the `glm`
-            NML.
-        sim_name : str
-            Name of the simulation.
-        """
-        self.sim_name = sim_name
-        self._outputs_path = os.path.join(sim_dir_path, out_dir)
-        files = os.listdir(self._outputs_path)
-
-        self._csv_files = {}
-        for file in files:
-            if file.endswith(".csv"):
-                self._csv_files[os.path.splitext(file)[0]] = os.path.join(
-                    self._outputs_path, file
-                )
-        if not out_fn.endswith(".nc"):
-            out_fn = out_fn + ".nc"
-        if out_fn in files:
-            self.nc_path = os.path.join(self._outputs_path, out_fn)
-        else:
-            self.nc_path = None
-
-    def get_csv_basenames(self) -> List[str]:
-        """
-        Returns a list of CSV basenames in the outputs directory.
-        """
-        return sorted(list(self._csv_files.keys()))
-
-    def get_csv_path(self, csv_basename: str) -> str:
-        """
-        Returns the full file path of a CSV in the outputs directory.
-
-        Parameters
-        ----------
-        csv_basename : str
-            The basename of a CSV in the outputs directory. To see
-            possible basenames, use `get_csv_basenames()`.
-        """
-        return self._csv_files[csv_basename]
-
-    def get_csv_pd(self, csv_basename: str) -> pd.DataFrame:
-        """
-        Returns a Pandas DataFrame of a CSV in the outputs directory.
-
-        Parameters
-        ----------
-        csv_basename : str
-            The basename of a CSV in the outputs directory. To see
-            possible basenames, use `get_csv_basenames()`.
-        """
-        return pd.read_csv(self.get_csv_path(csv_basename))
-
-    def get_netcdf_path(self) -> str:
-        """
-        Returns the path of the netCDF output file.
-        """
-        if self.nc_path is None:
-            raise FileNotFoundError(
-                f"No output netCDF file found in {self._outputs_path}"
-            )
-        return self.nc_path
-
-    def get_netcdf(self) -> netCDF4.Dataset:
-        """
-        Returns a `netCDF4.Dataset` instance of the netCDF output file.
-        """
-        output_nc = netCDF4.Dataset(
-            self.get_netcdf_path(), "r", format="NETCDF4"
-        )
-        return output_nc
-
-    def zip_csv_outputs(self) -> str:
-        """
-        Creates a zipfile of csv GLM outputs (csv outputs only).
-
-        Use this if you do not need a netCDF file of GLM outputs.
-        """
-        zip_name = f"{self.sim_name}_csv_outputs.zip"
-        with zipfile.ZipFile(
-            os.path.join(self._outputs_path, zip_name), "w"
-        ) as z:
-            for csv_path in self._csv_files.values():
-                if os.path.exists(csv_path):
-                    z.write(csv_path)
-
-        return os.path.join(self._outputs_path, zip_name)
+    # def _to_ordered_dict(self, in_dict: Union[dict, OrderedDict]) -> OrderedDict:
+    #     if isinstance(in_dict, OrderedDict):
+    #         out_dict = in_dict
+    #     elif isinstance(in_dict, dict):
+    #         out_dict = OrderedDict(in_dict)
+    #     return out_dict
+    @ staticmethod
+    def to_ordered_dict(value: Union[dict, OrderedDict]) -> OrderedDict:
+        """Recursively converts a dict and any nested dicts to OrderedDicts."""
+        if isinstance(value, dict):
+            return OrderedDict((k, GLMSim.to_ordered_dict(v)) for k, v in value.items())
+        return value
 
 
 def no_op_callback(x, y):

@@ -662,7 +662,7 @@ class NCPlotter:
         """Interpolates one timestep's layer values onto `plot_heights`."""
         n = self._num_layers[timestep]
         layer_tops = self._layer_heights[timestep, :n]
-        # the centre of a layer is `(bottom + top) / 2`
+        # the centre of a layer is `(layer_{n-1} + layer_{n}) / 2`
         layer_bottoms = np.concatenate([[0.0], layer_tops[:-1]])
         var_heights = np.concatenate([[0.0], (layer_bottoms + layer_tops) / 2])
         vals = np.concatenate([var_vals[timestep, :1], var_vals[timestep, :n]])
@@ -711,11 +711,10 @@ class NCPlotter:
                 f'the maximum height of {round(self._max_height, 2)} m.'
             )
 
-        nc = xr.open_dataset(self.nc_path)
-        var_vals = nc.variables[var_name].values[
-            :, 0 : self._max_num_layers + 1, 0, 0
-        ]
-        nc.close()
+        with xr.open_dataset(self.nc_path) as nc:
+            var_vals = nc.variables[var_name].values[
+                :, 0 : self._max_num_layers + 1, 0, 0
+            ]
 
         # the centre of a layer is `(layer_{n-1} + layer_{n}) / 2`
         layer_bottoms = np.concatenate(
@@ -788,32 +787,38 @@ class NCPlotter:
         out : AxesImage
             The plotted image object.
         """
-
-        reproj_var = self.get_profile(var_name, reference, mask_outside=(reference != 'bottom'))
+        reproj_var = self.get_profile(var_name, reference, False)
+        x_dates = mdates.date2num(self._time)
+        height_grid = np.arange(0, self._max_height, self.resolution)
+        y_span = len(height_grid) * self.resolution
+        half_dt = (x_dates[1] - x_dates[0]) / 2
 
         if reference == 'bottom':
-            y_min, y_max = (0, self._max_height)
+            y_min, y_max = (0, y_span)
+            clip_verts = np.column_stack([
+                np.concatenate([x_dates, x_dates[::-1]]),
+                np.concatenate([self._surface_heights, np.zeros(self._n_timesteps)]),
+            ])
         else:
-            y_min, y_max = (self._max_height, 0)
+            y_min, y_max = (y_span, 0)
+            clip_verts = np.column_stack([
+                np.concatenate([x_dates, x_dates[::-1]]),
+                np.concatenate([np.zeros(self._n_timesteps), self._surface_heights[::-1]]),
+            ])
 
-        x_dates = mdates.date2num(self._time)
         self._set_default_plot_params(
             param_dict,
             {
                 'interpolation': 'bilinear',
                 'aspect': 'auto',
                 'cmap': 'Spectral_r',
-                'extent': [x_dates[0], x_dates[-1], y_min, y_max],
+                'extent': [x_dates[0] - half_dt, x_dates[-1] + half_dt, y_min, y_max],
             },
         )
         out = ax.imshow(reproj_var, **param_dict)
-        if reference == 'bottom':
-            # clip the raster pixels to the exact water surface
-            clip_verts = np.column_stack([
-                np.concatenate([x_dates, x_dates[::-1]]),
-                np.concatenate([self._surface_heights, np.zeros(self._n_timesteps)]),
-            ])
-            out.set_clip_path(Path(clip_verts), transform=ax.transData)
+        # clip the raster pixels to the exact water surface
+        out.set_clip_path(Path(clip_verts), transform=ax.transData)
+
         locator = mdates.AutoDateLocator()
         date_formatter = mdates.DateFormatter('%d/%m/%y')
         ax.set_xticks(x_dates)
@@ -824,7 +829,7 @@ class NCPlotter:
         param_dict.clear()
         return out
 
-    def get_profile(self, var_name: str, reference: str = 'bottom', mask_outside: bool = True):
+    def get_profile(self, var_name: str, reference: str = 'bottom', mask_outside: bool = False):
         if reference != 'surface' and reference != 'bottom':
             raise ValueError(
                 "reference must be either 'surface' or 'bottom'. Got "
@@ -837,20 +842,7 @@ class NCPlotter:
             )
 
         var_vals = self._get_var_vals(var_name)[:, 0 : self._max_num_layers + 1, 0, 0]
-
-
         height_grid = np.arange(0, self._max_height, self.resolution)
-
-        # the centre of a layer is `(bottom + top) / 2`
-        # layer_bottoms = np.concatenate(
-        #     [np.zeros((self._n_timesteps, 1)), self._layer_heights[:, :-1]],
-        #     axis=1,
-        # )
-        # layer_centres = (layer_bottoms + self._layer_heights) / 2
-        # var_heights = np.concatenate(
-        #     [np.zeros((self._n_timesteps, 1)), layer_centres], axis=1
-        # )
-        # var_vals = np.concatenate([var_vals[:, 0:1], var_vals], axis=1)
 
         # a height_grid for each timestep
         if reference == 'bottom':  # plot_heights is height up from the bed
@@ -866,10 +858,6 @@ class NCPlotter:
         reproj_var = np.full((self._n_timesteps, len(height_grid)), np.nan)
         for i in range(self._n_timesteps):
             reproj_var[i, :] = self._reproject_timestep(var_vals, i, plot_heights[i])
-            # n = self._num_layers[i]
-            # reproj_var[i, :] = np.interp(
-            #     plot_heights[i], var_heights[i, : n + 1], var_vals[i, : n + 1]
-            # )
 
         if mask_outside:
             # set everything outside the water column to nan
@@ -934,7 +922,7 @@ class NCPlotter:
         snow_param_dict.clear()
         return [blue_fill, white_fill, snow_fill]
 
-    def plot_snow_ice_cross_section(
+    def plot_snow_ice_xsection(
         self, ax: Axes,
         timestep: int,
         blue_ice_param_dict: dict = {},
@@ -977,7 +965,7 @@ class NCPlotter:
         snow_param_dict.clear()
         return [blue_fill, white_fill, snow_fill]
 
-    def plot_cross_section(
+    def plot_xsection(
         self, ax: Axes, var_name: str, timestep: int, param_dict={}
     ):
         if var_name not in self.get_var_names():
@@ -990,6 +978,8 @@ class NCPlotter:
         reproj_var = self._reproject_timestep(var_vals, timestep, height_grid)
         # set everything above the water surface to nan
         reproj_var[height_grid > self._surface_heights[timestep]] = np.nan
+        reproj_var = np.expand_dims(reproj_var, axis=0)
+        reproj_var = np.rot90(reproj_var, 1)
 
         self._set_default_plot_params(
             param_dict,
@@ -1000,7 +990,7 @@ class NCPlotter:
                 'extent': [-10, 10, 0, round(self._max_height, 2)],
             }
         )
-        out = ax.imshow(np.expand_dims(reproj_var, axis=1), **param_dict)
+        out = ax.imshow(reproj_var, **param_dict)
         ax.get_xaxis().set_visible(False)
         ax.set_ylabel('Water column height (m)')
         param_dict.clear()
@@ -1177,3 +1167,7 @@ class NCPlotter:
             Maximum water column height
         """
         return float(self._max_height)
+
+    def get_time(self):
+
+        return self._time

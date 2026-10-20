@@ -34,7 +34,6 @@ fig, ax = plt.subplots(figsize=(10, 5))
 profile = nc.plot_profile(ax=ax, var_name="temp")
 fig.colorbar(profile).set_label("Temperature (°C)")
 ```
-<img src="docs/img/readme_profile.png" align="center" height="325" />
+<img src="docs/img/index/profile_demo.png" align="center" height="325" />
 
 The API is designed to be interoperable with existing GLM workflows and easily extendable by users. glm-py can be used for running GLM simulations within local Python environments, running batches of GLM simulations on HPCs, or for interfacing with web applications/cloud services that use GLM.
-

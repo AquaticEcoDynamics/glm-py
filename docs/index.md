@@ -1,4 +1,4 @@
-# glm-py <img src="img/glmpy-square-blue.png" align="right" width="128" />
+# glm-py <img src="img/logo/glmpy-square-blue.png" align="right" width="128" />
 
 Python API for the General Lake Model (GLM).
 
@@ -34,7 +34,7 @@ fig, ax = plt.subplots(figsize=(10, 5))
 profile = nc.plot_profile(ax=ax, var_name="temp")
 fig.colorbar(profile).set_label("Temperature (°C)")
 ```
-<img src="img/readme_profile.png" align="center" height="325" />
+
+![glm-py profile plot](img/index/profile_demo.png)
 
 The API is designed to be interoperable with existing GLM workflows and easily extendable by users. glm-py can be used for running GLM simulations within local Python environments, running batches of GLM simulations on HPCs, or for interfacing with web applications/cloud services that use GLM.
-

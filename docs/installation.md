@@ -8,7 +8,7 @@ Install glm-py with `pip`:
 pip install glm-py
 ```
 
-!!! tip "Advanced"
+!!! example "Advanced"
 
     To install the development version of glm-py use:
 
@@ -27,7 +27,7 @@ The built distribution of glm-py comes bundled with the GLM binary.
 - You have CPython 3.9-3.12 or PyPy 3.9-3.10 installed 
 - You are running one of the supported OS/architectures listed in the table below
 
-|             | Linux       | Macos       | Windows     |
+|             | Linux       | MacOS       | Windows     |
 | ----------- | ----------- | ----------- | ----------- |
 | **x86_64**  | ✅          | ✅          | ❌           |
 | **ARM64**   | ✅          | ✅          | ❌           |
@@ -44,6 +44,7 @@ The following table lists the GLM version that is bundled with the built distrib
 
 | glm-py version | GLM version     |
 | -------------- | -----------     |
+| `0.6.*`        | `4.0.0`         |
 | `0.5.*`        | `3.3.3`         |
 | `0.4.*`        | `3.3.1a12`      |
 | `0.3.*`        | `3.3.1a12`      |
