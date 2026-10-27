@@ -575,21 +575,12 @@ class NCPlotter:
         Path to the output NetCDF file.
     resolution : float
         Resolution of the depth range (m).
-    ice_height : bool
-        Include ice when calculating surface height.
-    white_ice_height : bool
-        Include white ice when calculating surface height.
-    snow_height : bool
-        Include snow when calculating surface height.
     """
 
     def __init__(
         self,
         nc_path: str,
         resolution: float = 0.1,
-        ice_height: bool = False,
-        white_ice_height: bool = False,
-        snow_height: bool = False,
     ):
         """
         Initialise NCPlotter with the output NetCDF file path.
@@ -600,17 +591,8 @@ class NCPlotter:
             Path to the output NetCDF file.
         resolution : float
             Resolution of the depth range (m).
-        ice_height : bool
-            Include ice when calculating surface height.
-        white_ice_height : bool
-            Include white ice when calculating surface height.
-        snow_height : bool
-            Include snow when calculating surface height.
         """
         self.resolution = resolution
-        self.ice_height = ice_height
-        self.white_ice_height = white_ice_height
-        self.snow_height = snow_height
         self.nc_path = nc_path
 
     @property
@@ -741,7 +723,6 @@ class NCPlotter:
                 )
 
         x_dates = mdates.date2num(self._time)
-        self._set_default_plot_params(param_dict, {'color': 'black'})
         out = ax.plot(x_dates, series, **param_dict)
         locator = mdates.AutoDateLocator()
         date_formatter = mdates.DateFormatter('%d/%m/%y')
@@ -794,12 +775,14 @@ class NCPlotter:
         half_dt = (x_dates[1] - x_dates[0]) / 2
 
         if reference == 'bottom':
+            y_label = 'Height (m)'
             y_min, y_max = (0, y_span)
             clip_verts = np.column_stack([
                 np.concatenate([x_dates, x_dates[::-1]]),
                 np.concatenate([self._surface_heights, np.zeros(self._n_timesteps)]),
             ])
         else:
+            y_label = 'Depth (m)'
             y_min, y_max = (y_span, 0)
             clip_verts = np.column_stack([
                 np.concatenate([x_dates, x_dates[::-1]]),
@@ -824,7 +807,7 @@ class NCPlotter:
         ax.set_xticks(x_dates)
         ax.xaxis.set_major_locator(locator)
         ax.xaxis.set_major_formatter(date_formatter)
-        ax.set_ylabel('Water column height (m)')
+        ax.set_ylabel(y_label)
         ax.set_xlabel('Date')
         param_dict.clear()
         return out

@@ -1,4 +1,3 @@
-from collections import OrderedDict
 import io
 import os
 import csv
@@ -11,6 +10,7 @@ import datetime
 import warnings
 import multiprocessing
 from importlib import resources
+from collections import OrderedDict
 from typing import Any, Callable, Dict, List, Union
 
 import pandas as pd
@@ -312,8 +312,8 @@ class GLMSim:
     def __init__(
         self,
         sim_name: str,
-        glm_nml: Union[dict, OrderedDict] = OrderedDict(),
-        aed_nml: Union[dict, OrderedDict] = OrderedDict(),
+        glm_nml: dict = {},
+        aed_nml: dict = {},
         bcs: Dict[str, pd.DataFrame] = {},
         aed_dbase: Dict[str, pd.DataFrame] = {},
         sim_dir_path: str = ".",
@@ -324,10 +324,10 @@ class GLMSim:
         sim_name : str
             The simulation name. Updates the `sim_name` parameter of
             the `glm_setup` block.
-        glm_nml : Union[dict, OrderedDict]
-            An ordered dictionary of the GLM model parameters.
-        aed_nml : Union[dict, OrderedDict]
-            An ordered dictionary of the AED model parameters.
+        glm_nml : dict
+            A dictionary of the GLM model parameters.
+        aed_nml : dict
+            A dictionary of the AED model parameters.
         bcs : Dict[str, pd.DataFrame]
             Dictionary of boundary condition dataframes. The keys are
             the basename (without extension) of the boundary condition
@@ -408,8 +408,6 @@ class GLMSim:
             sim_json = json.loads(zipf.read("glm_sim.json").decode("utf-8"))
             glm_nml = GLMSim.to_ordered_dict(sim_json["nml"]["glm"])
             aed_nml = GLMSim.to_ordered_dict(sim_json["nml"]["aed"])
-            # glm_nml = OrderedDict(**sim_json["nml"]["glm"])
-            # aed_nml = OrderedDict(**sim_json["nml"]["aed"])
             bcs = {}
             for fname in sim_json["bcs"]:
                 bc_pd = pd.read_csv(zipf.open(fname + ".csv"))
@@ -576,7 +574,6 @@ class GLMSim:
             Path to the GLM binary. If `None`, attempts to use the GLM
             binary included in glm-py's built distribution.
         """
-        self.validate()
         self.prepare_all_inputs()
         run_glm(
             sim_dir_path=self.get_sim_dir(),
@@ -661,7 +658,7 @@ class GLMSim:
         """
         return self.nml[nml_name][block_name][param_name]
 
-    def set_block(self, nml_name: str, block_name: str, block_dict: Union[dict, OrderedDict]):
+    def set_block(self, nml_name: str, block_name: str, block_dict: dict):
         """
         Set a NML Block.
 
@@ -673,13 +670,13 @@ class GLMSim:
             The NML name.
         block_name : str
             The block name.
-        block_dict : Union[dict, OrderedDict]
+        block_dict : dict
             The block to set.
         """
         block_dict = GLMSim.to_ordered_dict(block_dict)
         self.nml[nml_name][block_name] = block_dict
 
-    def get_block(self, nml_name: str, block_name: str) -> OrderedDict:
+    def get_block(self, nml_name: str, block_name: str) -> dict:
         """
         Get a NML Block.
 
@@ -692,9 +689,9 @@ class GLMSim:
         block_name : str
             The block name.
         """
-        return self.nml[nml_name][block_name]
+        return GLMSim.to_regular_dict(self.nml[nml_name][block_name])
 
-    def set_nml(self, nml_name: str, nml_dict: Union[dict, OrderedDict]):
+    def set_nml(self, nml_name: str, nml_dict: dict):
         """
         Set NML.
 
@@ -704,7 +701,7 @@ class GLMSim:
         ----------
         nml_name : str
             The NML name.
-        nml_dict : Union[dict, OrderedDict]
+        nml_dict : dict
             The NML to set.
         """
         nml_dict = GLMSim.to_ordered_dict(nml_dict)
@@ -721,7 +718,7 @@ class GLMSim:
         nml_name : str
             The NML name.
         """
-        return self.nml[nml_name]
+        return GLMSim.to_regular_dict(self.nml[nml_name])
 
     def get_param_names(self, nml_name: str, block_name: str) -> List[str]:
         """
@@ -797,12 +794,6 @@ class GLMSim:
         """
         self.bcs[bcs_name] = bcs_pd
 
-    def validate(self):
-        """
-        Validate the simulation inputs.
-        """
-        pass
-
     def get_deepcopy(self) -> "GLMSim":
         """
         Copy the `GLMSim` object.
@@ -823,18 +814,24 @@ class GLMSim:
         """
         return os.path.join(self.sim_dir_path, self.sim_name)
 
-    # def _to_ordered_dict(self, in_dict: Union[dict, OrderedDict]) -> OrderedDict:
-    #     if isinstance(in_dict, OrderedDict):
-    #         out_dict = in_dict
-    #     elif isinstance(in_dict, dict):
-    #         out_dict = OrderedDict(in_dict)
-    #     return out_dict
     @ staticmethod
-    def to_ordered_dict(value: Union[dict, OrderedDict]) -> OrderedDict:
-        """Recursively converts a dict and any nested dicts to OrderedDicts."""
-        if isinstance(value, dict):
-            return OrderedDict((k, GLMSim.to_ordered_dict(v)) for k, v in value.items())
-        return value
+    def to_ordered_dict(obj):
+        "Converts a nested dictionary to a nested ordered dictionary"
+        if isinstance(obj, dict):
+            obj = OrderedDict(obj)
+            for k, v in obj.items():
+                obj[k] = GLMSim.to_ordered_dict(v)
+        return obj
+
+    @ staticmethod
+    def to_regular_dict(obj):
+        "Converts a nested ordered dictionary to a nested dictionary"
+        if isinstance(obj, OrderedDict):
+            obj = dict(obj)
+            for k, v in obj.items():
+                obj[k] = GLMSim.to_regular_dict(v)
+        return obj
+
 
 
 def no_op_callback(x, y):

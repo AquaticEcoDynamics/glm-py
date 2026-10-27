@@ -5,7 +5,7 @@
 glm-py's `plots` module provides a series of classes for creating Matplotlib plots of GLM's various output files:  `LakePlotter` for plotting the lake.csv, `WQPlotter` for plotting the depth-specific WQ_*.csv files, and`NCPlotter` for plotting the output.nc.
 The responsibility of each class is strictly to plot the data and its neccesary labels to a Matplotlib `Axes` object with some sensible defaults.
 Everything else—the `Figure` and `Axes` creation, adding legends, customising the symbology and labels (including changing the sensible defaults), and exporting the plot—is left to the user.
-This approach provides control for the most opinionated part of plot making—it's presentation—while abstracting away the least—getting the data onto the plot.
+This gives you control over the most opinionated part of plot making—it's presentation—while abstracting away the least—getting the data onto the plot.
 
 ## Plotting NetCDF outputs
 
@@ -39,8 +39,8 @@ plt.tight_layout()
 
 #### Changing the vertical reference
 
-By default, `plot_profile` measures the water column from the bottom up. 
-You can invert this by setting `reference='surface'`.
+By default, `plot_profile`'s y-axis measures the height of the water from the lake bed up.
+You can instead choose to display the depth of the water from the surface down by setting `reference='surface'`.
 
 ```python
 import matplotlib.pyplot as plt
@@ -127,6 +127,70 @@ fig.colorbar(profile).set_label('Temperature (celsius)')
 plt.tight_layout()
 ```
 ![Sparkling lake profile with snow and ice](../img/how-to/plots/profile-snow-ice.webp)
+
+### Plotting depth-specific variables
+
+```python
+import matplotlib.pyplot as plt
+
+from glmpy import plots, simulation
+
+
+outputs = simulation.GLMSim.from_example_sim('sparkling_lake').run()
+nc = plots.NCPlotter(outputs.get_netcdf_path())
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+temp_15 = nc.plot_var(ax, 'temp', 15)
+
+plt.tight_layout()
+```
+
+![Temperature at 15 metres from the bottom of Sparkling lake](../img/how-to/plots/depth-variable.webp)
+
+#### Changing the vertical reference
+
+```python
+import matplotlib.pyplot as plt
+
+from glmpy import plots, simulation
+
+
+outputs = simulation.GLMSim.from_example_sim('sparkling_lake').run()
+nc = plots.NCPlotter(outputs.get_netcdf_path())
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+temp_15 = nc.plot_var(ax, 'temp', 15, reference='surface')
+
+plt.tight_layout()
+```
+
+![Temperature at 15 metres from the surface of Sparkling lake](../img/how-to/plots/depth-variable-surface.webp)
+
+#### Customisation
+
+```python
+import matplotlib.pyplot as plt
+
+from glmpy import plots, simulation
+
+
+outputs = simulation.GLMSim.from_example_sim('sparkling_lake').run()
+nc = plots.NCPlotter(outputs.get_netcdf_path())
+
+fig, ax = plt.subplots(figsize=(10, 6))
+
+temp_15 = nc.plot_var(
+    ax, 'temp', 15, param_dict={'label': '15 m', 'color': 'k', 'ls': '--'}
+)
+temp_5 = nc.plot_var(ax, 'temp', 5, param_dict={'label': '5 m', 'color': 'k'})
+ax.legend()
+
+plt.tight_layout()
+```
+
+![Temperature at 5 and 15 metres from the bottom of Sparkling lake](../img/how-to/plots/depth-variable-custom.webp)
 
 ## Advanced
 
