@@ -672,7 +672,7 @@ class NCPlotter:
             The matplotlib Axes object to plot on.
         var_name : str
             Name of the variable to plot. To list valid variables, see
-            the `get_2d_var_names()` method.
+            the `get_var_names("2d")` method.
         reference : str, optional
             Reference frame for depth, either `'bottom'` or
             `'surface'`. Default is "bottom".
@@ -685,10 +685,10 @@ class NCPlotter:
         out : List[Line2D]
             List of line objects.
         """
-        if var_name not in self.get_2d_var_names():
+        if var_name not in self.get_var_names('2d'):
             raise ValueError(
                 f'{var_name} is not a valid variable name. Valid variables '
-                'are those returned by get_2d_var_names().'
+                'are those returned by get_var_names("2d").'
             )
         if at_height > self._max_height:
             raise ValueError(
@@ -745,10 +745,10 @@ class NCPlotter:
                 "reference must be either 'surface' or 'bottom'. Got "
                 f"'{reference}'."
             )
-        if var_name not in self.get_2d_var_names():
+        if var_name not in self.get_var_names('2d'):
             raise ValueError(
                 f'{var_name} is not a valid variable name. Valid variables '
-                'are those returned by get_2d_var_names().'
+                'are those returned by get_var_names("2d").'
             )
 
         var_vals = self._get_var_vals(var_name)[:, 0 : self._max_num_layers + 1, 0, 0]
@@ -911,10 +911,10 @@ class NCPlotter:
     def plot_xsection(
         self, ax: Axes, var_name: str, timestep: int, surface_area: float, param_dict={}
     ):
-        if var_name not in self.get_2d_var_names():
+        if var_name not in self.get_var_names('2d'):
             raise ValueError(
                 f'{var_name} is not a valid variable name. Valid variables '
-                'are those returned by get_2d_var_names().'
+                'are those returned by get_var_names("2d").'
             )
         radius = math.sqrt(surface_area / math.pi)
         var_vals = self._get_var_vals(var_name)[:, 0 : self._max_num_layers + 1, 0, 0]
@@ -1011,7 +1011,7 @@ class NCPlotter:
         Line plot of a variable for a specified sediment zone.
 
         Variables compatiable with `plot_zone()` are those returned by
-        `get_zone_var_names()`. The number of valid zones equals
+        `get_var_names("zone")`. The number of valid zones equals
         `n_zones` in the `sediment` block of the `glm` nml.
 
         Parameters
@@ -1020,7 +1020,7 @@ class NCPlotter:
             The Axes to plot on.
         var_name : str
             Name of the variable to plot. To list valid variables, see
-            the `get_zone_var_names()` method.
+            the `get_var_names("zone")` method.
         zone : int, optional
             Zone number. Must be 0 < zone <= n_zones.
         param_dict : dict, optional
@@ -1033,10 +1033,10 @@ class NCPlotter:
             The plotted image object.
         """
 
-        if var_name not in self.get_zone_var_names():
+        if var_name not in self.get_var_names('zone'):
             raise ValueError(
                 f'{var_name} is not a valid variable name. Valid variables '
-                'are those returned by get_zone_var_names().'
+                'are those returned by get_var_names("zone").'
             )
         with xr.open_dataset(self.nc_path) as nc:
             var_vals = nc.variables[var_name].values[:, :, 0, 0]
