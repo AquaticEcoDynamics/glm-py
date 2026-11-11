@@ -653,6 +653,51 @@ class NCPlotter:
         vals = np.concatenate([var_vals[timestep, :1], var_vals[timestep, :n]])
         return np.interp(plot_heights, var_heights, vals)
 
+    def plot_1d_var(
+        self, ax: Axes, var_name: str, param_dict: dict = {}
+    ) -> List[Line2D]:
+        """
+        Line plot of a 1D variable.
+
+        Plots a variable to a matplotlib Axes object.
+
+        Parameters
+        ----------
+        ax : Axes
+            The matplotlib Axes object to plot on.
+        var_name : str
+            Name of the variable to plot. To list valid variables, see
+            the `get_var_names("1d")` method.
+        param_dict : dict, optional
+            Dictionary of keyword arguments to customise the `plot`
+            method. Default is `{}`.
+
+        Returns
+        -------
+        out : List[Line2D]
+            List of line objects.
+        """
+        if var_name not in self.get_var_names('1d'):
+            raise ValueError(
+                f'{var_name} is not a valid variable name. Valid variable '
+                'are those returned by get_var_name("1d").'
+            )
+        with xr.open_dataset(self.nc_path) as nc:
+            var_vals = nc.variables[var_name].values[:, 0, 0]
+        x_dates = self.get_time()
+        out = ax.plot(x_dates, var_vals, **param_dict)
+        locator = mdates.AutoDateLocator()
+        date_formatter = mdates.DateFormatter('%d/%m/%y')
+        ax.set_xticks(x_dates)
+        ax.xaxis.set_major_locator(locator)
+        ax.xaxis.set_major_formatter(date_formatter)
+        ax.set_ylabel(
+            f'{self.get_long_name(var_name)} ({self.get_units(var_name)})'
+        )
+        ax.set_xlabel('Date')
+        param_dict.clear()
+        return out
+
     def plot_2d_var(
         self,
         ax: Axes,
@@ -662,7 +707,7 @@ class NCPlotter:
         param_dict: dict = {},
     ) -> List[Line2D]:
         """
-        Line plot of a variable.
+        Line plot of a 2D variable.
 
         Plots a variable -- at a specified depth -- to a matplotlib Axes object.
 
@@ -1004,7 +1049,6 @@ class NCPlotter:
         curve_param_dict.clear()
         fill_param_dict.clear()
         return [line, fill]
-
 
     def plot_zone(self, ax, var_name: str, zone: int, param_dict: dict = {}):
         """
