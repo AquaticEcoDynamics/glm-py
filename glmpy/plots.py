@@ -1058,41 +1058,37 @@ class NCPlotter:
         )
         return out
 
-    def get_1d_var_names(self) -> List[str]:
+    def get_var_names(self, var_type: str = 'all'):
         """
-        Returns a list of 1D variables in the NetCDF, i.e.,
-        those without a depth dimension.
-        """
-        with xr.open_dataset(self.nc_path) as nc:
-             var_names = []
-             for key, data in nc.variables.items():
-                 if len(data.shape) == 3:
-                     var_names.append(str(key))
-                     print(key, data.shape)
-        return var_names
+        Returns a list of variable names used for plotting.
 
-    def get_2d_var_names(self) -> List[str]:
+        Parameters
+        ----------
+        var_type : str
+            The type of variable. Can be `'all'`, `'1d'` for
+            1D variables, `'2d'` for 2D variables, and `'zone'`
+            for sediment zone variables.
         """
-        Returns a list of 2D variables in the NetCDF, i.e.,
-        those with a time and depth dimension.
-        """
+        valid_types = ['all', '1d', '2d', 'zone']
+        if var_type not in valid_types:
+            raise ValueError(
+                f'Invalid variable type. Got {var_type}. '
+                f'Must be one of: {valid_types}'
+            )
+        var_names = []
         with xr.open_dataset(self.nc_path) as nc:
-            var_shape = nc['z'].shape
-            var_names = []
-            for key in nc.variables.keys():
-                if nc[key].shape == var_shape:
+            for key, data in nc.variables.items():
+                if var_type == 'all':
                     var_names.append(str(key))
-        return var_names
-
-    def get_zone_var_names(self) -> List[str]:
-        """
-        Returns a list of sediment zone variables.
-        """
-        with xr.open_dataset(self.nc_path) as nc:
-            var_names = []
-            for name, data in nc.variables.items():
-                if 'nzones' in data.dims:
-                    var_names.append(name)
+                elif var_type == '1d':
+                    if len(data.shape) == 3:
+                        var_names.append(str(key))
+                elif var_type == '2d':
+                    if nc[key].shape == nc['z'].shape:
+                        var_names.append(str(key))
+                elif var_type == 'zone':
+                    if 'nzones' in data.dims:
+                        var_names.append(str(key))
         return var_names
 
     def get_num_zones(self) -> int:
