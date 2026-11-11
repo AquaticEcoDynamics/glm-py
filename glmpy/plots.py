@@ -1087,9 +1087,9 @@ class NCPlotter:
         """
         with xr.open_dataset(self.nc_path) as nc:
             var_names = []
-            for key in nc.variables.keys():
-                if isinstance(key, str) and key.endswith('_Z'):
-                    var_names.append(key)
+            for name, data in nc.variables.items():
+                if 'nzones' in data.dims:
+                    var_names.append(name)
         return var_names
 
     def get_units(self, var_name: str) -> str:
