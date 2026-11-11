@@ -4,6 +4,79 @@ from typing import Tuple, Union
 import numpy as np
 
 
+class ImbodenLake:
+    """
+    Calculates morphometry data using Imboden's 1973 model.
+
+    Imboden's model describes the 2D shape of a lake using it's maximum
+    depth and an exponent value. The exponent determines the how convex
+    or concave the hyposgraphic curve is
+
+    Imboden, D.M., 1973. Limnologische transport-und Nährstoffmodelle.
+    Schweizerische Zeitschrift für Hydrologie, 35(1), pp.29-68.
+    """
+    def __init__(
+        self,
+        height,
+        surface_area,
+        exponent,
+        num_vals,
+        surface_elevation = 0
+    ):
+        self.height = height
+        self.surface_area = surface_area
+        self.exponent = exponent
+        self.num_vals = num_vals
+        self.surface_elevation = surface_elevation
+
+    def get_areas(self):
+        depth = self.height
+        areas = []
+        for i in np.linspace(start=0, stop=depth, num=self.num_vals):
+            area = self.surface_area * ((1 - (i / depth)) ** self.exponent)
+            areas.append(float(area))
+        return areas[::-1]
+
+    def get_volumes(self):
+        depth = self.height
+        #surface_area = math.pi * (self.surface_radius ** 2)
+        volumes = []
+        for i in np.linspace(start=0, stop=depth, num=self.num_vals):
+            vol = self.surface_area * (
+                (
+                    (depth - i) * ((1 - (i / depth)) ** self.exponent)
+                    / (self.exponent + 1)
+                )
+            )
+            volumes.append(float(vol))
+        return volumes[::-1]
+
+    def get_heights(self):
+        heights = np.linspace(0, self.height, self.num_vals)
+        heights = heights.tolist()
+        heights = [height + self.surface_elevation for height in heights]
+        return heights
+
+    def get_xsection(self, resolution: float = 0.1):
+        init_num_vals = self.num_vals
+        xsection_num_vals = int(self.height / resolution)
+        self.num_vals = xsection_num_vals
+        radii = []
+        for area in self.get_areas():
+            if area == 0:
+                radii.append(0)
+            else:
+                radius = math.sqrt(area / math.pi)
+                radii.append(radius)
+        x = [i * -1 for i in radii[::-1]]
+        x.extend(radii[1:])
+        y = self.get_heights()[::-1]
+        y.extend(self.get_heights()[1:])
+        self.num_vals = init_num_vals
+
+        return x, y
+
+
 class InvertedTruncatedPyramid:
     """
     Calculates the volume and surface area of an inverted truncated

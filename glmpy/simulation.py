@@ -273,7 +273,7 @@ class GLMOutputs:
         """
         return pd.read_csv(self.get_csv_path(csv_basename))
 
-    def get_netcdf_path(self) -> str:
+    def get_nc_path(self) -> str:
         """
         Returns the path of the netCDF output file.
         """
@@ -283,12 +283,12 @@ class GLMOutputs:
             )
         return self.nc_path
 
-    def get_netcdf(self) -> netCDF4.Dataset:
+    def get_nc(self) -> netCDF4.Dataset:
         """
         Returns a `netCDF4.Dataset` instance of the netCDF output file.
         """
         output_nc = netCDF4.Dataset(
-            self.get_netcdf_path(), "r", format="NETCDF4"
+            self.get_nc_path(), "r", format="NETCDF4"
         )
         return output_nc
 
@@ -520,7 +520,7 @@ class GLMSim:
                 nml_writer = NMLWriter(nml_dict)
                 nml_writer.to_nml(output_path)
             elif nml_name == "aed":
-                wq_nml_file = self.get_param_value(
+                wq_nml_file = self.get_param(
                     "glm", "wq_setup", "wq_nml_file"
                 )
                 if wq_nml_file is not None:
@@ -585,8 +585,8 @@ class GLMSim:
         )
         outputs = GLMOutputs(
             sim_dir_path=self.get_sim_dir(),
-            out_dir=self.get_param_value("glm", "output", "out_dir"),
-            out_fn=self.get_param_value("glm", "output", "out_fn"),
+            out_dir=self.get_param("glm", "output", "out_dir"),
+            out_fn=self.get_param("glm", "output", "out_fn"),
             sim_name=self.sim_name,
         )
         return outputs
@@ -604,7 +604,7 @@ class GLMSim:
     @sim_name.setter
     def sim_name(self, value: str):
         self._sim_name = value
-        self.set_param_value("glm", "glm_setup", "sim_name", self.sim_name)
+        self.set_param("glm", "glm_setup", "sim_name", self.sim_name)
 
     def iter_params(self):
         """
@@ -618,13 +618,13 @@ class GLMSim:
                     yield nml_name, block_name, param_name, param_value
 
 
-    def set_param_value(
+    def set_param(
         self, nml_name: str, block_name: str, param_name: str, value: Any
     ):
         """
         Set a parameter value.
 
-        Sets the `value` attribute of a `NMLParam` instance.
+        Sets the value of a specified NML parameter.
 
         Parameters
         ----------
@@ -639,13 +639,13 @@ class GLMSim:
         """
         self.nml[nml_name][block_name][param_name] = value
 
-    def get_param_value(
+    def get_param(
         self, nml_name: str, block_name: str, param_name: str
     ) -> Any:
         """
         Get a parameter value.
 
-        Returns the `value` attribute of a `NMLParam` instance.
+        Returns the value of a specified parameter.
 
         Parameters
         ----------
@@ -680,7 +680,7 @@ class GLMSim:
         """
         Get a NML Block.
 
-        Returns an instance of a `NMLBlock` subclass from the NML.
+        Returns an dictionary of the specified NML block.
 
         Parameters
         ----------
@@ -707,11 +707,11 @@ class GLMSim:
         nml_dict = GLMSim.to_ordered_dict(nml_dict)
         self.nml[nml_name] = nml_dict
 
-    def get_nml(self, nml_name: str) -> OrderedDict:
+    def get_nml(self, nml_name: str) -> dict:
         """
         Get a NML.
 
-        Returns an instance of a `NML` subclass.
+        Returns an dictionary of the specified NML.
 
         Parameters
         ----------
@@ -724,8 +724,7 @@ class GLMSim:
         """
         List the parameter names in a block.
 
-        Returns a list of the `name` attribute for all `NMLParam`
-        instances.
+        Returns a list of the parameter names in a specified NML block.
 
         Parameters
         ----------
@@ -740,8 +739,7 @@ class GLMSim:
         """
         List the block names.
 
-        Returns a list of the `name` attribute for all `NMLBlock`
-        subclass instances.
+        Returns a list of the block names in a specified NML.
 
         Parameters
         ----------
@@ -754,8 +752,7 @@ class GLMSim:
         """
         List the NML names.
 
-        Returns a list of the `name` attribute for all `NML`
-        subclass instances.
+        Returns a list of the NML names.
         """
         return list(self.nml.keys())
 

@@ -1,18 +1,21 @@
 from datetime import datetime, timedelta
 from typing import List
 
+import math
 import xarray as xr
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 import matplotlib.animation as animation
+import numpy.typing as npt
 from matplotlib.axes import Axes
 from matplotlib.image import AxesImage
 from matplotlib.lines import Line2D
 from matplotlib.colors import ListedColormap
 from matplotlib.path import Path
 from matplotlib.collections import FillBetweenPolyCollection
+from matplotlib.patches import Rectangle
 
 
 class WQPlotter:
@@ -605,14 +608,14 @@ class NCPlotter:
         Path to the GLM NetCDF file.
         """
         self._nc_path = nc_path
-        nc = xr.open_dataset(self.nc_path)
-        self._num_layers = nc['NS'].values
-        self._max_num_layers = np.nanmax(self._num_layers)
-        self._layer_heights = nc['z'].values[
-            :, 0 : self._max_num_layers + 1, 0, 0
-        ]
-        self._time = nc['time'].values
-        self._start_datetime = nc.start_time
+        with xr.open_dataset(self.nc_path) as nc:
+            self._num_layers = nc['NS'].values
+            self._max_num_layers = np.nanmax(self._num_layers)
+            self._layer_heights = nc['z'].values[
+                :, 0 : self._max_num_layers + 1, 0, 0
+            ]
+            self._time = nc['time'].values
+            self._start_datetime = nc.start_time
         self._n_timesteps = len(self._time)
         self._timesteps = np.arange(self._n_timesteps)
 
@@ -736,6 +739,50 @@ class NCPlotter:
         param_dict.clear()
         return out
 
+    def get_profile(self, var_name: str, reference: str = 'bottom', mask_outside: bool = False):
+        if reference != 'surface' and reference != 'bottom':
+            raise ValueError(
+                "reference must be either 'surface' or 'bottom'. Got "
+                f"'{reference}'."
+            )
+        if var_name not in self.get_var_names():
+            raise ValueError(
+                f'{var_name} is not a valid variable name. Valid variables '
+                'are those returned by get_var_names().'
+            )
+
+        var_vals = self._get_var_vals(var_name)[:, 0 : self._max_num_layers + 1, 0, 0]
+        height_grid = np.arange(0, self._max_height, self.resolution)
+
+        # a height_grid for each timestep
+        if reference == 'bottom':  # plot_heights is height up from the bed
+            plot_heights = np.broadcast_to(
+                height_grid, (self._n_timesteps, len(height_grid))
+            )
+        else:  # plot_heights is distance down from the surface
+            plot_heights = (
+                self._surface_heights[:, np.newaxis]
+                - height_grid[np.newaxis, :]
+            )
+
+        reproj_var = np.full((self._n_timesteps, len(height_grid)), np.nan)
+        for i in range(self._n_timesteps):
+            reproj_var[i, :] = self._reproject_timestep(var_vals, i, plot_heights[i])
+
+        if mask_outside:
+            # set everything outside the water column to nan
+            outside_water = (plot_heights < 0) | (
+                plot_heights > self._surface_heights[:, np.newaxis]
+            )
+            reproj_var[outside_water] = np.nan
+
+        if reference == 'bottom':
+            reproj_var = np.rot90(reproj_var, 1)
+        else:
+            reproj_var = np.rot90(reproj_var, -1)
+            reproj_var = np.flip(reproj_var, 1)
+        return reproj_var
+
     def plot_profile(
         self,
         ax: Axes,
@@ -812,51 +859,7 @@ class NCPlotter:
         param_dict.clear()
         return out
 
-    def get_profile(self, var_name: str, reference: str = 'bottom', mask_outside: bool = False):
-        if reference != 'surface' and reference != 'bottom':
-            raise ValueError(
-                "reference must be either 'surface' or 'bottom'. Got "
-                f"'{reference}'."
-            )
-        if var_name not in self.get_var_names():
-            raise ValueError(
-                f'{var_name} is not a valid variable name. Valid variables '
-                'are those returned by get_var_names().'
-            )
-
-        var_vals = self._get_var_vals(var_name)[:, 0 : self._max_num_layers + 1, 0, 0]
-        height_grid = np.arange(0, self._max_height, self.resolution)
-
-        # a height_grid for each timestep
-        if reference == 'bottom':  # plot_heights is height up from the bed
-            plot_heights = np.broadcast_to(
-                height_grid, (self._n_timesteps, len(height_grid))
-            )
-        else:  # plot_heights is distance down from the surface
-            plot_heights = (
-                self._surface_heights[:, np.newaxis]
-                - height_grid[np.newaxis, :]
-            )
-
-        reproj_var = np.full((self._n_timesteps, len(height_grid)), np.nan)
-        for i in range(self._n_timesteps):
-            reproj_var[i, :] = self._reproject_timestep(var_vals, i, plot_heights[i])
-
-        if mask_outside:
-            # set everything outside the water column to nan
-            outside_water = (plot_heights < 0) | (
-                plot_heights > self._surface_heights[:, np.newaxis]
-            )
-            reproj_var[outside_water] = np.nan
-
-        if reference == 'bottom':
-            reproj_var = np.rot90(reproj_var, 1)
-        else:
-            reproj_var = np.rot90(reproj_var, -1)
-            reproj_var = np.flip(reproj_var, 1)
-        return reproj_var
-
-    def plot_snow_ice_profile(
+    def plot_snowice_profile(
         self,
         ax: Axes,
         reference='bottom',
@@ -905,26 +908,103 @@ class NCPlotter:
         snow_param_dict.clear()
         return [blue_fill, white_fill, snow_fill]
 
-    def plot_morphometry(
-        self, ax: Axes, x_range: int=11, curve_range: float=9, curve_param_dict={}, fill_param_dict={}
+    def plot_xsection(
+        self, ax: Axes, var_name: str, timestep: int, surface_area: float, param_dict={}
     ):
-        max_height = round(self._max_height, 2)
-        x_range, y_range = abs(x_range), abs(curve_range)
-        x = np.arange(-x_range, x_range, self.resolution)
-        xc = np.clip(x, -y_range, y_range)
-        y = max_height * (xc / y_range)**2
-        self._set_default_plot_params(
-            curve_param_dict, {'color': 'lightgrey', 'zorder': 2}
+        if var_name not in self.get_var_names():
+            raise ValueError(
+                f'{var_name} is not a valid variable name. Valid variables '
+                'are those returned by get_var_names().'
+            )
+        radius = math.sqrt(surface_area / math.pi)
+        var_vals = self._get_var_vals(var_name)[:, 0 : self._max_num_layers + 1, 0, 0]
+        height_grid = np.arange(0, self._max_height, self.resolution)
+        reproj_var = self._reproject_timestep(var_vals, timestep, height_grid)
+        reproj_var = np.expand_dims(reproj_var, axis=0)
+        reproj_var = np.rot90(reproj_var, 1)
+        clip = Rectangle(
+            (-radius, 0), 2 * radius, self._surface_heights[timestep],
+            transform=ax.transData,
         )
         self._set_default_plot_params(
-            fill_param_dict, {'color': 'lightgrey', 'zorder': 2}
+            param_dict,
+            {
+                'interpolation': 'bilinear',
+                'aspect': 'auto',
+                'cmap': 'Spectral_r',
+                'extent': [-radius, radius, 0, round(self._max_height, 2)],
+            }
+        )
+        out = ax.imshow(reproj_var, **param_dict)
+        out.set_clip_path(clip)
+        ax.get_xaxis().set_visible(False)
+        ax.set_ylabel('Height (m)')
+        param_dict.clear()
+        return out
+
+    def plot_snowice_xsection(
+        self, ax: Axes,
+        timestep: int,
+        surface_area: float,
+        blue_ice_param_dict: dict = {},
+        white_ice_param_dict: dict = {},
+        snow_param_dict: dict = {}
+    ):
+        radius = math.sqrt(surface_area / math.pi)
+        blue_thick = self._get_var_vals('blue_ice_thickness')[timestep]
+        white_thick = self._get_var_vals('white_ice_thickness')[timestep]
+        snow_thick = self._get_var_vals('snow_thickness')[timestep]
+        surface_height = self._surface_heights[timestep]
+
+        blue_top = surface_height +  blue_thick
+        white_top = blue_top + white_thick
+        snow_top = white_top + snow_thick
+
+        self._set_default_plot_params(
+            blue_ice_param_dict,
+            {'color': '#a1cfe8', 'lw': 0, 'label': 'Blue ice'},
+        )
+        self._set_default_plot_params(
+            white_ice_param_dict,
+            {'color': '#d6eefa', 'lw': 0, 'label': 'White ice'},
+        )
+        self._set_default_plot_params(
+            snow_param_dict,
+            {'color': 'snow', 'lw': 0, 'label': 'Snow'},
+        )
+        has_data = ax.has_data()
+        xlim = ax.get_xlim()
+        x = np.linspace(-radius, radius, 2)
+        blue_fill = ax.fill_between(x, surface_height, blue_top, **blue_ice_param_dict)
+        white_fill = ax.fill_between(x, blue_top, white_top, **white_ice_param_dict)
+        snow_fill = ax.fill_between(x, white_top, snow_top, **snow_param_dict)
+        if has_data:
+            ax.set_xlim(xlim, auto=None) # keep the existing view, but leave autoscaling as it was
+        ax.get_xaxis().set_visible(False)
+        ax.set_xlim(xlim)
+        blue_ice_param_dict.clear()
+        white_ice_param_dict.clear()
+        snow_param_dict.clear()
+        return [blue_fill, white_fill, snow_fill]
+
+    def plot_morphometry_xsection(
+        self, ax: Axes, x, y, curve_param_dict={}, fill_param_dict={}
+    ):
+        self._set_default_plot_params(
+            curve_param_dict, {'color': 'darkgrey', 'zorder': 2}
+        )
+        self._set_default_plot_params(
+            fill_param_dict, {'color': 'darkgrey', 'zorder': 2}
         )
         line = ax.plot(x, y, **curve_param_dict)
-        fill = ax.fill_between(x, y, **fill_param_dict)
+        fill = ax.fill_between(x, y, 0, **fill_param_dict)
+        ax.set_xlim(min(x), max(x))
+        ax.set_ylim(min(y), max(y))
         ax.get_xaxis().set_visible(False)
         curve_param_dict.clear()
         fill_param_dict.clear()
         return [line, fill]
+
 
     def plot_zone(self, ax, var_name: str, zone: int, param_dict: dict = {}):
         """
@@ -958,9 +1038,8 @@ class NCPlotter:
                 f'{var_name} is not a valid variable name. Valid variables '
                 'are those returned by get_zone_var_names().'
             )
-        nc = xr.open_dataset(self.nc_path)
-        var_vals = nc.variables[var_name].values[:, :, 0, 0]
-        nc.close()
+        with xr.open_dataset(self.nc_path) as nc:
+            var_vals = nc.variables[var_name].values[:, :, 0, 0]
         n_zones = var_vals.shape[1]
         if zone < 1 or zone > n_zones:
             raise ValueError(
@@ -989,13 +1068,12 @@ class NCPlotter:
         var_names : List[str]
             Names of plottable variables.
         """
-        nc = xr.open_dataset(self.nc_path)
-        var_shape = nc['z'].shape
-        var_names = []
-        for key in nc.variables.keys():
-            if nc[key].shape == var_shape:
-                var_names.append(str(key))
-        nc.close()
+        with xr.open_dataset(self.nc_path) as nc:
+            var_shape = nc['z'].shape
+            var_names = []
+            for key in nc.variables.keys():
+                if nc[key].shape == var_shape:
+                    var_names.append(str(key))
         return var_names
 
     def get_zone_var_names(self) -> List[str]:
@@ -1007,12 +1085,11 @@ class NCPlotter:
         var_names : List[str]
             Names of plottable variables.
         """
-        nc = xr.open_dataset(self.nc_path)
-        var_names = []
-        for key in nc.variables.keys():
-            if isinstance(key, str) and key.endswith('_Z'):
-                var_names.append(key)
-        nc.close()
+        with xr.open_dataset(self.nc_path) as nc:
+            var_names = []
+            for key in nc.variables.keys():
+                if isinstance(key, str) and key.endswith('_Z'):
+                    var_names.append(key)
         return var_names
 
     def get_units(self, var_name: str) -> str:
@@ -1029,9 +1106,8 @@ class NCPlotter:
         unit : str
             Units of the variable.
         """
-        nc = xr.open_dataset(self.nc_path)
-        units = nc.variables[var_name].attrs['units']
-        nc.close()
+        with xr.open_dataset(self.nc_path) as nc:
+            units = nc.variables[var_name].attrs['units']
         return units
 
     def get_long_name(self, var_name: str) -> str:
@@ -1048,10 +1124,9 @@ class NCPlotter:
         long_name : str
             Long name description of the variable.
         """
-        nc = xr.open_dataset(self.nc_path)
-        long_name = nc.variables[var_name].attrs['long_name']
-        long_name = long_name[0].upper() + long_name[1:] if long_name else ''
-        nc.close()
+        with xr.open_dataset(self.nc_path) as nc:
+            long_name = nc.variables[var_name].attrs['long_name']
+            long_name = long_name[0].upper() + long_name[1:] if long_name else ''
         return long_name
 
     def get_start_datetime(self) -> datetime:
@@ -1077,6 +1152,13 @@ class NCPlotter:
         """
         return float(self._max_height)
 
-    def get_time(self):
+    def get_time(self) -> npt.NDArray[np.float64]:
+        """
+        Get an array of the simulations's timesteps.
 
-        return self._time
+        Returns
+        -------
+        time : npt.NDArray[np.float64]
+            Array of Matplotlib dates that represent the simulation's timesteps
+        """
+        return mdates.date2num(self._time)
