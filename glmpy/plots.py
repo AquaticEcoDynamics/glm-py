@@ -1092,6 +1092,17 @@ class NCPlotter:
                     var_names.append(name)
         return var_names
 
+    def get_num_zones(self) -> int:
+        """
+        Returns the number of modelled sediment zones.
+        """
+        with xr.open_dataset(self.nc_path) as nc:
+            if 'nzones' in nc.sizes.keys():
+                nzones = int(nc.sizes['nzones'])
+            else:
+                nzones = 0
+        return nzones
+
     def get_units(self, var_name: str) -> str:
         """
         Get the units of a variable.
