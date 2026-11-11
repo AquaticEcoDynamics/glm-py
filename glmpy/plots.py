@@ -653,7 +653,7 @@ class NCPlotter:
         vals = np.concatenate([var_vals[timestep, :1], var_vals[timestep, :n]])
         return np.interp(plot_heights, var_heights, vals)
 
-    def plot_var(
+    def plot_2d_var(
         self,
         ax: Axes,
         var_name: str,
@@ -672,7 +672,7 @@ class NCPlotter:
             The matplotlib Axes object to plot on.
         var_name : str
             Name of the variable to plot. To list valid variables, see
-            the `get_var_names()` method.
+            the `get_2d_var_names()` method.
         reference : str, optional
             Reference frame for depth, either `'bottom'` or
             `'surface'`. Default is "bottom".
@@ -685,10 +685,10 @@ class NCPlotter:
         out : List[Line2D]
             List of line objects.
         """
-        if var_name not in self.get_var_names():
+        if var_name not in self.get_2d_var_names():
             raise ValueError(
                 f'{var_name} is not a valid variable name. Valid variables '
-                'are those returned by get_var_names().'
+                'are those returned by get_2d_var_names().'
             )
         if at_height > self._max_height:
             raise ValueError(
@@ -745,10 +745,10 @@ class NCPlotter:
                 "reference must be either 'surface' or 'bottom'. Got "
                 f"'{reference}'."
             )
-        if var_name not in self.get_var_names():
+        if var_name not in self.get_2d_var_names():
             raise ValueError(
                 f'{var_name} is not a valid variable name. Valid variables '
-                'are those returned by get_var_names().'
+                'are those returned by get_2d_var_names().'
             )
 
         var_vals = self._get_var_vals(var_name)[:, 0 : self._max_num_layers + 1, 0, 0]
@@ -802,7 +802,7 @@ class NCPlotter:
             The matplotlib Axes object to plot on.
         var_name : str
             Name of the variable to plot. To list valid variables, see
-            the `get_var_names()` method.
+            the `get_2d_var_names()` method.
         reference : str, optional
             Reference frame for depth, either `'bottom'` or
             `'surface'`. Default is "bottom".
@@ -911,10 +911,10 @@ class NCPlotter:
     def plot_xsection(
         self, ax: Axes, var_name: str, timestep: int, surface_area: float, param_dict={}
     ):
-        if var_name not in self.get_var_names():
+        if var_name not in self.get_2d_var_names():
             raise ValueError(
                 f'{var_name} is not a valid variable name. Valid variables '
-                'are those returned by get_var_names().'
+                'are those returned by get_2d_var_names().'
             )
         radius = math.sqrt(surface_area / math.pi)
         var_vals = self._get_var_vals(var_name)[:, 0 : self._max_num_layers + 1, 0, 0]
@@ -1058,15 +1058,23 @@ class NCPlotter:
         )
         return out
 
-    def get_var_names(self) -> List[str]:
+    def get_1d_var_names(self) -> List[str]:
         """
-        Gets a list of variable names plottable with `plot_var() or
-        `plot_profile()`.
+        Returns a list of 1D variables in the NetCDF, i.e.,
+        those without a depth dimension.
+        """
+        with xr.open_dataset(self.nc_path) as nc:
+             var_names = []
+             for key, data in nc.variables.items():
+                 if len(data.shape) == 3:
+                     var_names.append(str(key))
+                     print(key, data.shape)
+        return var_names
 
-        Returns
-        -------
-        var_names : List[str]
-            Names of plottable variables.
+    def get_2d_var_names(self) -> List[str]:
+        """
+        Returns a list of 2D variables in the NetCDF, i.e.,
+        those with a time and depth dimension.
         """
         with xr.open_dataset(self.nc_path) as nc:
             var_shape = nc['z'].shape
@@ -1078,12 +1086,7 @@ class NCPlotter:
 
     def get_zone_var_names(self) -> List[str]:
         """
-        Gets a list of variable names plottable with `plot_zone()`.
-
-        Returns
-        -------
-        var_names : List[str]
-            Names of plottable variables.
+        Returns a list of sediment zone variables.
         """
         with xr.open_dataset(self.nc_path) as nc:
             var_names = []
